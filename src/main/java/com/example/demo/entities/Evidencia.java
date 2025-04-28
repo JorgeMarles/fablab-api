@@ -1,27 +1,30 @@
 package com.example.demo.entities;
 
-import java.time.LocalDate;
+import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "evidencia")
 public class Evidencia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "sesion_id", nullable = false)
-    private Sesion sesion;
-
-    @Column(columnDefinition = "TEXT")
-    private String observacion;
-
-    @Column
+    private String nombre;
+    private String descripcion;
     private String url;
-    
-    @Column
-    private LocalDate fecha = LocalDate.now();
+
+    @OneToMany(mappedBy = "evidencia")
+    private List<SesionEvidencia> sesionEvidencias;
 }

@@ -1,43 +1,38 @@
 package com.example.demo.entities;
-import java.time.LocalDate;
-import java.time.LocalTime;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "sesion")
 public class Sesion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull(message = "La fecha no puede estar vacía")
-    private LocalDate fecha;
-
-    @NotNull(message = "La hora no puede estar vacía")
-    private LocalTime hora;
+    private LocalDateTime inicio;
+    @ManyToOne
+    @JoinColumn(name = "id_oferta_formacion")
+    private OfertaFormacion ofertaFormacion;
 
     @ManyToOne
-    @JoinColumn(name = "programacion_id", nullable = false)
-    @NotNull(message = "La sesión debe pertenecer a una programación")
-    private Programacion programacion;
+    @JoinColumn(name = "id_sala")
+    private Sala sala;
 
-    @ManyToOne
-    @JoinColumn(name = "instructor_id", nullable = false)
-    @NotNull(message = "La sesión debe tener un instructor asignado")
-    private Instructor instructor;
-
-    @ManyToOne
-    @JoinColumn(name = "ubicacion_id", nullable = false)
-    @NotNull(message = "La sesión debe tener una ubicación asignada")
-    private Ubicacion ubicacion;
-    
-    @OneToMany(mappedBy = "sesion", cascade = CascadeType.ALL)
-    private List<Asistente> asistentes; 
-    
-    @OneToMany(mappedBy = "sesion",cascade = CascadeType.ALL)
-    private List<Evidencia> evidencias;
+    @OneToMany(mappedBy = "sesion")
+    private List<SesionEvidencia> sesionEvidencias;
 }

@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "municipio")
-public class Municipio {
+@Table(name = "pais")
+public class Pais {
 
     @Id
     private Long id;
 
-    private String codigo;
+    private String nombre;
 }

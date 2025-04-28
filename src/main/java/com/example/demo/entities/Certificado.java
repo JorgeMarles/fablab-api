@@ -1,24 +1,27 @@
 package com.example.demo.entities;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tipo_documento")
-public class TipoDocumento {
-
+@Table(name = "certificado")
+public class Certificado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String abreviatura;
-    private String nombre;
+    private String idPlantilla;
+    private String idSemillero;
+    private String idOferta;
+    private LocalDate fecha;
 }

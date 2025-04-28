@@ -15,21 +15,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "inscripcion")
-public class Inscripcion {
+@Table(name = "movimiento")
+public class Movimiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_participante")
-    private Participante participante;
-
-    @ManyToOne
-    @JoinColumn(name = "id_oferta_formacion")
-    private OfertaFormacion ofertaFormacion;
-
-    @ManyToOne
-    @JoinColumn(name = "id_programa_academico")
-    private ProgramaAcademico programaAcademico;
+    @JoinColumn(name = "id_tipo_movimiento")
+    private TipoMovimiento tipoMovimiento;
 }

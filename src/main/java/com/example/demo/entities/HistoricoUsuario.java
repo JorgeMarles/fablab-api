@@ -1,5 +1,9 @@
 package com.example.demo.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,29 +11,28 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "inscripcion")
-public class Inscripcion {
+@Table(name = "historico_usuario")
+public class HistoricoUsuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_participante")
-    private Participante participante;
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+
+    private String campo;
+    private String valorAnterior;
+    private String valorNuevo;
 
     @ManyToOne
-    @JoinColumn(name = "id_oferta_formacion")
-    private OfertaFormacion ofertaFormacion;
+    @JoinColumn(name = "tipo")
+    private TipoDocumento tipo;
 
-    @ManyToOne
-    @JoinColumn(name = "id_programa_academico")
-    private ProgramaAcademico programaAcademico;
 }

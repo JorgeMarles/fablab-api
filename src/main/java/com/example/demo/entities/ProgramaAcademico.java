@@ -6,9 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,21 +16,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "instructor")
-public class Instructor {
+@Table(name = "programa_academico")
+public class ProgramaAcademico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String cuarto;
-    private String direccion;
-    private String experiencia;
+    private String nombre;
+    private String codigo;
 
-    @OneToOne
-    @JoinColumn(name = "id_usuario")
-    private Usuario usuario;
-
-    private boolean activo;
-
-    @OneToMany(mappedBy = "instructor")
-    private List<OfertaFormacionInstructor> ofertaFormacionInstructors;
+    @OneToMany(mappedBy = "programaAcademico")
+    private List<Inscripcion> inscripciones;
 }
