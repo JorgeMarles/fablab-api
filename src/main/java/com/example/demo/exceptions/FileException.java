@@ -1,13 +1,13 @@
 package com.example.demo.exceptions;
 
-public class FilesException extends RuntimeException{
+public class FileException extends RuntimeException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	public FilesException(String msg) {
+
+	public FileException(String msg) {
 		super(msg);
 	}
 }
