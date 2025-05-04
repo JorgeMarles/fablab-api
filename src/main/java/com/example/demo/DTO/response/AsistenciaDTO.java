@@ -15,7 +15,8 @@ public class AsistenciaDTO implements IResponseDTO<Asistencia>{
     private boolean asistio;
     @Override
     public void parseFromEntity(Asistencia entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+        this.id = entity.getId();
+        this.nombre = entity.getParticipante().getUsuario().getNombreCompleto();
+        this.asistio = entity.isAsistio();
     }
 }
