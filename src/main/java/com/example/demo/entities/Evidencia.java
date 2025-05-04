@@ -1,12 +1,11 @@
 package com.example.demo.entities;
 
-import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,9 +21,13 @@ public class Evidencia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private String descripcion;
     private String url;
 
-    @OneToMany(mappedBy = "evidencia")
-    private List<SesionEvidencia> sesionEvidencias;
+    @ManyToOne
+    @JoinColumn(name = "sesion_id")
+    private Sesion sesion;
+
+    @ManyToOne
+    @JoinColumn(name = "instructor_id")
+    private Instructor instructor;
 }

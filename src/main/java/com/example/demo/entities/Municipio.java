@@ -17,5 +17,5 @@ public class Municipio {
     @Id
     private Long id;
 
-    private String codigo;
+    private String nombre;
 }

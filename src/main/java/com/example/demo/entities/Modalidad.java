@@ -24,5 +24,5 @@ public class Modalidad {
     private String nombre;
 
     @OneToMany(mappedBy = "modalidad")
-    private List<RegistroIngreso> registroIngresos;
+    private List<Instructor> instructores;
 }

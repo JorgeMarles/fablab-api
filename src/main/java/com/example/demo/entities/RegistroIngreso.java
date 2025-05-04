@@ -1,9 +1,11 @@
 package com.example.demo.entities;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,33 +25,52 @@ public class RegistroIngreso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate fecha;
-    private LocalDateTime hora;
+    private LocalDateTime tiempo;
 
     @ManyToOne
-    @JoinColumn(name = "id_motivo")
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
+    @Enumerated(EnumType.STRING)
     private Motivo motivo;
 
     @ManyToOne
-    @JoinColumn(name = "id_institucion")
+    @JoinColumn(name = "institucion_id")
+    @Nullable
     private Institucion institucion;
 
-    @ManyToOne
-    @JoinColumn(name = "id_tipo_institucion")
-    private TipoInstitucion tipoInstitucion;
+    @Nullable
+    private String institucionOtro;
 
+    @ManyToOne
+    @JoinColumn(name = "programa_academico_id")
+    @Nullable
+    private ProgramaAcademico programaAcademico;
+
+    @Nullable
     private String codigo;
-    private String aula;
+
+    @ManyToOne
+    @JoinColumn(name = "sala_id")
+    @Nullable
+    private Sala sala;
+
+    @Nullable
     private String materia;
-    private String idSemillero;
-    private String valorSiglaSemillero;
 
     @ManyToOne
-    @JoinColumn(name = "id_cargo")
+    @JoinColumn(name = "semillero_id")
+    @Nullable
+    private Semillero semillero;
+
+    @Nullable
+    private String semilleroOtro;
+
+    @Nullable
+    private String siglasSemilleroOtro;
+
+    @ManyToOne
+    @JoinColumn(name = "cargo_id")
     private Cargo cargo;
-
-    @ManyToOne
-    @JoinColumn(name = "id_modalidad")
-    private Modalidad modalidad;
 }
 

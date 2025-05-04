@@ -23,6 +23,6 @@ public class CategoriaOferta {
     private Long id;
     private String nombre;
 
-    @OneToMany(mappedBy = "categoriaOferta")
-    private List<OfertaFormacion> ofertaFormaciones;
+    @OneToMany(mappedBy = "categoria")
+    private List<OfertaFormacion> ofertas;
 }

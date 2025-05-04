@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class HistoricoUsuario {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     private String campo;

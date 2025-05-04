@@ -22,14 +22,14 @@ public class Inscripcion {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_participante")
+    @JoinColumn(name = "participante_id")
     private Participante participante;
 
     @ManyToOne
-    @JoinColumn(name = "id_oferta_formacion")
+    @JoinColumn(name = "oferta_formacion_id")
     private OfertaFormacion ofertaFormacion;
 
     @ManyToOne
-    @JoinColumn(name = "id_programa_academico")
+    @JoinColumn(name = "programa_academico_id")
     private ProgramaAcademico programaAcademico;
 }

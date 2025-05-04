@@ -4,12 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -27,41 +27,58 @@ public class OfertaFormacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String codigo;
-    private String cima;
-    private String sesion;
-    private boolean activo;
-    private String finalidad;
+    private String cine;
+    private boolean extension;
+    
+    @Enumerated(EnumType.STRING)
+    private EstadoOfertaFormacion estado;
+
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
-    private String hora;
-    private double valor;
-    private double cupoMaximo;
-    private String prioridad;
-    private String institucion;
-    private String semestre;
+    private int horas;
+    
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private CategoriaOferta categoria;
 
     @ManyToOne
-    @JoinColumn(name = "id_tipo_beneficiario")
+    @JoinColumn(name = "tipo_id")
+    private TipoOferta tipo;
+
+    //REVISAR
+    @ManyToOne
+    @JoinColumn(name = "tipo_beneficiario_id")
     private TipoBeneficiario tipoBeneficiario;
 
+    private int valor;
+
+    private int cupoMaximo;
+
+    private String piezaGrafica;
+
+    private int semestre;
+
+    //REVISAR
     @ManyToOne
-    @JoinColumn(name = "id_categoria_oferta")
-    private CategoriaOferta categoriaOferta;
+    @JoinColumn(name = "institucion_id")
+    private Institucion institucion;
 
-    @OneToMany(mappedBy = "ofertaFormacion")
-    private List<OfertaFormacionInstructor> ofertaFormacionInstructors;
-
+    /*
     @ManyToMany
     @JoinTable(
             name = "inscripcion",
-            joinColumns = @JoinColumn(name = "id_oferta_formacion"),
-            inverseJoinColumns = @JoinColumn(name = "id_participante")
+            joinColumns = @JoinColumn(name = "oferta_formacion_id"),
+            inverseJoinColumns = @JoinColumn(name = "participante_id")
     )
     private List<Participante> participantes;
+    */
 
     @OneToMany(mappedBy = "ofertaFormacion")
     private List<Sesion> sesiones;
 
     @OneToMany(mappedBy = "ofertaFormacion")
     private List<Inscripcion> inscripciones;
+
+    @OneToMany(mappedBy = "ofertaFormacion")
+    private List<Certificado> certificados;
 }

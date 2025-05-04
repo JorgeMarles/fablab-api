@@ -26,4 +26,7 @@ public class ProgramaAcademico {
 
     @OneToMany(mappedBy = "programaAcademico")
     private List<Inscripcion> inscripciones;
+
+    @OneToMany(mappedBy = "programaAcademico")
+    private List<RegistroIngreso> registrosIngreso;
 }

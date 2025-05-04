@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -25,14 +26,21 @@ public class Sesion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime inicio;
+    private LocalDateTime fin;
     @ManyToOne
-    @JoinColumn(name = "id_oferta_formacion")
+    @JoinColumn(name = "oferta_formacion_id")
     private OfertaFormacion ofertaFormacion;
 
     @ManyToOne
-    @JoinColumn(name = "id_sala")
-    private Sala sala;
+    @JoinColumn(name = "sala_id")
+    private Sala sala;    
 
     @OneToMany(mappedBy = "sesion")
-    private List<SesionEvidencia> sesionEvidencias;
+    private List<Evidencia> evidencias;
+
+    @ManyToMany(mappedBy = "sesiones")
+    private List<Instructor> instructores;
+
+    @OneToMany(mappedBy = "sesion")
+    private List<Asistencia> asistencias;
 }

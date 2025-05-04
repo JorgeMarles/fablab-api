@@ -1,6 +1,10 @@
 package com.example.demo.entities;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,6 +26,11 @@ public class Movimiento {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_tipo_movimiento")
+    @JoinColumn(name = "instructor_id")
+    private Instructor instructor;
+
+    private LocalDateTime fecha;
+
+    @Enumerated(EnumType.STRING)
     private TipoMovimiento tipoMovimiento;
 }

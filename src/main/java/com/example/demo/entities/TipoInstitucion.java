@@ -24,5 +24,5 @@ public class TipoInstitucion {
     private String nombre;
 
     @OneToMany(mappedBy = "tipoInstitucion")
-    private List<RegistroIngreso> registroIngresos;
+    private List<Institucion> instituciones;
 }

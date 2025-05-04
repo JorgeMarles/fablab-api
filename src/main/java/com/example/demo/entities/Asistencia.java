@@ -22,10 +22,12 @@ public class Asistencia {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_participante")
+    @JoinColumn(name = "participante_id")
     private Participante participante;
 
     @ManyToOne
-    @JoinColumn(name = "id_sesion")
+    @JoinColumn(name = "sesion_id")
     private Sesion sesion;
+
+    private boolean asistio;
 }
