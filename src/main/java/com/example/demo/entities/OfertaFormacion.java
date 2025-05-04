@@ -26,6 +26,7 @@ public class OfertaFormacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nombre;
     private String codigo;
     private String cine;
     private boolean extension;
