@@ -14,8 +14,10 @@ public class CargoDTO implements IResponseDTO<Cargo> {
     private String nombre;
     @Override
     public void parseFromEntity(Cargo entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+        if (entity != null) {
+            this.id = entity.getId();
+            this.nombre = entity.getNombre();
+        }
     }
 
 }

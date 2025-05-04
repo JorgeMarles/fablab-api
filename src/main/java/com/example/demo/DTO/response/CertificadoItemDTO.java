@@ -18,7 +18,8 @@ public class CertificadoItemDTO implements IResponseDTO<Certificado>{
     private LocalDate fecha;
     @Override
     public void parseFromEntity(Certificado entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+        this.id = entity.getId();
+        this.instructor = entity.getInstructor().getUsuario().getNombreCompleto();
+        this.oferta_formacion = entity.getOfertaFormacion().getNombre();
     }
 }

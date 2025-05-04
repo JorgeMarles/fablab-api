@@ -25,6 +25,7 @@ public class Sesion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nombre;
     private LocalDateTime inicio;
     private LocalDateTime fin;
     @ManyToOne
