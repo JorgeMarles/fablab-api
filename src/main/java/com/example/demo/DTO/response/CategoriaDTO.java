@@ -15,8 +15,10 @@ public class CategoriaDTO implements IResponseDTO<CategoriaOferta> {
     private String nombre;
     @Override
     public void parseFromEntity(CategoriaOferta entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fromEntity'");
+    	if (entity != null) {
+            this.id = entity.getId();
+            this.nombre = entity.getNombre();
+        }
     }
     
 
