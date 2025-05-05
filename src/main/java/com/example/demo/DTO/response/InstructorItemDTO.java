@@ -16,10 +16,9 @@ public class InstructorItemDTO implements IResponseDTO<Instructor> {
     private String correo;
     @Override
     public void parseFromEntity(Instructor entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+    	this.id = entity.getId();
+        this.nombre = entity.getUsuario().getNombreCompleto();
+        this.correo = entity.getUsuario().getCorreoPersonal();
     }
 
-
-    
 }

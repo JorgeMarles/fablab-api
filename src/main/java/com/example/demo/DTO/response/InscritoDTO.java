@@ -14,8 +14,8 @@ public class InscritoDTO implements IResponseDTO<Inscripcion>{
     private String nombre;
     @Override
     public void parseFromEntity(Inscripcion entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fromEntity'");
+    	 this.id = entity.getId();
+    	 this.nombre = entity.getParticipante().getUsuario().getNombreCompleto();
     }
 
 

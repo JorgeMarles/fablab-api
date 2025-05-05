@@ -23,7 +23,7 @@ public class IngresoFablabItemDTO implements IResponseDTO<RegistroIngreso>{
 		this.id = entity.getId();
 		this.tiempo = entity.getTiempo();
 		this.nombre = entity.getUsuario().getNombreCompleto();
-		this.motivo = entity.getMotivo(); // Convert enum to String
+		this.motivo = entity.getMotivo();
     }
 
 

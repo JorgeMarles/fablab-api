@@ -19,8 +19,10 @@ public class MovimientoDTO implements IResponseDTO<Movimiento>{
     private TipoMovimiento tipoMovimiento;
     @Override
     public void parseFromEntity(Movimiento entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+    	 this.id = entity.getId();
+    	 this.nombre = entity.getInstructor().getUsuario().getNombreCompleto();
+    	 this.fecha = entity.getFecha();
+    	 this.tipoMovimiento = entity.getTipoMovimiento();
     }
 
 

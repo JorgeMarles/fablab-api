@@ -17,9 +17,8 @@ public class OfertaItemDTO implements IResponseDTO<OfertaFormacion> {
     private EstadoOfertaFormacion estado;
     @Override
     public void parseFromEntity(OfertaFormacion entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+    	this.id = entity.getId();
+        this.nombre = entity.getNombre();
+        this.estado = entity.getEstado();
     }
-
-
 }

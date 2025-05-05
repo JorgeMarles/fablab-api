@@ -17,8 +17,9 @@ public class InstitucionDTO implements IResponseDTO<Institucion>{
     private String tipoInstitucion;
     @Override
     public void parseFromEntity(Institucion entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fromEntity'");
+    	this.id = entity.getId();
+        this.nombre = entity.getNombre();
+        this.tipoInstitucion = entity.getNombre();
     }
 
 

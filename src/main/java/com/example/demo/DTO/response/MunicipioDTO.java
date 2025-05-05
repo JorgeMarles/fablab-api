@@ -15,7 +15,8 @@ public class MunicipioDTO implements IResponseDTO<Municipio>{
     private String codigo;
     @Override
     public void parseFromEntity(Municipio entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+    	this.id = entity.getId();
+        this.nombre = entity.getNombre();
+        this.codigo = entity.getCodigo();
     }
 }

@@ -35,8 +35,47 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion>{
     private List<InscritoDTO> inscritos;
     @Override
     public void parseFromEntity(OfertaFormacion entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+    	 this.id = entity.getId();
+    	    this.nombre = entity.getNombre();
+    	    this.codigo = entity.getCodigo();
+    	    this.cine = entity.getCine();
+    	    this.extension = entity.isExtension();
+    	    this.estado = entity.getEstado();
+    	    this.fecha_inicio = entity.getFechaInicio();
+    	    this.fecha_fin = entity.getFechaFin();
+    	    this.horas = entity.getHoras();
+
+    	    this.tipo_oferta = new TipoOfertaDTO();
+    	    this.tipo_oferta.parseFromEntity(entity.getTipo());
+
+    	    this.categoria = new CategoriaDTO();
+    	    this.categoria.parseFromEntity(entity.getCategoria());
+
+    	    this.tipo_beneficiario = new TipoBeneficiarioDTO();
+    	    this.tipo_beneficiario.parseFromEntity(entity.getTipoBeneficiario());
+
+    	    this.semestre = entity.getSemestre();
+    	    this.valor = entity.getValor();
+    	    this.pieza_grafica = entity.getPiezaGrafica();
+
+    	    this.institucion = new InstitucionDTO();
+    	    this.institucion.parseFromEntity(entity.getInstitucion());
+
+    	    this.sesiones = entity.getSesiones().stream()
+    	        .map(sesion -> {
+    	            SesionItemDTO sesionDTO = new SesionItemDTO();
+    	            sesionDTO.parseFromEntity(sesion);
+    	            return sesionDTO;
+    	        })
+    	        .toList();
+
+    	    this.inscritos = entity.getInscripciones().stream()
+    	        .map(inscrito -> {
+    	            InscritoDTO inscritoDTO = new InscritoDTO();
+    	            inscritoDTO.parseFromEntity(inscrito);
+    	            return inscritoDTO;
+    	        })
+    	        .toList();
     }
 
 

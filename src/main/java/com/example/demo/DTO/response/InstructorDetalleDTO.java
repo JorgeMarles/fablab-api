@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.example.demo.entities.Instructor;
 import com.example.demo.entities.Sexo;
+import com.example.demo.entities.TipoDocumento;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,8 +35,28 @@ public class InstructorDetalleDTO implements IResponseDTO<Instructor>{
     private boolean activo;
     @Override
     public void parseFromEntity(Instructor entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+    	this.id = entity.getId();
+        this.primer_nombre = entity.getUsuario().getPrimerNombre();
+        this.segundo_nombre = entity.getUsuario().getSegundoNombre();
+        this.primer_apellido = entity.getUsuario().getPrimerApellido();
+        this.segundo_apellido = entity.getUsuario().getSegundoApellido();
+        this.correo_personal = entity.getUsuario().getCorreoPersonal();
+        this.tipo_documento = new TipoDocumentoDTO();
+        this.tipo_documento.parseFromEntity(entity.getUsuario().getTipoDocumento());
+        this.documento = entity.getUsuario().getDocumento();
+        this.fecha_expedicion = entity.getUsuario().getFechaExpedicion();
+        this.sexo = entity.getUsuario().getSexo();
+        this.fecha_nacimiento = entity.getUsuario().getFechaNacimiento();
+        this.pais = new PaisDTO();
+        this.pais.parseFromEntity(entity.getUsuario().getPais());
+        this.municipio = new MunicipioDTO();
+        this.municipio.parseFromEntity(entity.getUsuario().getMunicipio());
+        this.telefono = entity.getUsuario().getTelefono();
+        this.direccion = entity.getDireccion();	
+        this.entidad = entity.getEntidad();
+        this.modalidad = new ModalidadDTO();
+        this.modalidad.parseFromEntity(entity.getModalidad());
+        this.activo = entity.isActivo();
     }
 
 
