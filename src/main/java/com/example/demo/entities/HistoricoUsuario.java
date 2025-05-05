@@ -4,7 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,8 +36,8 @@ public class HistoricoUsuario {
     private String valorAnterior;
     private String valorNuevo;
 
-    @ManyToOne
-    @JoinColumn(name = "tipo")
-    private TipoDocumento tipo;
+    @Enumerated(EnumType.STRING)
+    private TipoDato tipo;
 
+    private LocalDateTime fechaModificacion;
 }
