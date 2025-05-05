@@ -3,7 +3,6 @@ package com.example.demo.entities;
 import java.time.LocalDate;
 import java.util.List;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +16,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,7 +36,7 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Nullable
+    @Null
     @Column(length = 128)
     private String uid;
 
@@ -40,12 +44,24 @@ public class Usuario {
     @JoinColumn(name = "tipo_documento_id")
     private TipoDocumento tipoDocumento;
 
+    @Size(max = 30, message = "El numero de documento no puede exceder 30 caracteres")
+    @NotNull(message = "El numero de documento no puede ser nulo")
     private String documento;
 
     private LocalDate fechaExpedicion;
+
+    @NotNull(message = "Primer apellido no puede ser nulo")
+    @Size(max = 50, message = "Primer apellido no puede exceder 50 caracteres")
     private String primerApellido;
+
+    @Size(max = 50, message = "Segundo apellido no puede exceder 50 caracteres")
     private String segundoApellido;
+
+    @NotNull(message = "Primer nombre no puede ser nulo")
+    @Size(max = 50, message = "Primer nombre no puede exceder 50 caracteres")
     private String primerNombre;
+
+    @Size(max = 50, message = "Segundo nombre no puede exceder 50 caracteres")
     private String segundoNombre;
 
     @Enumerated(EnumType.STRING)
@@ -61,9 +77,13 @@ public class Usuario {
     @JoinColumn(name = "municipio_id")
     private Municipio municipio;
 
-    @Nullable
+    @Null
+    @Pattern(regexp = "^[0-9]{15}$", message = "El telefono debe contener 15 digitos")
     private String telefono;
-    @Nullable
+
+    @Null
+    @Size(max = 200, message = "El correo no puede exceder 200 caracteres")
+    @Email(message = "El correo debe tener un formato válido")
     private String correoPersonal;
 
     @OneToMany(mappedBy = "usuario")

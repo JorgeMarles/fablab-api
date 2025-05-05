@@ -2,7 +2,6 @@ package com.example.demo.entities;
 
 import java.util.List;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -11,6 +10,9 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,10 +35,13 @@ public class Participante {
     @JoinColumn(name = "estado_civil_id")
     private EstadoCivil estadoCivil;
 
-    @Nullable
+    @Null
+    @Size(max = 200, message = "El correo no puede exceder 200 caracteres")
+    @Email(message = "El correo debe tener un formato válido")
     private String correoInstitucional;
 
-    @Nullable
+    @Null
+    @Size(max = 200, message = "La dirección institucional no puede exceder 200 caracteres")
     private String direccionInstitucional;
 
     @ManyToOne

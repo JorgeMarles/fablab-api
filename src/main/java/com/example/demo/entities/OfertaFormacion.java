@@ -3,7 +3,6 @@ package com.example.demo.entities;
 import java.time.LocalDate;
 import java.util.List;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,6 +13,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,11 +30,20 @@ public class OfertaFormacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull(message = "NOMBRE no puede ser nulo")
+    @Size(max = 200, message = "NOMBRE no puede exceder 200 caracteres")
     private String nombre;
-    @Column(unique = true)
+
+    @NotNull(message = "CÓDIGO no puede ser nulo")
+    @Size(max = 20, message = "CÓDIGO no puede exceder 20 caracteres")
     private String codigo;
-    @Column(unique = true)
+
+    @NotNull(message = "CINE no puede ser nulo")
+    @Pattern(regexp = "\\d{1,4}", message = "CINE debe contener solo números y máximo 4 dígitos")
     private String cine;
+
+    @NotNull(message = "EXTENSIÓN no puede ser nulo")
     private boolean extension;
     
     @Enumerated(EnumType.STRING)
@@ -39,6 +51,9 @@ public class OfertaFormacion {
 
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
+    
+    @NotNull(message = "HORAS no puede ser nulo")
+    @Digits(integer = 5, fraction = 0, message = "HORAS debe ser un número entero de máximo 5 dígitos")
     private int horas;
     
     @ManyToOne
@@ -56,6 +71,8 @@ public class OfertaFormacion {
 
     private int valor;
 
+    @NotNull(message = "CUPOMÁXIMO no puede ser nulo")
+    @Digits(integer = 10, fraction = 0, message = "CUPOMÁXIMO debe ser un número entero de máximo 10 dígitos")
     private int cupoMaximo;
 
     private String piezaGrafica;
