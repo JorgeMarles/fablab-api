@@ -25,12 +25,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(createErrorResponse("Ocurrió un error inesperado: " + ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<Object> handleValidationException(ValidationException ex, WebRequest request) {
-    	logger.error("Error de validación: ", ex);
-        return new ResponseEntity<>(createErrorResponse("Error de validación: " + ex.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         return new ResponseEntity<>(createErrorResponse("Recurso no encontrado: " + ex.getMessage()), HttpStatus.NOT_FOUND);
@@ -43,6 +37,7 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex) {
+        logger.error("Error de argumento ilegal: ", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(createErrorResponse(ex.getMessage()));
     }
     

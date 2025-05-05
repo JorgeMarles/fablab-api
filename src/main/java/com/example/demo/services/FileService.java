@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.exceptions.FileException;
 
 @Service
-@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTRUCTOR')")
 public class FileService {
 
 	Logger logger = LoggerFactory.getLogger(FileService.class);
