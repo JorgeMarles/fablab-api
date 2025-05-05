@@ -55,21 +55,29 @@ public class GlobalExceptionHandler {
             errors.add(errorMessage);
         }
         
-        return new ResponseEntity<>(createErrorResponse(errors.get(0)), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(createErrorResponse(errors), HttpStatus.BAD_REQUEST);
     }
     
     private ErrorResponse createErrorResponse(String message) {
         return new ErrorResponse(true, message);
     }
 
-   
+    private ErrorResponse createErrorResponse(List<String> messages) {
+        return new ErrorResponse(true, messages);
+    }
+
     private static class ErrorResponse {
         private boolean error;
-        private String message;
+        private String[] messages;
 
         public ErrorResponse(boolean error, String message) {
             this.error = error;
-            this.message = message;
+            this.messages = new String[]{message};
+        }
+
+        public ErrorResponse(boolean error, List<String> messages) {
+            this.error = error;
+            this.messages = messages.toArray(new String[0]);
         }
 
         @SuppressWarnings("unused")
@@ -78,8 +86,8 @@ public class GlobalExceptionHandler {
         }
 
         @SuppressWarnings("unused")
-		public String getMessage() {
-            return message;
+		public String[] getMessages() {
+            return messages;
         }
     }
 }
