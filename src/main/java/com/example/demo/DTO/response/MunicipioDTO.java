@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class MunicipioDTO implements IResponseDTO<Municipio>{
     private Long id;
     private String nombre;
+    private String codigo;
     @Override
     public void parseFromEntity(Municipio entity) {
         // TODO Auto-generated method stub

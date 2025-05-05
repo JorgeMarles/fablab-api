@@ -3,25 +3,24 @@ package com.example.demo.entities;
 import java.util.List;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "tipo_oferta")
-public class TipoOferta {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String nombre;
+public class TipoOferta extends BaseEntity {
+
+    public TipoOferta(Long id, String nombre) {
+        super(id, nombre);
+    }
 
     @OneToMany(mappedBy = "tipo")
     private List<OfertaFormacion> ofertas;

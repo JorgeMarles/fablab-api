@@ -61,7 +61,9 @@ public class Usuario {
     @JoinColumn(name = "municipio_id")
     private Municipio municipio;
 
+    @Nullable
     private String telefono;
+    @Nullable
     private String correoPersonal;
 
     @OneToMany(mappedBy = "usuario")

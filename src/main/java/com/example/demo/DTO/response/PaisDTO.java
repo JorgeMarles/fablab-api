@@ -13,6 +13,7 @@ public class PaisDTO implements IResponseDTO<Pais>{
     
     private Long id;
     private String nombre;
+    private String codigo;
     @Override
     public void parseFromEntity(Pais entity) {
         // TODO Auto-generated method stub

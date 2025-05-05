@@ -33,6 +33,7 @@ public class Participante {
     @JoinColumn(name = "estado_civil_id")
     private EstadoCivil estadoCivil;
 
+    @Nullable
     private String correoInstitucional;
 
     @Nullable

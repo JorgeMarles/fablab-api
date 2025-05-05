@@ -1,21 +1,22 @@
 package com.example.demo.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "municipio")
-public class Municipio {
-
-    @Id
-    private Long id;
-
-    private String nombre;
+public class Municipio extends BaseEntity {
+    private String codigo;
+    public Municipio(Long id, String nombre, String codigo) {
+        super(id, nombre);
+        this.codigo = codigo;
+    }
 }
