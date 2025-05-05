@@ -17,7 +17,11 @@ public class ParticipanteItemDTO implements IResponseDTO<Participante> {
     private String correo_institucional;
     @Override
     public void parseFromEntity(Participante entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+    	this.id = entity.getId();
+		this.nombre = entity.getUsuario().getNombreCompleto();
+		this.documento = entity.getUsuario().getDocumento();
+    	this.documento = entity.getUsuario().getDocumento();
+        this.correo_personal = entity.getUsuario().getCorreoPersonal();
+        this.correo_institucional = entity.getCorreoInstitucional();
     }
 }

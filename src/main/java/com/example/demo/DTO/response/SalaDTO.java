@@ -15,9 +15,7 @@ public class SalaDTO implements IResponseDTO<Sala>{
     private String nombre;
     @Override
     public void parseFromEntity(Sala entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+		this.id = entity.getId();
+		this.nombre = entity.getNombre();
     }
-
-
 }

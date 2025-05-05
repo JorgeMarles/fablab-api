@@ -15,7 +15,8 @@ public class ProgramaAcademicoDTO implements IResponseDTO<ProgramaAcademico> {
     private String codigo;
     @Override
     public void parseFromEntity(ProgramaAcademico entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+    	 this.id = entity.getId();
+    	 this.nombre = entity.getNombre();
+    	 this.codigo = entity.getCodigo();
     }
 }

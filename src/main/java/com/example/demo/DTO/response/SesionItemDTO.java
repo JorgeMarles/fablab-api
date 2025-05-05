@@ -20,9 +20,11 @@ public class SesionItemDTO implements IResponseDTO<Sesion>{
     private SalaDTO sala;
     @Override
     public void parseFromEntity(Sesion entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+    	this.id = entity.getId();
+        this.nombre = entity.getNombre();
+        this.inicio = entity.getInicio();
+        this.fin = entity.getFin();
+        this.sala = new SalaDTO();
+        this.sala.parseFromEntity(entity.getSala());
     }
-
-
 }

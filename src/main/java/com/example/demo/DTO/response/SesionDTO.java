@@ -24,9 +24,35 @@ public class SesionDTO implements IResponseDTO<Sesion>{
     private List<EvidenciaDTO> evidencias;
     @Override
     public void parseFromEntity(Sesion entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
-    }
+		this.id = entity.getId();
+		this.nombre = entity.getNombre();
+		this.inicio = entity.getInicio();
+		this.fin = entity.getFin();
+		this.sala = new SalaDTO();
+		this.sala.parseFromEntity(entity.getSala());
+		
+		this.instructores = entity.getInstructores().stream()
+		        .map(instructor -> {
+		            InstructorItemDTO instructorDTO = new InstructorItemDTO();
+		            instructorDTO.parseFromEntity(instructor);
+		            return instructorDTO;
+		        })
+		        .toList();
+		
+		this.participantes = entity.getAsistencias().stream()
+	            .map(participante -> {
+	                AsistenciaDTO asistenciaDTO = new AsistenciaDTO();
+	                asistenciaDTO.parseFromEntity(participante);
+	                return asistenciaDTO;
+	            })
+	            .toList();
 
-    
+	    this.evidencias = entity.getEvidencias().stream()
+	            .map(evidencia -> {
+	                EvidenciaDTO evidenciaDTO = new EvidenciaDTO();
+	                evidenciaDTO.parseFromEntity(evidencia);
+	                return evidenciaDTO;
+	            })
+	            .toList();
+    }
 }

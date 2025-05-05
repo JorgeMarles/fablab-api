@@ -16,9 +16,8 @@ public class TipoDocumentoDTO implements IResponseDTO<TipoDocumento>{
     private String siglas;
     @Override
     public void parseFromEntity(TipoDocumento entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+		this.id = entity.getId();
+		this.nombre = entity.getNombre();
+		this.siglas = entity.getSiglas();
     }
-
-    
 }

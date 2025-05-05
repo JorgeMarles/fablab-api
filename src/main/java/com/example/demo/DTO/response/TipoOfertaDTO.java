@@ -15,8 +15,8 @@ public class TipoOfertaDTO implements IResponseDTO<TipoOferta> {
     private String nombre;
     @Override
     public void parseFromEntity(TipoOferta entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+                this.id = entity.getId();
+                this.nombre = entity.getNombre();
     }
     
 }

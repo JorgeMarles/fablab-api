@@ -15,8 +15,9 @@ public class SemilleroDTO implements IResponseDTO<Semillero>{
     private String siglas;
     @Override
     public void parseFromEntity(Semillero entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+           this.id = entity.getId();
+           this.nombre = entity.getNombre();
+           this.siglas = entity.getSiglas();
     }
     
 }

@@ -34,9 +34,36 @@ public class ParticipanteDetalleDTO implements IResponseDTO<Participante> {
 
     @Override
     public void parseFromEntity(Participante entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
-    }
+    	this.id = entity.getId();
+        this.primer_nombre = entity.getUsuario().getPrimerNombre();
+        this.segundo_nombre = entity.getUsuario().getSegundoNombre();
+        this.primer_apellido = entity.getUsuario().getPrimerApellido();
+        this.segundo_apellido = entity.getUsuario().getSegundoApellido();
+        this.correo_personal = entity.getUsuario().getCorreoPersonal();
 
-    
+        this.tipo_documento = new TipoDocumentoDTO();
+        this.tipo_documento.parseFromEntity(entity.getUsuario().getTipoDocumento());
+
+        this.documento = entity.getUsuario().getDocumento();
+        this.fecha_expedicion = entity.getUsuario().getFechaExpedicion();
+        this.sexo = entity.getUsuario().getSexo();
+        this.fecha_nacimiento = entity.getUsuario().getFechaNacimiento();
+
+        this.pais = new PaisDTO();
+        this.pais.parseFromEntity(entity.getUsuario().getPais());
+
+        this.municipio = new MunicipioDTO();
+        this.municipio.parseFromEntity(entity.getUsuario().getMunicipio());
+
+        this.telefono = entity.getUsuario().getTelefono();
+
+        this.estado_civil = new EstadoCivilDTO();
+        this.estado_civil.parseFromEntity(entity.getEstadoCivil());
+
+        this.correo_institucional = entity.getCorreoInstitucional();
+        this.direccion_institucional = entity.getDireccionInstitucional();
+
+        this.poblacion_especial = new PoblacionEspecialDTO();
+        this.poblacion_especial.parseFromEntity(entity.getPoblacionEspecial());
+    }
 }

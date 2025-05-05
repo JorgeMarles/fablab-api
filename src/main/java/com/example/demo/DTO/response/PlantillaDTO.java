@@ -15,8 +15,9 @@ public class PlantillaDTO implements IResponseDTO<PlantillaCertificado>{
     private String url;
     @Override
     public void parseFromEntity(PlantillaCertificado entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+    	this.id = entity.getId();
+        this.nombre = entity.getNombre();
+        this.url = entity.getUrl();
     }
 
 
