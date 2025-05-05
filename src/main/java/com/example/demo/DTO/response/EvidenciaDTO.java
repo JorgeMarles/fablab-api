@@ -16,7 +16,9 @@ public class EvidenciaDTO implements IResponseDTO<Evidencia>{
     private String url;
     @Override
     public void parseFromEntity(Evidencia entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+		this.id = entity.getId();
+		this.nombre = entity.getNombre();
+		this.instructor = entity.getInstructor().getUsuario().getNombreCompleto();
+		this.url = entity.getUrl();
     }
 }

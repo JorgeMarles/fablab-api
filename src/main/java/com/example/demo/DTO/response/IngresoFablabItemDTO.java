@@ -1,7 +1,8 @@
 package com.example.demo.DTO.response;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import com.example.demo.entities.Motivo;
 import com.example.demo.entities.RegistroIngreso;
 
 import lombok.AllArgsConstructor;
@@ -14,13 +15,15 @@ import lombok.NoArgsConstructor;
 public class IngresoFablabItemDTO implements IResponseDTO<RegistroIngreso>{
 
     private Long id;
-    private LocalDate fecha;
+    private LocalDateTime tiempo;
     private String nombre;
-    private String motivo;
+    private Motivo motivo;
     @Override
     public void parseFromEntity(RegistroIngreso entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fromEntity'");
+		this.id = entity.getId();
+		this.tiempo = entity.getTiempo();
+		this.nombre = entity.getUsuario().getNombreCompleto();
+		this.motivo = entity.getMotivo(); // Convert enum to String
     }
 
 
