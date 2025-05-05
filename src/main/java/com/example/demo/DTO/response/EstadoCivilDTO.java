@@ -14,8 +14,8 @@ public class EstadoCivilDTO implements IResponseDTO<EstadoCivil> {
     private String nombre;
     @Override
     public void parseFromEntity(EstadoCivil entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseFromEntity'");
+    	this.id = entity.getId();
+        this.nombre = entity.getNombre();
     }
 
     
