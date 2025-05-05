@@ -3,6 +3,7 @@ package com.example.demo.entities;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,7 +28,9 @@ public class OfertaFormacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
+    @Column(unique = true)
     private String codigo;
+    @Column(unique = true)
     private String cine;
     private boolean extension;
     
