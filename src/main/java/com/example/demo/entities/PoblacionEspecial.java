@@ -1,23 +1,19 @@
 package com.example.demo.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "poblacion_especial")
-public class PoblacionEspecial {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String nombre;
+public class PoblacionEspecial extends BaseEntity {
+    public PoblacionEspecial(Long id, String nombre) {
+        super(id, nombre);
+    }
 }

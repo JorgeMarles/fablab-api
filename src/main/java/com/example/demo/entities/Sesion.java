@@ -1,6 +1,7 @@
 package com.example.demo.entities;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -26,8 +27,9 @@ public class Sesion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private LocalDateTime inicio;
-    private LocalDateTime fin;
+    private LocalDate fecha;
+    private LocalTime inicio;
+    private LocalTime fin;
     @ManyToOne
     @JoinColumn(name = "oferta_formacion_id")
     private OfertaFormacion ofertaFormacion;

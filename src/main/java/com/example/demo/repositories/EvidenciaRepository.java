@@ -6,5 +6,5 @@ import com.example.demo.entities.Evidencia;
 import java.util.List;
 
 public interface EvidenciaRepository extends JpaRepository<Evidencia, Long> {
-	List<Evidencia> findBySesionId(Long sesionId);
+	List<Evidencia> findBySesion_Id(Long sesionId);
 }

@@ -4,8 +4,6 @@ import java.time.LocalDate;
 
 import com.example.demo.entities.Instructor;
 import com.example.demo.entities.Sexo;
-import com.example.demo.entities.TipoDocumento;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
