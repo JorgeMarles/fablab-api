@@ -7,17 +7,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.exceptions.FilesException;
+import com.example.demo.exceptions.FileException;
 
 @Service
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTRUCTOR')")
 public class FileService {
+
+	Logger logger = LoggerFactory.getLogger(FileService.class);
 	
 	private final String uploadDirectory = "uploads";
 	
@@ -47,6 +51,9 @@ public class FileService {
 	}
 
 	public String uploadFile(MultipartFile file) throws Exception {
+		logger.info("Subiendo archivo: " + file.getOriginalFilename());
+		return "hola";
+		/*/
 		try {
 			String fileName = UUID.randomUUID().toString();
 			byte[] bytes = file.getBytes();
@@ -56,7 +63,7 @@ public class FileService {
 			long maxFileSize = 10 * 1024 * 1024;
 
 			if (fileSize > maxFileSize) {
-				throw new FilesException("El tamaño del archivo es de mas de 10 MB");
+				throw new FileException("El tamaño del archivo es de mas de 10 MB");
 			}
 
 			if (fileOriginalName.endsWith(".jpg") || fileOriginalName.endsWith(".png") || fileOriginalName.endsWith(".jpeg")
@@ -81,11 +88,12 @@ public class FileService {
 					Files.write(path, bytes);
 					return path.getFileName().toString().replace("\\", "/");
 			} else {
-				throw new FilesException("Ese Tipo de archivo no esta permitido, y este es el nombre:" + fileOriginalName + " y pesa: " +fileSize);
+				throw new FileException("Ese Tipo de archivo no esta permitido, y este es el nombre:" + fileOriginalName + " y pesa: " +fileSize);
 			}
 		} catch (Exception e) {
-			throw new FilesException(e.getMessage());
+			throw new FileException(e.getMessage());
 		}
+			*/
 	}
 
 }
