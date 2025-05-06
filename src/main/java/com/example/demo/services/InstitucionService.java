@@ -39,10 +39,14 @@ public class InstitucionService {
 			throw new IllegalArgumentException("El nombre debe ser un texto.");
 		}
 
-		TipoInstitucion tipoInstitucion = tipoInstitucionService.buscarPorIdEntidad((Long) institucionDTO.get("id_tipo_institucion"));
+		Optional<TipoInstitucion> tipoInstitucion = tipoInstitucionService.buscarPorIdEntidad((Long) institucionDTO.get("id_tipo_institucion"));
+
+		if(!tipoInstitucion.isPresent()){
+			throw new ResourceNotFoundException("No existe un tipo de Institución con ese id");
+		}
 
 		institucion.setNombre((String) institucionDTO.get("nombre"));
-		institucion.setTipoInstitucion(tipoInstitucion);
+		institucion.setTipoInstitucion(tipoInstitucion.get());
 		institucion = institucionRepository.save(institucion);
 
 		InstitucionDTO institucionResponse = new InstitucionDTO();
