@@ -70,4 +70,13 @@ public class ProgramaAcademicoService {
 				}).toList();
 		return programasAcademicosResponse;
 	}
+	
+	public ProgramaAcademico buscarPorIdEntidad(Long id) {
+		return programaAcademicoRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Programa académico no encontrado."));
+	}
+	
+	public List<ProgramaAcademico> listarEntidad() {
+		return programaAcademicoRepository.findAll();
+	}
 }
