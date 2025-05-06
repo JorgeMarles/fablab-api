@@ -6,9 +6,10 @@ import java.util.Map;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.demo.exceptions.ResourceNotFoundException;
+
 import com.example.demo.DTO.response.TipoInstitucionDTO;
 import com.example.demo.entities.TipoInstitucion;
-import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.TipoInstitucionRepository;
 
 @Service
