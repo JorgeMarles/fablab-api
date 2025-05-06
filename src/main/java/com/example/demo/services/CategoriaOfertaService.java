@@ -21,6 +21,10 @@ public class CategoriaOfertaService {
 		if (!categoriaDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
 		}
+		
+		if (!(categoriaDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
 
 		categoriaOferta.setNombre((String) categoriaDTO.get("nombre"));
 		categoriaOferta = categoriaOfertaRepository.save(categoriaOferta);

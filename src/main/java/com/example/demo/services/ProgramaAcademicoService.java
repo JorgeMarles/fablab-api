@@ -25,6 +25,14 @@ public class ProgramaAcademicoService {
         if (!programaAcademicoDTO.containsKey("nombre")) {
             throw new IllegalArgumentException("El nombre es obligatorio.");
         }
+        
+		if (!(programaAcademicoDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
+		
+		if (!(programaAcademicoDTO.get("codigo") instanceof String)) {
+			throw new IllegalArgumentException("codigo debe ser un texto.");
+		}
 
         programaAcademico.setNombre((String) programaAcademicoDTO.get("nombre"));
         programaAcademico = programaAcademicoRepository.save(programaAcademico);

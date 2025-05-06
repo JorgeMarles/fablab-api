@@ -26,6 +26,11 @@ public class TipoInstitucionService {
 		if (!tipoInstitucionDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
 		}
+		
+		if (!(tipoInstitucionDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
+		
 		tipoInstitucion.setNombre((String) tipoInstitucionDTO.get("nombre"));
 		
 		tipoInstitucion = tipoInstitucionRepository.save(tipoInstitucion);

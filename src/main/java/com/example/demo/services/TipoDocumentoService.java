@@ -21,6 +21,14 @@ public class TipoDocumentoService {
 		if (!tipoDocumentoDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
 		}
+		
+		if (!(tipoDocumentoDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
+		
+		if (!(tipoDocumentoDTO.get("siglas") instanceof String)) {
+			throw new IllegalArgumentException("siglas debe ser un texto.");
+		}
 
 		tipoDocumento.setNombre((String) tipoDocumentoDTO.get("nombre"));
 		tipoDocumento = tipoDocumentoRepository.save(tipoDocumento);

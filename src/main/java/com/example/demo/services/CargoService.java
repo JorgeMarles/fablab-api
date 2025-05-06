@@ -21,6 +21,10 @@ public class CargoService {
 		if (!cargoDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
 		}
+		
+		if (!(cargoDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
 
 		cargo.setNombre((String) cargoDTO.get("nombre"));
 		cargo = cargoRepository.save(cargo);

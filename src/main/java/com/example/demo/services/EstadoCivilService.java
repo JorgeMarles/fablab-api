@@ -22,6 +22,10 @@ public class EstadoCivilService {
 		if (!estadoCivilDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
 		}
+		
+		if (!(estadoCivilDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
 
 		estadoCivil.setNombre((String) estadoCivilDTO.get("nombre"));
 		estadoCivil = estadoCivilRepository.save(estadoCivil);

@@ -21,6 +21,14 @@ public class MunicipioService {
 		if (!municipioDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
 		}
+		
+		if (!(municipioDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
+		
+		if (!municipioDTO.containsKey("codigo")) {
+			throw new IllegalArgumentException("codigo es obligatorio.");
+		}
 
 		municipio.setNombre((String) municipioDTO.get("nombre"));
 		municipio = municipioRepository.save(municipio);

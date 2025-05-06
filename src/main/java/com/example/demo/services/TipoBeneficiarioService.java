@@ -21,7 +21,11 @@ public class TipoBeneficiarioService {
 		if (!tipoBeneficiarioDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
 		}
-
+		
+		if (!(tipoBeneficiarioDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
+		
 		tipoBeneficiario.setNombre((String) tipoBeneficiarioDTO.get("nombre"));
 		tipoBeneficiario = tipoBeneficiarioRepository.save(tipoBeneficiario);
 		TipoBeneficiarioDTO tipoBeneficiarioResponse = new TipoBeneficiarioDTO();

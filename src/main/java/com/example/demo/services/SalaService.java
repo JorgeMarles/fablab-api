@@ -21,6 +21,10 @@ public class SalaService {
 		if (!salaDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
 		}
+		
+		if (!(salaDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
 
 		sala.setNombre((String) salaDTO.get("nombre"));
 		sala = salaRepository.save(sala);

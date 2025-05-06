@@ -22,7 +22,15 @@ public class SemilleroService {
         if (!semilleroDTO.containsKey("nombre")) {
             throw new IllegalArgumentException("El nombre es obligatorio.");
         }
-
+        
+		if (!(semilleroDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
+		
+		if (!(semilleroDTO.get("siglas") instanceof String)) {
+			throw new IllegalArgumentException("siglas debe ser un texto.");
+		}
+		
         semillero.setNombre((String) semilleroDTO.get("nombre"));
         semillero = semilleroRepository.save(semillero);
 

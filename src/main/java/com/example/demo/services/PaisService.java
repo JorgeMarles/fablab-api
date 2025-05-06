@@ -21,6 +21,14 @@ public class PaisService {
 		if (!paisDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
 		}
+		
+		if (!(paisDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
+		
+		if (!paisDTO.containsKey("codigo")) {
+			throw new IllegalArgumentException("codigo es obligatorio.");
+		}
 
 		pais.setNombre((String) paisDTO.get("nombre"));
 		pais = paisRepository.save(pais);

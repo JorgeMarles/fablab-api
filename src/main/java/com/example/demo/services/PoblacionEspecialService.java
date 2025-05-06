@@ -22,6 +22,10 @@ public class PoblacionEspecialService {
 		if (!poblacionEspecialDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
 		}
+		
+		if (!(poblacionEspecialDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
 
 		poblacionEspecial.setNombre((String) poblacionEspecialDTO.get("nombre"));
 		poblacionEspecial = poblacionEspecialRepository.save(poblacionEspecial);
