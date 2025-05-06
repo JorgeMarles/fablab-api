@@ -55,7 +55,7 @@ public class InstitucionService {
 		InstitucionDTO institucionResponse = new InstitucionDTO();
 		institucionResponse.parseFromEntity(institucionRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Institución no encontrada.")));
-		return institucionResponse;
+		return institucionResponse;//
 	}
 	
 	public List<InstitucionDTO> listar() {
