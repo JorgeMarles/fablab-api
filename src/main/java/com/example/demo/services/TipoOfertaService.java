@@ -31,8 +31,6 @@ public class TipoOfertaService {
 
         tipoOferta.setNombre((String) tipoOfertaDTO.get("nombre"));
 
-        // Aquí puedes agregar la lógica para crear un nuevo tipo de oferta
-        // Por ejemplo, guardar el tipo de oferta en la base de datos
 
         tipoOferta = tipoOfertaRepository.save(tipoOferta);
         TipoOfertaDTO tipoOfertaResponse = new TipoOfertaDTO();

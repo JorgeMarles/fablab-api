@@ -19,7 +19,7 @@ public class InstitucionDTO implements IResponseDTO<Institucion>{
     public void parseFromEntity(Institucion entity) {
     	this.id = entity.getId();
         this.nombre = entity.getNombre();
-        this.tipoInstitucion = entity.getNombre();
+        this.tipoInstitucion = entity.getTipoInstitucion().getNombre();
     }
 
 
