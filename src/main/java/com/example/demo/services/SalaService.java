@@ -50,4 +50,12 @@ public class SalaService {
 	public boolean existe(Long id) {
 		return salaRepository.existsById(id);
 	}
+	
+	public Sala buscarPorIdEntidad(Long id) {
+		return salaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Sala no encontrada."));
+	}
+	
+	public List<Sala> listarEntidad() {
+		return salaRepository.findAll();
+	}
 }

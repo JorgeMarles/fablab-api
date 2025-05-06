@@ -58,4 +58,13 @@ public class TipoOfertaService {
     public boolean existe(Long id) {
         return tipoOfertaRepository.existsById(id);
     }
+    
+	public TipoOferta buscarPorIdEntidad(Long id) {
+		return tipoOfertaRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Tipo de oferta no encontrado."));
+	}
+	
+	public List<TipoOferta> listarEntidad() {
+		return tipoOfertaRepository.findAll();
+	}
 }

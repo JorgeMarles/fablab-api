@@ -68,4 +68,13 @@ public class InstitucionService {
 	public boolean existe(Long id) {
 		return institucionRepository.existsById(id);
 	}
+	
+	public Institucion buscarPorIdEntidad(Long id) {
+		return institucionRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Institución no encontrada."));
+	}
+	
+	public List<Institucion> listarEntidad() {
+		return institucionRepository.findAll();
+	}
 }

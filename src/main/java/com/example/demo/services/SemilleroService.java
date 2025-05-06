@@ -51,4 +51,13 @@ public class SemilleroService {
 	public boolean existe(Long id) {
 		return semilleroRepository.existsById(id);
 	}
+	
+	public Semillero buscarPorIdEntidad(Long id) {
+		return semilleroRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Semillero no encontrado."));
+	}
+	
+	public List<Semillero> listarEntidad() {
+		return semilleroRepository.findAll();
+	}
 }

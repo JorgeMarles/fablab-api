@@ -51,4 +51,11 @@ public class CargoService {
 		return cargoRepository.existsById(id);
 	}
 
+	public Cargo buscarPorIdEntidad(Long id) {
+		return cargoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cargo no encontrado."));
+	}
+	
+	public List<Cargo> listarEntidad() {
+		return cargoRepository.findAll();
+	}
 }
