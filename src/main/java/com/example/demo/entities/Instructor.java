@@ -1,6 +1,7 @@
 package com.example.demo.entities;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.demo.utils.ChangeMap;
@@ -76,5 +77,16 @@ public class Instructor {
                 }
             }
         }
+    }
+
+    public static List<String> getFields(){
+        List<String> fields = new ArrayList<>();
+        for (Field field : Usuario.class.getDeclaredFields()) {
+            Observable observable = field.getAnnotation(Observable.class);
+            if (observable != null) {
+                fields.add(field.getName());
+            }
+        }
+        return fields;
     }
 }

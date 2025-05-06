@@ -2,6 +2,7 @@ package com.example.demo.entities;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.demo.utils.ChangeMap;
@@ -126,11 +127,25 @@ public class Usuario {
                 field.setAccessible(true);
                 try {
                     Object value = field.get(this);
+                    if(observable.tipo() == TipoDato.ENTITY){
+                        value = value.getClass().getMethod("getId").invoke(value);
+                    }
                     map.registerOldValue(field.getName(), value, observable.tipo());
                 } catch (Exception e) {
                     throw e;
                 }
             }
         }
+    }
+
+    public static List<String> getFields(){
+        List<String> fields = new ArrayList<>();
+        for (Field field : Usuario.class.getDeclaredFields()) {
+            Observable observable = field.getAnnotation(Observable.class);
+            if (observable != null) {
+                fields.add(field.getName());
+            }
+        }
+        return fields;
     }
 }

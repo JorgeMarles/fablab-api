@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ChangeMap {
-    private final Map<String, FieldMetadata> fields = new HashMap<>();
+    private final Map<String, FieldChangeMetadata> fields = new HashMap<>();
     
     Logger logger = LoggerFactory.getLogger(ChangeMap.class);
 
@@ -31,7 +31,7 @@ public class ChangeMap {
      * Adaptación para ejecutar {@code forEach()} en la clase
      * @param action
      */
-    public void forEach(BiConsumer<String, FieldMetadata> action) {
+    public void forEach(BiConsumer<String, FieldChangeMetadata> action) {
         fields.forEach(action);
         new ChangeMap();
     }
@@ -47,7 +47,7 @@ public class ChangeMap {
         if(fields.containsKey(field)){
             throw new RuntimeException("El campo "+field+" ya estaba registrado en esta entidad, esto no debería pasar porque no compilaría.");
         }
-        FieldMetadata fm = new FieldMetadata(value, null, type);
+        FieldChangeMetadata fm = new FieldChangeMetadata(value, null, type);
         fields.put(field, fm);
     }  
 
@@ -65,7 +65,7 @@ public class ChangeMap {
             logger.error("Error: propiedad "+field+" no registrada. Ignorando...");
             return;
         }
-        FieldMetadata fm = fields.get(field);
+        FieldChangeMetadata fm = fields.get(field);
         fm.setNewValue(value);
         if(fm.areEqual()){
             fields.remove(field);

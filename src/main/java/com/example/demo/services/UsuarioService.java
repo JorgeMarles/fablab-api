@@ -18,7 +18,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class UsuarioService {
-    
+
     @Autowired
     private UsuarioRepository usuarioRepository;
 
@@ -38,21 +38,23 @@ public class UsuarioService {
 
     @Transactional
     public Usuario crear(DatosPersonalesDTO usuarioDto) {
-        
+
         Usuario usuario = new Usuario();
 
-        Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService.buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
+        Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService
+                .buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
         Optional<Pais> paisOpt = paisService.buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_pais()));
-        Optional<Municipio> municipioOpt = municipioService.buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_municipio()));
-        if(!tipoDocumentoOpt.isPresent()){
+        Optional<Municipio> municipioOpt = municipioService
+                .buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_municipio()));
+        if (!tipoDocumentoOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un tipo de documento con ese id");
         }
 
-        if(!paisOpt.isPresent()){
+        if (!paisOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un pais con ese id");
         }
 
-        if(!municipioOpt.isPresent()){
+        if (!municipioOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un municipio con ese id");
         }
 
@@ -74,21 +76,23 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario actualizar(Long id, DatosPersonalesDTO usuarioDto){
+    public Usuario actualizar(Long id, DatosPersonalesDTO usuarioDto) throws Exception {
         Usuario usuario = this.buscarPorId(id);
 
-        Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService.buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
+        Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService
+                .buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
         Optional<Pais> paisOpt = paisService.buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_pais()));
-        Optional<Municipio> municipioOpt = municipioService.buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_municipio()));
-        if(!tipoDocumentoOpt.isPresent()){
+        Optional<Municipio> municipioOpt = municipioService
+                .buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_municipio()));
+        if (!tipoDocumentoOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un tipo de documento con ese id");
         }
 
-        if(!paisOpt.isPresent()){
+        if (!paisOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un pais con ese id");
         }
 
-        if(!municipioOpt.isPresent()){
+        if (!municipioOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un municipio con ese id");
         }
 
@@ -110,7 +114,8 @@ public class UsuarioService {
     }
 
     public Usuario buscarPorId(Long id) {
-        return usuarioRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado."));
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado."));
     }
 
     public List<Usuario> listar() {
@@ -121,7 +126,7 @@ public class UsuarioService {
         return usuarioRepository.existsById(id);
     }
 
-    public Optional<Usuario> buscarPorDocumento(String documento){
+    public Optional<Usuario> buscarPorDocumento(String documento) {
         return usuarioRepository.findByDocumento(documento);
     }
 }

@@ -31,7 +31,6 @@ public class ParticipanteDetalleDTO implements IResponseDTO<Participante> {
     private String correo_institucional;
     private String direccion_institucional;
     private PoblacionEspecialDTO poblacion_especial;
-    private boolean primera_vez;
 
     @Override
     public void parseFromEntity(Participante entity) {
@@ -66,7 +65,5 @@ public class ParticipanteDetalleDTO implements IResponseDTO<Participante> {
 
         this.poblacion_especial = new PoblacionEspecialDTO();
         this.poblacion_especial.parseFromEntity(entity.getPoblacionEspecial());
-
-        this.primera_vez = entity.isPrimeraVez();
     }
 }

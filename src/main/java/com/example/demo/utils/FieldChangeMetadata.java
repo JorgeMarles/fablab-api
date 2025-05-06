@@ -6,14 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Clase para manejar metadatos e información de un campo.
+ * Clase para manejar cambios en un campo
  * 
  * <p>
  * Guarda el valor de la entidad, el valor del Dto, y el tipo de dato
  */
 @Data
 @AllArgsConstructor
-public class FieldMetadata {
+public class FieldChangeMetadata {
     private Object oldValue;
     private Object newValue;
     private final TipoDato type;
