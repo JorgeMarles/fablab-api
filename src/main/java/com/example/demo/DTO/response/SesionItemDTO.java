@@ -1,7 +1,6 @@
 package com.example.demo.DTO.response;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import com.example.demo.entities.Sesion;

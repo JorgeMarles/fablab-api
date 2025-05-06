@@ -23,12 +23,12 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion>{
     private EstadoOfertaFormacion estado;
     private LocalDate fecha_inicio;
     private LocalDate fecha_fin;
-    private int horas;
+    private Integer horas;
     private TipoOfertaDTO tipo_oferta;
     private CategoriaDTO categoria;
     private TipoBeneficiarioDTO tipo_beneficiario;
-    private int semestre;
-    private int valor;
+    private Integer semestre;
+    private Integer valor;
     private String pieza_grafica;
     private InstitucionDTO institucion;
     private List<SesionItemDTO> sesiones;

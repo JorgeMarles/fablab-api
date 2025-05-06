@@ -1,6 +1,8 @@
 package com.example.demo.services;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,9 +59,8 @@ public class TipoDocumentoService {
 		return tipoDocumentoRepository.existsById(id);
 	}
 
-	public TipoDocumento buscarPorIdEntidad(Long id) {
-		return tipoDocumentoRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Tipo de documento no encontrado."));
+	public Optional<TipoDocumento> buscarPorIdEntidad(Long id) {
+		return tipoDocumentoRepository.findById(id);
 	}
 
 	public List<TipoDocumento> listarEntidad() {

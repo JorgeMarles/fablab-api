@@ -1,13 +1,17 @@
 package com.example.demo.services;
 import java.util.List;
 import java.util.Map;
-import jakarta.transaction.Transactional;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.demo.exceptions.ResourceNotFoundException;
+
 import com.example.demo.DTO.response.PoblacionEspecialDTO;
 import com.example.demo.entities.PoblacionEspecial;
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.PoblacionEspecialRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class PoblacionEspecialService {
@@ -55,9 +59,8 @@ public class PoblacionEspecialService {
 		return poblacionEspecialRepository.existsById(id);
 	}
 	
-	public PoblacionEspecial buscarPorIdEntidad(Long id) {
-		return poblacionEspecialRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Poblacion especial no encontrada."));
+	public Optional<PoblacionEspecial> buscarPorIdEntidad(Long id) {
+		return poblacionEspecialRepository.findById(id);
 	}
 
 	public List<PoblacionEspecial> listarEntidad() {

@@ -1,7 +1,11 @@
 package com.example.demo.entities;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.example.demo.utils.ChangeMap;
+import com.example.demo.utils.Observable;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -42,48 +46,61 @@ public class Usuario {
 
     @ManyToOne
     @JoinColumn(name = "tipo_documento_id")
+    @Observable(tipo = TipoDato.ENTITY)
     private TipoDocumento tipoDocumento;
 
     @Size(max = 30, message = "El numero de documento no puede exceder 30 caracteres")
     @NotNull(message = "El numero de documento no puede ser nulo")
+    @Observable(tipo = TipoDato.STRING)
     private String documento;
 
+    @Observable(tipo = TipoDato.DATE)
     private LocalDate fechaExpedicion;
 
     @NotNull(message = "Primer apellido no puede ser nulo")
     @Size(max = 50, message = "Primer apellido no puede exceder 50 caracteres")
+    @Observable(tipo = TipoDato.STRING)
     private String primerApellido;
 
     @Size(max = 50, message = "Segundo apellido no puede exceder 50 caracteres")
+    @Observable(tipo = TipoDato.STRING)
     private String segundoApellido;
 
     @NotNull(message = "Primer nombre no puede ser nulo")
     @Size(max = 50, message = "Primer nombre no puede exceder 50 caracteres")
+    @Observable(tipo = TipoDato.STRING)
     private String primerNombre;
 
     @Size(max = 50, message = "Segundo nombre no puede exceder 50 caracteres")
+    @Observable(tipo = TipoDato.STRING)
     private String segundoNombre;
 
     @Enumerated(EnumType.STRING)
+    @Observable(tipo = TipoDato.ENUM)
     private Sexo sexo;
 
+    @Observable(tipo = TipoDato.DATE)
     private LocalDate fechaNacimiento;
 
     @ManyToOne
     @JoinColumn(name = "pais_id")
+    @Observable(tipo = TipoDato.ENTITY)
     private Pais pais;
 
     @ManyToOne
     @JoinColumn(name = "municipio_id")
+    @Observable(tipo = TipoDato.ENTITY)
     private Municipio municipio;
 
     @Null
     @Pattern(regexp = "^[0-9]{15}$", message = "El telefono debe contener 15 digitos")
+    @Observable(tipo = TipoDato.STRING)
     private String telefono;
 
     @Null
     @Size(max = 200, message = "El correo no puede exceder 200 caracteres")
     @Email(message = "El correo debe tener un formato válido")
+    @Observable(tipo = TipoDato.STRING)
     private String correoPersonal;
 
     @OneToMany(mappedBy = "usuario")
@@ -100,5 +117,20 @@ public class Usuario {
 
     public String getNombreCompleto() {
         return primerNombre + " " + segundoNombre + " " + primerApellido + " " + segundoApellido;
+    }
+
+    public void registerValues(ChangeMap map) throws Exception {
+        for (Field field : this.getClass().getDeclaredFields()) {
+            Observable observable = field.getAnnotation(Observable.class);
+            if (observable != null) {
+                field.setAccessible(true);
+                try {
+                    Object value = field.get(this);
+                    map.registerOldValue(field.getName(), value, observable.tipo());
+                } catch (Exception e) {
+                    throw e;
+                }
+            }
+        }
     }
 }

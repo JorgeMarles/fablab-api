@@ -56,4 +56,6 @@ public class Participante {
 
     @OneToMany(mappedBy = "participante")
     private List<RegistroIngreso> registroIngresos;
+
+    private boolean primeraVez;
 }

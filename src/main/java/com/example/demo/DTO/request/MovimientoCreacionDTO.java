@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovimientoCreacionDTO {
-    private int id_instructor;
+    private Long id_instructor;
     private LocalDate fecha;
     private TipoMovimiento tipo;
 }

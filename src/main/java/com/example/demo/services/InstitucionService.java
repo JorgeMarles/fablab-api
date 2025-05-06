@@ -1,6 +1,8 @@
 package com.example.demo.services;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,9 +71,8 @@ public class InstitucionService {
 		return institucionRepository.existsById(id);
 	}
 	
-	public Institucion buscarPorIdEntidad(Long id) {
-		return institucionRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Institución no encontrada."));
+	public Optional<Institucion> buscarPorIdEntidad(Long id) {
+		return institucionRepository.findById(id);
 	}
 	
 	public List<Institucion> listarEntidad() {

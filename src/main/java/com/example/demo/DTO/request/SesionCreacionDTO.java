@@ -16,6 +16,6 @@ public class SesionCreacionDTO {
     private LocalDate fecha;
     private LocalTime inicio;
     private LocalTime fin;
-    private int id_sala;
+    private Long id_sala;
     private List<Integer> instructores; //Lista de ids de instructores
 }
