@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entities.BaseEntity;
 import com.example.demo.entities.HistoricoUsuario;
 import com.example.demo.entities.Instructor;
+import com.example.demo.entities.Participante;
 import com.example.demo.entities.TipoDato;
 import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.ResourceNotFoundException;
@@ -51,7 +52,7 @@ public class HistoricoUsuarioService {
                 continue;
             }
             HistoricoUsuario hu = huOpt.get();
-            String setter = "set" + hu.getCampo().substring(0, 1).toUpperCase() + hu.getCampo().substring(1);
+            String setter = "set" + capitalize(hu.getCampo());
             Object valor = getValue(hu.getCampo(), hu.getTipo(), hu.getValorNuevo());
             if (valor == null) {
                 continue;
@@ -72,12 +73,12 @@ public class HistoricoUsuarioService {
                 continue;
             }
             HistoricoUsuario hu = huOpt.get();
-            String setter = "set" + hu.getCampo().substring(0, 1).toUpperCase() + hu.getCampo().substring(1);
+            String setter = "set" + capitalize(hu.getCampo());
             Object valor = getValue(hu.getCampo(), hu.getTipo(), hu.getValorNuevo());
             if (valor == null) {
                 continue;
             }
-            Participante.class.getMethod(setter, valor.getClass()).invoke(instructor, valor);
+            Participante.class.getMethod(setter, valor.getClass()).invoke(participante, valor);
         }
 
         this.obtenerUsuarioEnFecha(participante.getUsuario(), fecha);
@@ -94,7 +95,7 @@ public class HistoricoUsuarioService {
                 continue;
             }
             HistoricoUsuario hu = huOpt.get();
-            String setter = "set" + hu.getCampo().substring(0, 1).toUpperCase() + hu.getCampo().substring(1);
+            String setter = "set" + capitalize(hu.getCampo());
             Object valor = getValue(hu.getCampo(), hu.getTipo(), hu.getValorNuevo());
             if (valor == null) {
                 continue;
@@ -118,12 +119,8 @@ public class HistoricoUsuarioService {
             case DATE -> LocalDateTime.parse(val);
             case ENTITY -> {
                 try {
-                    // Get entity class name from field name
-                    String entityClassName = campo.substring(0, 1).toUpperCase() + campo.substring(1);
-
-                    // Get repository bean name
-                    String repositoryName = entityClassName.substring(0, 1).toLowerCase()
-                            + entityClassName.substring(1) + "Repository";
+                   // Get repository bean name
+                    String repositoryName = capitalize(campo) + "Repository";
 
                     // Get repository from Spring context
                     GenericRepository<BaseEntity> repository = (GenericRepository<BaseEntity>) context
@@ -132,7 +129,7 @@ public class HistoricoUsuarioService {
                     // Find entity by ID
                     yield repository.findById(Long.parseLong(val))
                             .orElseThrow(() -> new ResourceNotFoundException(
-                                    entityClassName + " not found with id: " + val));
+                                    capitalize(campo) + " not found with id: " + val));
                 } catch (Exception e) {
                     throw new RuntimeException("Error converting to entity: " + e.getMessage(), e);
                 }
@@ -150,5 +147,9 @@ public class HistoricoUsuarioService {
             }
             default -> throw new IllegalArgumentException("Tipo de dato no soportado: " + tipo);
         };
+    }
+
+    private String capitalize(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 }
