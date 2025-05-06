@@ -32,7 +32,7 @@ public class TipoOfertaService {
 		if (!(tipoOfertaDTO.get("nombre") instanceof String)) {
 			throw new IllegalArgumentException("El nombre debe ser un texto.");
 		}
-
+		
         tipoOferta.setNombre((String) tipoOfertaDTO.get("nombre"));
 
         tipoOferta = tipoOfertaRepository.save(tipoOferta);
@@ -70,4 +70,5 @@ public class TipoOfertaService {
 	public List<TipoOferta> listarEntidad() {
 		return tipoOfertaRepository.findAll();
 	}
+	//
 }
