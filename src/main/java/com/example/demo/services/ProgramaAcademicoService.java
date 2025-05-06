@@ -3,6 +3,8 @@ package com.example.demo.services;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,9 +81,8 @@ public class ProgramaAcademicoService {
 		return programasAcademicosResponse;
 	}
 	
-	public ProgramaAcademico buscarPorIdEntidad(Long id) {
-		return programaAcademicoRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Programa académico no encontrado."));
+	public Optional<ProgramaAcademico> buscarPorIdEntidad(Long id) {
+		return programaAcademicoRepository.findById(id);
 	}
 	
 	public List<ProgramaAcademico> listarEntidad() {

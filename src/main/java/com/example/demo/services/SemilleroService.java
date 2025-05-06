@@ -1,6 +1,8 @@
 package com.example.demo.services;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,9 +62,8 @@ public class SemilleroService {
 		return semilleroRepository.existsById(id);
 	}
 	
-	public Semillero buscarPorIdEntidad(Long id) {
-		return semilleroRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Semillero no encontrado."));
+	public  Optional<Semillero> buscarPorIdEntidad(Long id) {
+		return semilleroRepository.findById(id);
 	}
 	
 	public List<Semillero> listarEntidad() {

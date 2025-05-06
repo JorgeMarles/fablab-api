@@ -1,6 +1,8 @@
 package com.example.demo.services;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,9 +55,8 @@ public class CategoriaOfertaService {
 		return categoriaOfertaRepository.existsById(id);
 	}
 	
-	public CategoriaOferta buscarPorIdEntidad(Long id) {
-		return categoriaOfertaRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada."));
+	public  Optional<CategoriaOferta> buscarPorIdEntidad(Long id) {
+		return categoriaOfertaRepository.findById(id);
 	}
 	
 	public List<CategoriaOferta> listarEntidad() {

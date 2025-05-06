@@ -107,9 +107,8 @@ public class ParticipanteService {
         return participanteRepository.existsById(id);
     }
 
-    public Participante buscarPorIdEntidad(Long id) {
-        return participanteRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Participante no encontrada."));
+    public  Optional<Participante> buscarPorIdEntidad(Long id) {
+        return participanteRepository.findById(id);
     }
 
     public List<Participante> listarEntidad() {

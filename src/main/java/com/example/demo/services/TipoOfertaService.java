@@ -3,6 +3,7 @@ package com.example.demo.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,9 +63,8 @@ public class TipoOfertaService {
         return tipoOfertaRepository.existsById(id);
     }
     
-	public TipoOferta buscarPorIdEntidad(Long id) {
-		return tipoOfertaRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Tipo de oferta no encontrado."));
+	public  Optional<TipoOferta> buscarPorIdEntidad(Long id) {
+		return tipoOfertaRepository.findById(id);
 	}
 	
 	public List<TipoOferta> listarEntidad() {

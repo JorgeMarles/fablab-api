@@ -2,6 +2,8 @@ package com.example.demo.services;
 import java.util.List;
 import java.util.Map;
 import jakarta.transaction.Transactional;
+
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demo.exceptions.ResourceNotFoundException;
@@ -28,10 +30,23 @@ public class RegistroIngresoService {
 		}
 		
 		if(registroIngresoDTO.getMotivo()== Motivo.CURSO) {
-				//ofertaFormacionService.buscarPorIdEntidad(registroIngresoDTO.getId_oferta_formacion());
+			 if(registroIngresoDTO.getId_oferta_formacion() == null) {
+				 throw new IllegalArgumentException("El id_oferta_formacion es obligatorio.");
+			 }
+			 if (registroIngresoDTO.getId_institucion() == null) {
+				 throw new IllegalArgumentException("El id_institucion es obligatorio.");
+			 }
+			 if (registroIngresoDTO.getNombre_institucion() == null) {
+				throw new IllegalArgumentException("El nombre_institucion es obligatorio.");
+			}
+			if (registroIngresoDTO.getId_programa_academico() == null) {
+				throw new IllegalArgumentException("El id_programa_academico es obligatorio.");
+			}
+			if (registroIngresoDTO.getId_cargo() == null) {
+				throw new IllegalArgumentException("El id_cargo es obligatorio.");
+			}
 		}
 		
-		
 		return null;
-	}
+    }
 }

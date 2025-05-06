@@ -1,6 +1,8 @@
 package com.example.demo.services;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,9 +56,8 @@ public class TipoBeneficiarioService {
 		return tipoBeneficiarioRepository.existsById(id);
 	}
 	
-	public TipoBeneficiario buscarPorIdEntidad(Long id) {
-		return tipoBeneficiarioRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Tipo de beneficiario no encontrado."));
+	public  Optional<TipoBeneficiario> buscarPorIdEntidad(Long id) {
+		return tipoBeneficiarioRepository.findById(id);
 	}
 	
 	public List<TipoBeneficiario> listarEntidad() {
