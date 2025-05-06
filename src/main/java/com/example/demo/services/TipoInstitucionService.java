@@ -50,5 +50,14 @@ public class TipoInstitucionService {
         }
         return tipoInstitucionesResponse;
     }
+	
+	public TipoInstitucion buscarPorIdEntidad(Long id) {
+		return tipoInstitucionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tipo de institucion no encontrado."));
+    }
+	
+	public List<TipoInstitucion> listarEntidad() {
+		return tipoInstitucionRepository.findAll();
+    }
  }
 
