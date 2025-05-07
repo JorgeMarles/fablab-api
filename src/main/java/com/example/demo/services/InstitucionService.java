@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import jakarta.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demo.exceptions.ResourceNotFoundException;
@@ -14,6 +17,9 @@ import com.example.demo.repositories.InstitucionRepository;
 
 @Service
 public class InstitucionService {
+
+	Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private InstitucionRepository institucionRepository;
 
@@ -69,6 +75,18 @@ public class InstitucionService {
 			return institucionResponse;
 		}).toList();
 		return institucionesResponse;
+	}
+
+	public List<InstitucionDTO> listarPorTipoId(Long id){
+		return this.listarPorTipoIdEntidad(id).stream().map(institucion -> {
+			InstitucionDTO institucionResponse = new InstitucionDTO();
+			institucionResponse.parseFromEntity(institucion);
+			return institucionResponse;
+		}).toList();
+	}
+
+	public List<Institucion> listarPorTipoIdEntidad(Long id){
+		return institucionRepository.findByTipoInstitucion_Id(id);
 	}
 	
 	public boolean existe(Long id) {

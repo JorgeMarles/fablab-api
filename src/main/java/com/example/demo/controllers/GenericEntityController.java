@@ -3,7 +3,6 @@ package com.example.demo.controllers;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +21,6 @@ public class GenericEntityController {
 
     @PostMapping("/{entityName}")
     public ResponseEntity<?> createEntity(@PathVariable String entityName, @RequestBody Map<String, Object> entity) throws Exception {
-        return ResponseEntity.status(HttpStatus.CREATED).body(genericEntityService.createEntity(entityName, entity));
+        return ResponseEntity.created(null).body(genericEntityService.createEntity(entityName, entity));
     }
 }
