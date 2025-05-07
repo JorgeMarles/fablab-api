@@ -37,6 +37,7 @@ public class ProgramaAcademicoService {
 		}
 
         programaAcademico.setNombre((String) programaAcademicoDTO.get("nombre"));
+		programaAcademico.setCodigo((String) programaAcademicoDTO.get("codigo"));
         programaAcademico = programaAcademicoRepository.save(programaAcademico);
 
         ProgramaAcademicoDTO programaAcademicoResponse = new ProgramaAcademicoDTO();
@@ -60,7 +61,7 @@ public class ProgramaAcademicoService {
 		return programaAcademicoResponse;
 	}
 	
-	public ProgramaAcademicoDTO buscarPoCodigo(String codigo) {
+	public ProgramaAcademicoDTO buscarPorCodigo(String codigo) {
 		ProgramaAcademicoDTO programaAcademicoResponse = new ProgramaAcademicoDTO();
 		programaAcademicoResponse.parseFromEntity(programaAcademicoRepository.findByCodigo(codigo)
 				.orElseThrow(() -> new ResourceNotFoundException("Programa académico no encontrado.")));
