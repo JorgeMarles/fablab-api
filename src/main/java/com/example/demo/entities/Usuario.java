@@ -115,6 +115,9 @@ public class Usuario {
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Participante participante;
+    
+    @OneToMany(mappedBy = "usuario")
+    private List<RegistroIngreso> registroIngresos;
 
     public String getNombreCompleto() {
         return primerNombre + " " + segundoNombre + " " + primerApellido + " " + segundoApellido;

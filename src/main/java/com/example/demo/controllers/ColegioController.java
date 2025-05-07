@@ -1,22 +1,12 @@
 package com.example.demo.controllers;
 
-import com.example.demo.DTO.ColegioDTO;
-import com.example.demo.DTO.ColegioRequestDTO;
-import com.example.demo.entities.Colegio;
-import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.exceptions.ResourceReferencedByOthersException;
-import com.example.demo.services.ColegioService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/colegio")
 public class ColegioController {
-
+/*
     @Autowired
     private ColegioService colegioService;
 
@@ -52,4 +42,4 @@ public class ColegioController {
         Colegio colegio = colegioService.eliminarColegio(id);
         return ResponseEntity.ok(ColegioDTO.fromEntity(colegio));
     }
-}
+*/}

@@ -1,22 +1,12 @@
 package com.example.demo.controllers;
 
-import com.example.demo.DTO.MunicipioDTO;
-import com.example.demo.DTO.MunicipioRequestDTO;
-import com.example.demo.entities.Municipio;
-import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.exceptions.ResourceReferencedByOthersException;
-import com.example.demo.services.MunicipioService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/municipio")
 public class MunicipioController {
-
+/*
 	@Autowired
     private MunicipioService municipioService;
 
@@ -52,4 +42,4 @@ public class MunicipioController {
         Municipio municipio = municipioService.eliminarMunicipio(id);
         return ResponseEntity.ok(MunicipioDTO.fromEntity(municipio));
     }
-}
+*/}

@@ -8,7 +8,7 @@ import javax.naming.AuthenticationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.entities.User;
+import com.example.demo.entities.Usuario;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -34,11 +34,11 @@ public class JwtUtil {
         this.jwtParser = Jwts.parser().setSigningKey(this.SECRET_KEY);
     }
 
-    public String createToken(User user) {
+    public String createToken(Usuario user) {
         Claims claims = Jwts.claims();
         
-        claims.setSubject(user.getEmail());
-        claims.put("rol", user.getRol().getDescripcion());
+        claims.setSubject(user.getCorreoPersonal());
+   //     claims.put("rol", user.getRol().getDescripcion());
 
         Date tokenCreateTime = new Date();
         Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(accessTokenValidity));

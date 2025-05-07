@@ -63,9 +63,6 @@ public class Participante {
     @OneToMany(mappedBy = "participante")
     private List<Inscripcion> inscripciones;
 
-    @OneToMany(mappedBy = "participante")
-    private List<RegistroIngreso> registroIngresos;
-
     public void registerValues(ChangeMap map, boolean callSuper) throws Exception {
         if (callSuper) {
             this.getUsuario().registerValues(map);
