@@ -1,7 +1,5 @@
 package com.example.demo.DTO.response;
 
-import java.time.LocalDateTime;
-
 import com.example.demo.entities.Movimiento;
 import com.example.demo.entities.TipoMovimiento;
 
@@ -12,18 +10,18 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MovimientoDTO implements IResponseDTO<Movimiento>{
+public class MovimientoDTO implements IResponseDTO<Movimiento> {
     private Long id;
     private String nombre;
-    private LocalDateTime fecha;
+    private String fecha;
     private TipoMovimiento tipoMovimiento;
+
     @Override
     public void parseFromEntity(Movimiento entity) {
-    	 this.id = entity.getId();
-    	 this.nombre = entity.getInstructor().getUsuario().getNombreCompleto();
-    	 this.fecha = entity.getFecha();
-    	 this.tipoMovimiento = entity.getTipoMovimiento();
+        this.id = entity.getId();
+        this.nombre = entity.getInstructor().getUsuario().getNombreCompleto();
+        this.fecha = entity.getFecha().toString();
+        this.tipoMovimiento = entity.getTipoMovimiento();
     }
-
 
 }

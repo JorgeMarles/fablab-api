@@ -1,6 +1,5 @@
 package com.example.demo.DTO.response;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import com.example.demo.entities.EstadoOfertaFormacion;
@@ -21,8 +20,8 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion>{
     private String cine;
     private boolean extension;
     private EstadoOfertaFormacion estado;
-    private LocalDate fecha_inicio;
-    private LocalDate fecha_fin;
+    private String fecha_inicio;
+    private String fecha_fin;
     private Integer horas;
     private TipoOfertaDTO tipo_oferta;
     private CategoriaDTO categoria;
@@ -41,8 +40,8 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion>{
     	    this.cine = entity.getCine();
     	    this.extension = entity.isExtension();
     	    this.estado = entity.getEstado();
-    	    this.fecha_inicio = entity.getFechaInicio();
-    	    this.fecha_fin = entity.getFechaFin();
+    	    this.fecha_inicio = entity.getFechaInicio().toString();
+    	    this.fecha_fin = entity.getFechaFin().toString();
     	    this.horas = entity.getHoras();
 
     	    this.tipo_oferta = new TipoOfertaDTO();
