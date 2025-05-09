@@ -112,7 +112,7 @@ public class OfertaFormacionService {
             OfertaItemDTO item = new OfertaItemDTO();
             item.parseFromEntity(inscripcion.getOfertaFormacion());
             return item;
-        }).toList();
+        }).filter(oferta -> oferta.getEstado() != EstadoOfertaFormacion.INACTIVA).toList();
     }
 
     public List<OfertaItemDTO> listarInstructor(Long instructorId) {
