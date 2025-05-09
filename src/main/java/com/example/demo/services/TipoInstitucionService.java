@@ -3,6 +3,8 @@ package com.example.demo.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,11 @@ public class TipoInstitucionService {
 		if (!tipoInstitucionDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
 		}
+		
+		if (!(tipoInstitucionDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
+		
 		tipoInstitucion.setNombre((String) tipoInstitucionDTO.get("nombre"));
 		
 		tipoInstitucion = tipoInstitucionRepository.save(tipoInstitucion);
@@ -51,9 +58,8 @@ public class TipoInstitucionService {
         return tipoInstitucionesResponse;
     }
 	
-	public TipoInstitucion buscarPorIdEntidad(Long id) {
-		return tipoInstitucionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Tipo de institucion no encontrado."));
+	public  Optional<TipoInstitucion> buscarPorIdEntidad(Long id) {
+		return tipoInstitucionRepository.findById(id);
     }
 	
 	public List<TipoInstitucion> listarEntidad() {

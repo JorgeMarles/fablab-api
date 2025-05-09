@@ -1,6 +1,8 @@
 package com.example.demo.services;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,15 @@ public class SemilleroService {
         if (!semilleroDTO.containsKey("nombre")) {
             throw new IllegalArgumentException("El nombre es obligatorio.");
         }
-
+        
+		if (!(semilleroDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
+		
+		if (!(semilleroDTO.get("siglas") instanceof String)) {
+			throw new IllegalArgumentException("siglas debe ser un texto.");
+		}
+		
         semillero.setNombre((String) semilleroDTO.get("nombre"));
         semillero = semilleroRepository.save(semillero);
 
@@ -52,9 +62,8 @@ public class SemilleroService {
 		return semilleroRepository.existsById(id);
 	}
 	
-	public Semillero buscarPorIdEntidad(Long id) {
-		return semilleroRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Semillero no encontrado."));
+	public  Optional<Semillero> buscarPorIdEntidad(Long id) {
+		return semilleroRepository.findById(id);
 	}
 	
 	public List<Semillero> listarEntidad() {

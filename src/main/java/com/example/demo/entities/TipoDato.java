@@ -6,10 +6,6 @@ public enum TipoDato {
     INT, 
     DOUBLE, 
     DATE, 
-    TIPO_DOCUMENTO, 
-    PAIS, 
-    MUNICIPIO, 
-    ESTADO_CIVIL, 
-    POBLACION_ESPECIAL, 
-    MODALIDAD
+    ENTITY,
+    ENUM
 }

@@ -54,7 +54,7 @@ public class OfertaFormacion {
     
     @NotNull(message = "HORAS no puede ser nulo")
     @Digits(integer = 5, fraction = 0, message = "HORAS debe ser un número entero de máximo 5 dígitos")
-    private int horas;
+    private Integer horas;
     
     @ManyToOne
     @JoinColumn(name = "categoria_id")
@@ -69,15 +69,15 @@ public class OfertaFormacion {
     @JoinColumn(name = "tipo_beneficiario_id")
     private TipoBeneficiario tipoBeneficiario;
 
-    private int valor;
+    private Integer valor;
 
     @NotNull(message = "CUPOMÁXIMO no puede ser nulo")
     @Digits(integer = 10, fraction = 0, message = "CUPOMÁXIMO debe ser un número entero de máximo 10 dígitos")
-    private int cupoMaximo;
+    private Integer cupoMaximo;
 
     private String piezaGrafica;
 
-    private int semestre;
+    private Integer semestre;
 
     //REVISAR
     @ManyToOne

@@ -3,6 +3,8 @@ package com.example.demo.services;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +27,17 @@ public class ProgramaAcademicoService {
         if (!programaAcademicoDTO.containsKey("nombre")) {
             throw new IllegalArgumentException("El nombre es obligatorio.");
         }
+        
+		if (!(programaAcademicoDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
+		}
+		
+		if (!(programaAcademicoDTO.get("codigo") instanceof String)) {
+			throw new IllegalArgumentException("codigo debe ser un texto.");
+		}
 
         programaAcademico.setNombre((String) programaAcademicoDTO.get("nombre"));
+		programaAcademico.setCodigo((String) programaAcademicoDTO.get("codigo"));
         programaAcademico = programaAcademicoRepository.save(programaAcademico);
 
         ProgramaAcademicoDTO programaAcademicoResponse = new ProgramaAcademicoDTO();
@@ -50,7 +61,7 @@ public class ProgramaAcademicoService {
 		return programaAcademicoResponse;
 	}
 	
-	public ProgramaAcademicoDTO buscarPoCodigo(String codigo) {
+	public ProgramaAcademicoDTO buscarPorCodigo(String codigo) {
 		ProgramaAcademicoDTO programaAcademicoResponse = new ProgramaAcademicoDTO();
 		programaAcademicoResponse.parseFromEntity(programaAcademicoRepository.findByCodigo(codigo)
 				.orElseThrow(() -> new ResourceNotFoundException("Programa académico no encontrado.")));
@@ -71,9 +82,8 @@ public class ProgramaAcademicoService {
 		return programasAcademicosResponse;
 	}
 	
-	public ProgramaAcademico buscarPorIdEntidad(Long id) {
-		return programaAcademicoRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Programa académico no encontrado."));
+	public Optional<ProgramaAcademico> buscarPorIdEntidad(Long id) {
+		return programaAcademicoRepository.findById(id);
 	}
 	
 	public List<ProgramaAcademico> listarEntidad() {

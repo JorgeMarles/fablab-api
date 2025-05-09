@@ -21,5 +21,6 @@ public class RegistroIngresoDTO {
     private Long id_semillero;
     private String nombre_semillero;
     private String siglas_semillero;
-    private Long id_cargo;    
+    private Long id_cargo;
+    private String asociacion;
 }

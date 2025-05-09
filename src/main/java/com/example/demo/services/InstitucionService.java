@@ -1,7 +1,12 @@
 package com.example.demo.services;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demo.exceptions.ResourceNotFoundException;
@@ -12,6 +17,9 @@ import com.example.demo.repositories.InstitucionRepository;
 
 @Service
 public class InstitucionService {
+
+	Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private InstitucionRepository institucionRepository;
 
@@ -37,10 +45,14 @@ public class InstitucionService {
 			throw new IllegalArgumentException("El nombre debe ser un texto.");
 		}
 
-		TipoInstitucion tipoInstitucion = tipoInstitucionService.buscarPorIdEntidad((Long) institucionDTO.get("id_tipo_institucion"));
+		Optional<TipoInstitucion> tipoInstitucion = tipoInstitucionService.buscarPorIdEntidad((Long) institucionDTO.get("id_tipo_institucion"));
+
+		if(!tipoInstitucion.isPresent()){
+			throw new ResourceNotFoundException("No existe un tipo de Institución con ese id");
+		}
 
 		institucion.setNombre((String) institucionDTO.get("nombre"));
-		institucion.setTipoInstitucion(tipoInstitucion);
+		institucion.setTipoInstitucion(tipoInstitucion.get());
 		institucion = institucionRepository.save(institucion);
 
 		InstitucionDTO institucionResponse = new InstitucionDTO();
@@ -53,7 +65,7 @@ public class InstitucionService {
 		InstitucionDTO institucionResponse = new InstitucionDTO();
 		institucionResponse.parseFromEntity(institucionRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Institución no encontrada.")));
-		return institucionResponse;
+		return institucionResponse;//
 	}
 	
 	public List<InstitucionDTO> listar() {
@@ -64,14 +76,25 @@ public class InstitucionService {
 		}).toList();
 		return institucionesResponse;
 	}
+
+	public List<InstitucionDTO> listarPorTipoId(Long id){
+		return this.listarPorTipoIdEntidad(id).stream().map(institucion -> {
+			InstitucionDTO institucionResponse = new InstitucionDTO();
+			institucionResponse.parseFromEntity(institucion);
+			return institucionResponse;
+		}).toList();
+	}
+
+	public List<Institucion> listarPorTipoIdEntidad(Long id){
+		return institucionRepository.findByTipoInstitucion_Id(id);
+	}
 	
 	public boolean existe(Long id) {
 		return institucionRepository.existsById(id);
 	}
 	
-	public Institucion buscarPorIdEntidad(Long id) {
-		return institucionRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Institución no encontrada."));
+	public Optional<Institucion> buscarPorIdEntidad(Long id) {
+		return institucionRepository.findById(id);
 	}
 	
 	public List<Institucion> listarEntidad() {

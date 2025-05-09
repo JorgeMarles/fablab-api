@@ -1,21 +1,12 @@
 package com.example.demo.controllers;
 
-import com.example.demo.DTO.UbicacionDTO;
-import com.example.demo.DTO.UbicacionRequestDTO;
-import com.example.demo.entities.Ubicacion;
-import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.exceptions.ResourceReferencedByOthersException;
-import com.example.demo.services.UbicacionService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/ubicacion")
 public class UbicacionController {
+    /*/
 
     @Autowired
     private UbicacionService ubicacionService;
@@ -52,4 +43,5 @@ public class UbicacionController {
         Ubicacion ubicacion = ubicacionService.eliminarUbicacion(id);
         return ResponseEntity.ok(UbicacionDTO.fromEntity(ubicacion));
     }
+        */
 }

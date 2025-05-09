@@ -1,22 +1,12 @@
 package com.example.demo.controllers;
 
-import com.example.demo.DTO.AsistenteDTO;
-import com.example.demo.DTO.AsistenteRequestDTO;
-import com.example.demo.entities.Asistente;
-import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.exceptions.ResourceReferencedByOthersException;
-import com.example.demo.services.AsistenteService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/asistente")
 public class AsistenteController {
-
+/*
     @Autowired
     private AsistenteService asistenteService;
 
@@ -58,4 +48,4 @@ public class AsistenteController {
         Asistente asistente = asistenteService.eliminarAsistente(id);
         return ResponseEntity.ok(AsistenteDTO.fromEntity(asistente));
     }
-}
+*/}

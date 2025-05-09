@@ -19,14 +19,14 @@ public class OfertaCreacionDTO {
     private boolean extension;
     private LocalDate fecha_inicio;
     private LocalDate fecha_fin;
-    private int horas;
-    private int id_tipo;
-    private int id_categoria;
-    private int valor;
-    private int id_tipo_beneficiario;
-    private int cupo_maximo;
+    private Integer horas;
+    private Long id_tipo;
+    private Long id_categoria;
+    private Integer valor;
+    private Long id_tipo_beneficiario;
+    private Integer cupo_maximo;
     private MultipartFile pieza_grafica; //La idea es que se haga set y se pase solo este objeto al service
-    private int id_institucion;
+    private Long id_institucion;
     private List<SesionCreacionDTO> sesiones;
-    private int semestre;
+    private Integer semestre;
 }

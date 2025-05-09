@@ -1,22 +1,12 @@
 package com.example.demo.controllers;
 
-import com.example.demo.DTO.SesionDTO;
-import com.example.demo.DTO.SesionRequestDTO;
-import com.example.demo.entities.Sesion;
-import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.exceptions.ResourceReferencedByOthersException;
-import com.example.demo.services.SesionService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/sesion")
 public class SesionController {
-
+/*
     @Autowired
     private SesionService sesionService;
 
@@ -59,5 +49,5 @@ public class SesionController {
     public ResponseEntity<SesionDTO> eliminarSesion(@PathVariable Long id) throws ResourceNotFoundException, ResourceReferencedByOthersException {
         Sesion sesion = sesionService.eliminarSesion(id);
         return ResponseEntity.ok(SesionDTO.fromEntity(sesion));
-    }
+        }*/
 }

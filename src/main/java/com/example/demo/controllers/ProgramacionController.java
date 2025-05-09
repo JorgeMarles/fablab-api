@@ -1,22 +1,12 @@
 package com.example.demo.controllers;
 
-import com.example.demo.DTO.ProgramacionDTO;
-import com.example.demo.DTO.ProgramacionRequestDTO;
-import com.example.demo.entities.Programacion;
-import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.exceptions.ResourceReferencedByOthersException;
-import com.example.demo.services.ProgramacionService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/programacion")
 public class ProgramacionController {
-
+/*
     @Autowired
     private ProgramacionService programacionService;
 
@@ -63,5 +53,5 @@ public class ProgramacionController {
         return ResponseEntity.ok(ProgramacionDTO.fromEntity(programacion));
     }
     
-    
+*/    
 }

@@ -1,6 +1,8 @@
 package com.example.demo.services;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,10 @@ public class CargoService {
 
 		if (!cargoDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
+		}
+		
+		if (!(cargoDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
 		}
 
 		cargo.setNombre((String) cargoDTO.get("nombre"));
@@ -51,8 +57,8 @@ public class CargoService {
 		return cargoRepository.existsById(id);
 	}
 
-	public Cargo buscarPorIdEntidad(Long id) {
-		return cargoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cargo no encontrado."));
+	public  Optional<Cargo> buscarPorIdEntidad(Long id) {
+		return cargoRepository.findById(id);
 	}
 	
 	public List<Cargo> listarEntidad() {

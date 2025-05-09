@@ -1,22 +1,12 @@
 package com.example.demo.controllers;
 
-import com.example.demo.DTO.TipoDocumentoDTO;
-import com.example.demo.DTO.TipoDocumentoRequestDTO;
-import com.example.demo.entities.TipoDocumento;
-import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.exceptions.ResourceReferencedByOthersException;
-import com.example.demo.services.TipoDocumentoService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/tipo-documento")
 public class TipoDocumentoController {
-
+/*
     @Autowired
     private TipoDocumentoService tipoDocumentoService;
 
@@ -51,5 +41,5 @@ public class TipoDocumentoController {
     public ResponseEntity<TipoDocumentoDTO> eliminarTipoDocumento(@PathVariable Long id) throws ResourceNotFoundException, ResourceReferencedByOthersException {
         TipoDocumento tipoDocumento = tipoDocumentoService.eliminarTipoDocumento(id);
         return ResponseEntity.ok(TipoDocumentoDTO.fromEntity(tipoDocumento));
-    }
+    }*/
 }

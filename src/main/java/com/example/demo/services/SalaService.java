@@ -1,6 +1,8 @@
 package com.example.demo.services;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,10 @@ public class SalaService {
 
 		if (!salaDTO.containsKey("nombre")) {
 			throw new IllegalArgumentException("El nombre es obligatorio.");
+		}
+		
+		if (!(salaDTO.get("nombre") instanceof String)) {
+			throw new IllegalArgumentException("El nombre debe ser un texto.");
 		}
 
 		sala.setNombre((String) salaDTO.get("nombre"));
@@ -51,8 +57,8 @@ public class SalaService {
 		return salaRepository.existsById(id);
 	}
 	
-	public Sala buscarPorIdEntidad(Long id) {
-		return salaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Sala no encontrada."));
+	public  Optional<Sala> buscarPorIdEntidad(Long id) {
+		return salaRepository.findById(id);
 	}
 	
 	public List<Sala> listarEntidad() {

@@ -9,12 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import com.example.demo.entities.Participante;
 
 public interface ParticipanteRepository extends JpaRepository<Participante, Long> {
-    Optional<Participante> findByUsuario_Cedula(String cedula);
+    Optional<Participante> findByUsuario_Documento(String documento);
     
     @Query("""
         SELECT p FROM Participante p 
-        WHERE CONCAT(p.primer_nombre, ' ', p.segundo_nombre, ' ', p.primer_apellido, ' ', p.segundo_apellido) LIKE %:search% 
-        OR p.usuario.cedula LIKE %:search% or p.usuario.correo_personal LIKE %:search%
+        WHERE CONCAT(p.usuario.primerNombre, ' ', p.usuario.segundoNombre, ' ', p.usuario.primerApellido, ' ', p.usuario.segundoApellido) LIKE %:search% 
+        OR p.usuario.documento LIKE %:search% or p.usuario.correoPersonal LIKE %:search%
         """)
     List<Participante> findBySearch(String search);
 }

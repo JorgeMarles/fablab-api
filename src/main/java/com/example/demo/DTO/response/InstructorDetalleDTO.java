@@ -54,7 +54,7 @@ public class InstructorDetalleDTO implements IResponseDTO<Instructor>{
         this.entidad = entity.getEntidad();
         this.modalidad = new ModalidadDTO();
         this.modalidad.parseFromEntity(entity.getModalidad());
-        this.activo = entity.isActivo();
+        this.activo = entity.getActivo();
     }
 
 

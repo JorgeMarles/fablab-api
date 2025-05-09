@@ -1,22 +1,12 @@
 package com.example.demo.controllers;
 
-import com.example.demo.DTO.TallerDTO;
-import com.example.demo.DTO.TallerRequestDTO;
-import com.example.demo.entities.Taller;
-import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.exceptions.ResourceReferencedByOthersException;
-import com.example.demo.services.TallerService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/taller")
 public class TallerController {
-
+/*
     @Autowired
     private TallerService tallerService;
 
@@ -51,5 +41,5 @@ public class TallerController {
     public ResponseEntity<TallerDTO> eliminarTaller(@PathVariable Long id) throws ResourceNotFoundException, ResourceReferencedByOthersException {
         Taller taller = tallerService.eliminarTaller(id);
         return ResponseEntity.ok(TallerDTO.fromEntity(taller));
-    }
+    }*/
 }
