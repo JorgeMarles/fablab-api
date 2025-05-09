@@ -43,7 +43,7 @@ public class OfertaFormacionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OfertaDetalleDTO> detalle(@PathVariable Long idOferta){
+    public ResponseEntity<OfertaDetalleDTO> detalle(@PathVariable(name = "id") Long idOferta){
         return ResponseEntity.ok().body(ofertaFormacionService.obtenerPorIdDetalle(idOferta));
     }
 }
