@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,13 +9,26 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.DTO.request.OfertaCreacionDTO;
 import com.example.demo.DTO.response.OfertaDetalleDTO;
-import com.example.demo.entities.*;
-import com.example.demo.repositories.*;
+import com.example.demo.DTO.response.OfertaItemDTO;
+import com.example.demo.entities.CategoriaOferta;
+import com.example.demo.entities.EstadoOfertaFormacion;
+import com.example.demo.entities.Institucion;
+import com.example.demo.entities.OfertaFormacion;
+import com.example.demo.entities.TipoBeneficiario;
+import com.example.demo.entities.TipoOferta;
+import com.example.demo.repositories.CategoriaOfertaRepository;
+import com.example.demo.repositories.InstitucionRepository;
+import com.example.demo.repositories.OfertaFormacionRepository;
+import com.example.demo.repositories.TipoBeneficiarioRepository;
+import com.example.demo.repositories.TipoOfertaRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class OfertaFormacionService {
+
+    @Autowired
+    private InscripcionService inscripcionService;
 
     @Autowired
     private OfertaFormacionRepository ofertaFormacionRepository;
@@ -83,5 +97,29 @@ public class OfertaFormacionService {
         detalleDTO.parseFromEntity(guardada);
 
         return detalleDTO;
+    }
+
+    public List<OfertaItemDTO> listarTodos() {
+        return ofertaFormacionRepository.findAll().stream().map(oferta -> {
+            OfertaItemDTO item = new OfertaItemDTO();
+            item.parseFromEntity(oferta);
+            return item;
+        }).toList();
+    }
+
+    public List<OfertaItemDTO> listarParticipante(Long participanteId) {
+        return inscripcionService.inscripcionesPorParticipante(participanteId).stream().map(inscripcion -> {
+            OfertaItemDTO item = new OfertaItemDTO();
+            item.parseFromEntity(inscripcion.getOfertaFormacion());
+            return item;
+        }).toList();
+    }
+
+    public List<OfertaItemDTO> listarInstructor(Long instructorId) {
+        return ofertaFormacionRepository.findByInstructorId(instructorId).stream().map(oferta -> {
+            OfertaItemDTO item = new OfertaItemDTO();
+            item.parseFromEntity(oferta);
+            return item;
+        }).toList();
     }
 }
