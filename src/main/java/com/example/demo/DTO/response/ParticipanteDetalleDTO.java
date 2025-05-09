@@ -1,6 +1,5 @@
 package com.example.demo.DTO.response;
 
-import java.time.LocalDate;
 
 import com.example.demo.entities.Participante;
 import com.example.demo.entities.Sexo;
@@ -21,9 +20,9 @@ public class ParticipanteDetalleDTO implements IResponseDTO<Participante> {
     private String correo_personal;
     private TipoDocumentoDTO tipo_documento;
     private String documento;
-    private LocalDate fecha_expedicion;
+    private String fecha_expedicion;
     private Sexo sexo;
-    private LocalDate fecha_nacimiento;
+    private String fecha_nacimiento;
     private PaisDTO pais;
     private MunicipioDTO municipio;
     private String telefono;
@@ -45,9 +44,9 @@ public class ParticipanteDetalleDTO implements IResponseDTO<Participante> {
         this.tipo_documento.parseFromEntity(entity.getUsuario().getTipoDocumento());
 
         this.documento = entity.getUsuario().getDocumento();
-        this.fecha_expedicion = entity.getUsuario().getFechaExpedicion();
+        this.fecha_expedicion = entity.getUsuario().getFechaExpedicion().toString();
         this.sexo = entity.getUsuario().getSexo();
-        this.fecha_nacimiento = entity.getUsuario().getFechaNacimiento();
+        this.fecha_nacimiento = entity.getUsuario().getFechaNacimiento().toString();
 
         this.pais = new PaisDTO();
         this.pais.parseFromEntity(entity.getUsuario().getPais());

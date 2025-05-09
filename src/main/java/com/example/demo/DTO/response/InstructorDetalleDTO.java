@@ -1,6 +1,5 @@
 package com.example.demo.DTO.response;
 
-import java.time.LocalDate;
 
 import com.example.demo.entities.Instructor;
 import com.example.demo.entities.Sexo;
@@ -11,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InstructorDetalleDTO implements IResponseDTO<Instructor>{
-    
+public class InstructorDetalleDTO implements IResponseDTO<Instructor> {
+
     private Long id;
     private String primer_nombre;
     private String segundo_nombre;
@@ -21,9 +20,9 @@ public class InstructorDetalleDTO implements IResponseDTO<Instructor>{
     private String correo_personal;
     private TipoDocumentoDTO tipo_documento;
     private String documento;
-    private LocalDate fecha_expedicion;
+    private String fecha_expedicion;
     private Sexo sexo;
-    private LocalDate fecha_nacimiento;
+    private String fecha_nacimiento;
     private PaisDTO pais;
     private MunicipioDTO municipio;
     private String telefono;
@@ -31,9 +30,10 @@ public class InstructorDetalleDTO implements IResponseDTO<Instructor>{
     private String entidad;
     private ModalidadDTO modalidad;
     private boolean activo;
+
     @Override
     public void parseFromEntity(Instructor entity) {
-    	this.id = entity.getId();
+        this.id = entity.getId();
         this.primer_nombre = entity.getUsuario().getPrimerNombre();
         this.segundo_nombre = entity.getUsuario().getSegundoNombre();
         this.primer_apellido = entity.getUsuario().getPrimerApellido();
@@ -42,20 +42,19 @@ public class InstructorDetalleDTO implements IResponseDTO<Instructor>{
         this.tipo_documento = new TipoDocumentoDTO();
         this.tipo_documento.parseFromEntity(entity.getUsuario().getTipoDocumento());
         this.documento = entity.getUsuario().getDocumento();
-        this.fecha_expedicion = entity.getUsuario().getFechaExpedicion();
+        this.fecha_expedicion = entity.getUsuario().getFechaExpedicion().toString();
         this.sexo = entity.getUsuario().getSexo();
-        this.fecha_nacimiento = entity.getUsuario().getFechaNacimiento();
+        this.fecha_nacimiento = entity.getUsuario().getFechaNacimiento().toString();
         this.pais = new PaisDTO();
         this.pais.parseFromEntity(entity.getUsuario().getPais());
         this.municipio = new MunicipioDTO();
         this.municipio.parseFromEntity(entity.getUsuario().getMunicipio());
         this.telefono = entity.getUsuario().getTelefono();
-        this.direccion = entity.getDireccion();	
+        this.direccion = entity.getDireccion();
         this.entidad = entity.getEntidad();
         this.modalidad = new ModalidadDTO();
         this.modalidad.parseFromEntity(entity.getModalidad());
         this.activo = entity.getActivo();
     }
-
 
 }

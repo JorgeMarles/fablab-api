@@ -1,7 +1,5 @@
 package com.example.demo.DTO.response;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import com.example.demo.entities.Sesion;
@@ -17,9 +15,9 @@ public class SesionDTO implements IResponseDTO<Sesion>{
 
     private Long id;
     private String nombre;
-    private LocalDate fecha;
-	private LocalTime inicio;
-    private LocalTime fin;
+    private String fecha;
+	private String inicio;
+    private String fin;
     private SalaDTO sala;
     private List<InstructorItemDTO> instructores;
     private List<AsistenciaDTO> participantes;
@@ -27,10 +25,10 @@ public class SesionDTO implements IResponseDTO<Sesion>{
     @Override
     public void parseFromEntity(Sesion entity) {
 		this.id = entity.getId();
-		this.fecha = entity.getFecha();
+		this.fecha = entity.getFecha().toString();
 		this.nombre = entity.getNombre();
-		this.inicio = entity.getInicio();
-		this.fin = entity.getFin();
+		this.inicio = entity.getInicio().toString();
+		this.fin = entity.getFin().toString();
 		this.sala = new SalaDTO();
 		this.sala.parseFromEntity(entity.getSala());
 		
