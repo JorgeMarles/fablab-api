@@ -49,4 +49,12 @@ public class RegistroIngresoService {
 		
 		return null;
     }
+
+	public List<IngresoFablabItemDTO> listar(){
+		return registroIngresoRepository.findAll().stream().map(registro -> {
+			IngresoFablabItemDTO dto = new IngresoFablabItemDTO();
+			dto.parseFromEntity(registro);
+			return dto;
+		}).toList();
+	}
 }

@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.DTO.response.OfertaDetalleDTO;
 import com.example.demo.DTO.response.OfertaItemDTO;
 import com.example.demo.services.OfertaFormacionService;
 
@@ -38,5 +40,10 @@ public class OfertaFormacionController {
         //TODO: Sacar del userdetails del authorization
         Long id = 3L;
         return ResponseEntity.ok().body(ofertaFormacionService.listarParticipante(id)); 
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OfertaDetalleDTO> detalle(@PathVariable Long idOferta){
+        return ResponseEntity.ok().body(ofertaFormacionService.obtenerPorIdDetalle(idOferta));
     }
 }

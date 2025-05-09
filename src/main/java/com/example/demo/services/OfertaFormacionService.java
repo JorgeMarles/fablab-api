@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import com.example.demo.entities.Institucion;
 import com.example.demo.entities.OfertaFormacion;
 import com.example.demo.entities.TipoBeneficiario;
 import com.example.demo.entities.TipoOferta;
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.CategoriaOfertaRepository;
 import com.example.demo.repositories.InstitucionRepository;
 import com.example.demo.repositories.OfertaFormacionRepository;
@@ -121,5 +123,19 @@ public class OfertaFormacionService {
             item.parseFromEntity(oferta);
             return item;
         }).toList();
+    }
+
+    public Optional<OfertaFormacion> obtenerPorIdEntidad(Long ofertaId){
+        return ofertaFormacionRepository.findById(ofertaId);
+    }
+
+    public OfertaDetalleDTO obtenerPorIdDetalle(Long ofertaId){
+        Optional<OfertaFormacion> opt = this.obtenerPorIdEntidad(ofertaId);
+        if(!opt.isPresent()){
+            throw new ResourceNotFoundException("No existe una oferta de formación con ese id");
+        }
+        OfertaDetalleDTO dto = new OfertaDetalleDTO();
+        dto.parseFromEntity(opt.get());
+        return dto;
     }
 }
