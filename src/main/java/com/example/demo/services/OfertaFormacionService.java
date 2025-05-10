@@ -1,20 +1,22 @@
 package com.example.demo.services;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.DTO.request.OfertaCreacionDTO;
+import com.example.demo.DTO.request.SesionCreacionDTO;
 import com.example.demo.DTO.response.OfertaDetalleDTO;
 import com.example.demo.DTO.response.OfertaItemDTO;
 import com.example.demo.entities.CategoriaOferta;
 import com.example.demo.entities.EstadoOfertaFormacion;
 import com.example.demo.entities.Institucion;
 import com.example.demo.entities.OfertaFormacion;
+import com.example.demo.entities.Sesion;
 import com.example.demo.entities.TipoBeneficiario;
 import com.example.demo.entities.TipoOferta;
 import com.example.demo.exceptions.ResourceNotFoundException;
@@ -28,6 +30,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class OfertaFormacionService {
+
+    Logger logger = LoggerFactory.getLogger(OfertaFormacionService.class.getName());
 
     @Autowired
     private InscripcionService inscripcionService;
@@ -47,8 +51,19 @@ public class OfertaFormacionService {
     @Autowired
     private InstitucionRepository institucionRepository;
 
+    @Autowired
+    private SesionService sesionService;
+
+    public OfertaDetalleDTO crearRetDto(OfertaCreacionDTO dto) {
+        OfertaDetalleDTO detalleDTO = new OfertaDetalleDTO();
+        OfertaFormacion of = this.crear(dto);
+        detalleDTO.parseFromEntity(of);
+        return detalleDTO;
+    }
+
     @Transactional
-    public OfertaDetalleDTO crear(OfertaCreacionDTO dto) {
+    public OfertaFormacion crear(OfertaCreacionDTO dto) {
+        logger.info(dto.toString());
         if (ofertaFormacionRepository.findByCodigo(dto.getCodigo()).isPresent()) {
             throw new IllegalArgumentException("Ya existe una oferta con el mismo código.");
         }
@@ -83,22 +98,17 @@ public class OfertaFormacionService {
         oferta.setSemestre(dto.getSemestre());
         oferta.setInstitucion(institucion);
 
-        MultipartFile archivo = dto.getPieza_grafica();
-        if (archivo != null && !archivo.isEmpty()) {
-            try {
-                byte[] bytes = archivo.getBytes();
-                oferta.setPiezaGrafica(new String(bytes));
-            } catch (IOException e) {
-                throw new RuntimeException("Error al procesar la pieza gráfica", e);
-            }
+        OfertaFormacion guardada = ofertaFormacionRepository.save(oferta);
+
+        int order = 1;
+        for(SesionCreacionDTO sesion : dto.getSesiones()){
+            Sesion creada = sesionService.crear(sesion, oferta, order++);
+            oferta.getSesiones().add(creada);
         }
 
 
-        OfertaFormacion guardada = ofertaFormacionRepository.save(oferta);
-        OfertaDetalleDTO detalleDTO = new OfertaDetalleDTO();
-        detalleDTO.parseFromEntity(guardada);
-
-        return detalleDTO;
+        logger.info("Oferta guardada: " + guardada.getId());
+        return guardada;
     }
 
     public List<OfertaItemDTO> listarTodos() {

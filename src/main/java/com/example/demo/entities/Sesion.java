@@ -2,6 +2,7 @@ package com.example.demo.entities;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -15,12 +16,16 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString(exclude = {"instructores", "ofertaFormacion"})
+@EqualsAndHashCode(exclude = {"instructores", "ofertaFormacion"})
 @Table(name = "sesion")
 public class Sesion {
     @Id
@@ -39,11 +44,11 @@ public class Sesion {
     private Sala sala;    
 
     @OneToMany(mappedBy = "sesion")
-    private List<Evidencia> evidencias;
+    private List<Evidencia> evidencias = new ArrayList<>();
 
     @ManyToMany(mappedBy = "sesiones")
-    private List<Instructor> instructores;
+    private List<Instructor> instructores = new ArrayList<>();
 
     @OneToMany(mappedBy = "sesion")
-    private List<Asistencia> asistencias;
+    private List<Asistencia> asistencias = new ArrayList<>();
 }

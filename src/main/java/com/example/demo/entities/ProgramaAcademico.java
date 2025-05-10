@@ -1,5 +1,6 @@
 package com.example.demo.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -26,8 +27,8 @@ public class ProgramaAcademico extends BaseEntity {
     private String codigo;
 
     @OneToMany(mappedBy = "programaAcademico")
-    private List<Inscripcion> inscripciones;
+    private List<Inscripcion> inscripciones = new ArrayList<>();;
 
     @OneToMany(mappedBy = "programaAcademico")
-    private List<RegistroIngreso> registrosIngreso;
+    private List<RegistroIngreso> registrosIngreso = new ArrayList<>();;
 }
