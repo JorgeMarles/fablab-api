@@ -1,5 +1,6 @@
 package com.example.demo.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -27,5 +28,5 @@ public class PlantillaCertificado {
     private String url;
 
     @OneToMany(mappedBy = "plantilla")
-    private List<Certificado> certificados;
+    private List<Certificado> certificados = new ArrayList<>();;
 }

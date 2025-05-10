@@ -1,6 +1,7 @@
 package com.example.demo.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -84,22 +85,12 @@ public class OfertaFormacion {
     @JoinColumn(name = "institucion_id")
     private Institucion institucion;
 
-    /*
-    @ManyToMany
-    @JoinTable(
-            name = "inscripcion",
-            joinColumns = @JoinColumn(name = "oferta_formacion_id"),
-            inverseJoinColumns = @JoinColumn(name = "participante_id")
-    )
-    private List<Participante> participantes;
-    */
+    @OneToMany(mappedBy = "ofertaFormacion")
+    private List<Sesion> sesiones = new ArrayList<>();
 
     @OneToMany(mappedBy = "ofertaFormacion")
-    private List<Sesion> sesiones;
+    private List<Inscripcion> inscripciones = new ArrayList<>();
 
     @OneToMany(mappedBy = "ofertaFormacion")
-    private List<Inscripcion> inscripciones;
-
-    @OneToMany(mappedBy = "ofertaFormacion")
-    private List<Certificado> certificados;
+    private List<Certificado> certificados = new ArrayList<>();
 }

@@ -28,12 +28,16 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString(exclude = {"instructor", "administrador", "participante", "historicoUsuarios", "registroIngresos"})
+@EqualsAndHashCode(exclude = {"instructor", "administrador", "participante", "historicoUsuarios", "registroIngresos"})
 @Table(name = "usuario")
 public class Usuario {
 
@@ -105,7 +109,7 @@ public class Usuario {
     private String correoPersonal;
 
     @OneToMany(mappedBy = "usuario")
-    private List<HistoricoUsuario> historicoUsuarios;
+    private List<HistoricoUsuario> historicoUsuarios = new ArrayList<>();;
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Instructor instructor;
@@ -117,7 +121,7 @@ public class Usuario {
     private Participante participante;
     
     @OneToMany(mappedBy = "usuario")
-    private List<RegistroIngreso> registroIngresos;
+    private List<RegistroIngreso> registroIngresos = new ArrayList<>();;
 
     public String getNombreCompleto() {
         return primerNombre + " " + segundoNombre + " " + primerApellido + " " + segundoApellido;

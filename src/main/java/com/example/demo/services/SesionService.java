@@ -3,20 +3,36 @@ package com.example.demo.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.DTO.request.SesionCreacionDTO;
 import com.example.demo.DTO.response.SesionDTO;
 import com.example.demo.DTO.response.SesionItemDTO;
+import com.example.demo.entities.Instructor;
+import com.example.demo.entities.OfertaFormacion;
+import com.example.demo.entities.Sala;
 import com.example.demo.entities.Sesion;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.SesionRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class SesionService {
+
+    Logger logger = LoggerFactory.getLogger(SesionService.class.getName());
     
     @Autowired
     private SesionRepository sesionRepository;
+
+    @Autowired
+    private SalaService salaService;
+
+    @Autowired
+    private InstructorService instructorService;
 
     public List<Sesion> listar(){
         return sesionRepository.findAll();
@@ -69,6 +85,35 @@ public class SesionService {
         dto.parseFromEntity(opt.get());
 
         return dto;
+    }
+
+    @Transactional
+    public Sesion crear(SesionCreacionDTO sesionDto, OfertaFormacion oferta, int order) {
+
+        Sesion sesion = new Sesion();
+        
+        Optional<Sala> salaOpt = salaService.buscarPorIdEntidad(sesionDto.getId_sala());
+        if(!salaOpt.isPresent()){
+            throw new ResourceNotFoundException("No existe una sala con ese id");
+        }
+
+        sesion.setNombre(oferta.getNombre()+" - Sesión "+order);
+        sesion.setFecha(sesionDto.getFecha());
+        sesion.setInicio(sesionDto.getInicio());
+        sesion.setFin(sesionDto.getFin());
+        sesion.setSala(salaOpt.get());
+        sesion.setOfertaFormacion(oferta);
+
+        for(Long idInstructor : sesionDto.getInstructores()) {
+            Optional<Instructor> instructorOpt = instructorService.buscarPorIdEntidad(idInstructor);
+            if(!instructorOpt.isPresent()){
+                throw new ResourceNotFoundException("No existe un instructor con ese id");
+            }
+            sesion.getInstructores().add(instructorOpt.get());
+            instructorOpt.get().getSesiones().add(sesion);
+        }
+
+        return sesionRepository.save(sesion);
     }
 
 }

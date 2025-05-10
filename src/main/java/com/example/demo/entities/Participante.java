@@ -58,10 +58,10 @@ public class Participante {
     private PoblacionEspecial poblacionEspecial;
 
     @OneToMany(mappedBy = "participante")
-    private List<Asistencia> asistencias;
+    private List<Asistencia> asistencias = new ArrayList<>();;
 
     @OneToMany(mappedBy = "participante")
-    private List<Inscripcion> inscripciones;
+    private List<Inscripcion> inscripciones = new ArrayList<>();;
 
     public void registerValues(ChangeMap map, boolean callSuper) throws Exception {
         if (callSuper) {

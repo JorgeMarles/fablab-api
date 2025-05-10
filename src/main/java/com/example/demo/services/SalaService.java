@@ -36,7 +36,7 @@ public class SalaService {
 
 		return salaResponse;
 	}
-	
+
 	public SalaDTO buscarPorId(Long id) {
 		SalaDTO salaResponse = new SalaDTO();
 		salaResponse.parseFromEntity(

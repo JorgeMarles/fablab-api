@@ -19,12 +19,16 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString(exclude = {"sesiones", "evidencias", "certificados"})
+@EqualsAndHashCode(exclude = {"sesiones", "evidencias", "certificados"})
 @Table(name = "instructor")
 public class Instructor {
     @Id
@@ -53,13 +57,13 @@ public class Instructor {
     @JoinTable(name = "instructor_sesion",
             joinColumns = @JoinColumn(name = "instructor_id"),
             inverseJoinColumns = @JoinColumn(name = "sesion_id"))
-    private List<Sesion> sesiones;
+    private List<Sesion> sesiones = new ArrayList<>();;
 
     @OneToMany(mappedBy = "instructor")
-    private List<Evidencia> evidencias;
+    private List<Evidencia> evidencias = new ArrayList<>();;
 
     @OneToMany(mappedBy = "instructor")
-    private List<Certificado> certificados;
+    private List<Certificado> certificados = new ArrayList<>();;
 
     public void registerValues(ChangeMap map, boolean callSuper) throws Exception{
         if(callSuper){
