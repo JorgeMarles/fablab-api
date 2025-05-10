@@ -25,7 +25,7 @@ public class InstructorController {
         return ResponseEntity.ok().body(instructorService.listar());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
     private ResponseEntity<InstructorDetalleDTO> buscarPorId(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok().body(instructorService.buscarPorId(id));
     }

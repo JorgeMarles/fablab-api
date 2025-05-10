@@ -19,7 +19,7 @@ public class GenericEntityController {
     @Autowired
     private GenericEntityService genericEntityService;
 
-    @PostMapping("/{entityName}")
+    @PostMapping("/{entityName}/")
     public ResponseEntity<?> createEntity(@PathVariable String entityName, @RequestBody Map<String, Object> entity) throws Exception {
         return ResponseEntity.created(null).body(genericEntityService.createEntity(entityName, entity));
     }

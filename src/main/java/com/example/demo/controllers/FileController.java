@@ -20,7 +20,7 @@ public class FileController {
 	@Autowired
 	FileService fileService;
 	
-	@GetMapping("{filename}")
+	@GetMapping("/{filename}/")
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws IOException {
 		try {
 			Resource resource = fileService.getFile(filename);

@@ -17,7 +17,7 @@ public class SesionController {
     @Autowired
     private SesionService sesionService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
     public ResponseEntity<SesionDTO> buscarPorId(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok().body(sesionService.obtenerPorIdDto(id));
     }

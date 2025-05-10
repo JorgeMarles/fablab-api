@@ -46,7 +46,7 @@ public class OfertaFormacionController {
     @Autowired
     private TipoBeneficiarioService tipoBeneficiarioService;
 
-    @PostMapping
+    @PostMapping("/")
     private ResponseEntity<OfertaDetalleDTO> crearEvidencia(@ModelAttribute OfertaCreacionDTO ofertaFormacionDto,
             @RequestParam("file") MultipartFile file) throws Exception {
         ofertaFormacionDto.setPieza_grafica(file);
@@ -66,7 +66,7 @@ public class OfertaFormacionController {
         return ResponseEntity.ok().body(ofertaFormacionService.listarTodos());
     }
 
-    @GetMapping("/instructor")
+    @GetMapping("/instructor/")
     // preauth instructor
     public ResponseEntity<List<OfertaItemDTO>> listarInstructor() {
         // TODO: Sacar del userdetails del authorization
@@ -74,7 +74,7 @@ public class OfertaFormacionController {
         return ResponseEntity.ok().body(ofertaFormacionService.listarInstructor(id));
     }
 
-    @GetMapping("/participante")
+    @GetMapping("/participante/")
     // preauth instructor
     public ResponseEntity<List<OfertaItemDTO>> listarParticipante() {
         // TODO: Sacar del userdetails del authorization
@@ -82,22 +82,22 @@ public class OfertaFormacionController {
         return ResponseEntity.ok().body(ofertaFormacionService.listarParticipante(id));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
     public ResponseEntity<OfertaDetalleDTO> detalle(@PathVariable(name = "id") Long idOferta) {
         return ResponseEntity.ok().body(ofertaFormacionService.obtenerPorIdDetalle(idOferta));
     }
 
-    @GetMapping("/tipos-oferta")
+    @GetMapping("/tipos-oferta/")
     public ResponseEntity<List<TipoOfertaDTO>> listarTiposOferta() {
         return ResponseEntity.ok().body(tipoOfertaService.listar());
     }
 
-    @GetMapping("/categorias")
+    @GetMapping("/categorias/")
     public ResponseEntity<List<CategoriaDTO>> listarCategorias() {
         return ResponseEntity.ok().body(categoriaOfertaService.listar());
     }
 
-    @GetMapping("/tipos-beneficiario")
+    @GetMapping("/tipos-beneficiario/")
     public ResponseEntity<List<TipoBeneficiarioDTO>> listarTiposBeneficiario() {
         return ResponseEntity.ok().body(tipoBeneficiarioService.listar());
     }
