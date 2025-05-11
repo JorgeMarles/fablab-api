@@ -16,6 +16,7 @@ public class RegistroIngresoDTO {
     private Long id_institucion;
     private String nombre_institucion;
     private Long id_programa_academico;
+    private String codigo;
     private Long id_sala;
     private String materia;
     private Long id_semillero;
