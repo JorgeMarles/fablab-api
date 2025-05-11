@@ -20,8 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.entities.Archivo;
 import com.example.demo.services.FileService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/files")
+@Slf4j
 public class FileController {
     Logger logger = LoggerFactory.getLogger(FileController.class);
 

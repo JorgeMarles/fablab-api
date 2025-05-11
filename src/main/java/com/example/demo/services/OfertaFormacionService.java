@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import com.example.demo.entities.CategoriaOferta;
 import com.example.demo.entities.EstadoOfertaFormacion;
 import com.example.demo.entities.Institucion;
 import com.example.demo.entities.OfertaFormacion;
+import com.example.demo.entities.PlantillaCertificado;
 import com.example.demo.entities.Sesion;
 import com.example.demo.entities.TipoBeneficiario;
 import com.example.demo.entities.TipoOferta;
@@ -54,6 +56,12 @@ public class OfertaFormacionService {
 
     @Autowired
     private SesionService sesionService;
+
+    @Autowired
+    private CertificadoService certificadoService;
+
+    @Autowired
+    private PlantillaService plantillaService;
 
     @Autowired
     private FileService fileService;
@@ -118,6 +126,23 @@ public class OfertaFormacionService {
         }
         logger.info("Oferta guardada: " + guardada.getId());
         return guardada;
+    }
+
+    @Transactional
+    public void finalizar(Long ofertaId, Long plantillaId) {
+
+        PlantillaCertificado plantilla = plantillaService.buscarPorId(plantillaId);
+
+        OfertaFormacion oferta = ofertaFormacionRepository.findById(ofertaId)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe una oferta de formación con ese id"));
+        oferta.setEstado(EstadoOfertaFormacion.FINALIZADA);
+        LocalDate fechaFin = LocalDate.now();
+        oferta.getSesiones().forEach(sesion -> {
+            sesion.getInstructores().forEach(instructor -> {
+                certificadoService.crearCertificado(oferta, instructor, fechaFin, plantilla);
+            });
+        });
+        ofertaFormacionRepository.save(oferta);
     }
 
     public List<OfertaItemDTO> listarTodos() {
