@@ -35,7 +35,7 @@ public class CategoriaOfertaService {
 		return categoriaResponse;
 	}
 	
-	public CategoriaDTO buscarPorId(Long id) {
+	public CategoriaDTO obtenerPorId(Long id) {
 		CategoriaDTO categoriaResponse = new CategoriaDTO();
 		categoriaResponse.parseFromEntity(categoriaOfertaRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada.")));
@@ -55,7 +55,7 @@ public class CategoriaOfertaService {
 		return categoriaOfertaRepository.existsById(id);
 	}
 	
-	public  Optional<CategoriaOferta> buscarPorIdEntidad(Long id) {
+	public  Optional<CategoriaOferta> obtenerPorIdEntidad(Long id) {
 		return categoriaOfertaRepository.findById(id);
 	}
 	

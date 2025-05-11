@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,8 +24,8 @@ public class Institucion extends BaseEntity {
         super(id, nombre);
         this.tipoInstitucion = tipoInstitucion;
     }
-    @ManyToOne
-    @JoinColumn(name = "tipo_institucion_id")
+    
+    @Enumerated(EnumType.STRING)
     private TipoInstitucion tipoInstitucion;
 
     @OneToMany(mappedBy = "institucion")

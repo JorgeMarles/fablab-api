@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.PathResource;
@@ -24,11 +22,11 @@ import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.ArchivoRepository;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class FileService {
-
-	Logger logger = LoggerFactory.getLogger(FileService.class);
 
 	@Value("${app.file-upload-dir:uploads}")
 	private String uploadDirectory;
@@ -152,7 +150,7 @@ public class FileService {
 
 	public Resource getFile(String uuid) throws FileException, IOException {
 
-		logger.info("uuid {}", uuid);
+		log.info("uuid {}", uuid);
 
 		Archivo archivo = getFileById(uuid);
 
@@ -197,7 +195,7 @@ public class FileService {
 	}
 
 	public Archivo uploadFile(MultipartFile file) throws Exception {
-		logger.info("Subiendo archivo: " + file.getOriginalFilename());
+		log.info("Subiendo archivo: " + file.getOriginalFilename());
 		try {
 			validateExtension(file.getOriginalFilename(), ALLOWED_EXTENSIONS);
 			String fileName = UUID.randomUUID().toString();
@@ -226,7 +224,7 @@ public class FileService {
 			archivo.setExtension(fileExtension);
 			archivo.setUuid(fileName);
 
-			logger.info("newFile {}", path.toString());
+			log.info("newFile {}", path.toString());
 			return archivoRepository.save(archivo);
 		} catch (Exception e) {
 			throw new FileException(e.getMessage(), e);

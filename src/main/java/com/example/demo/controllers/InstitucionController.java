@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.response.InstitucionDTO;
-import com.example.demo.DTO.response.TipoInstitucionDTO;
+import com.example.demo.entities.TipoInstitucion;
 import com.example.demo.services.InstitucionService;
-import com.example.demo.services.TipoInstitucionService;
 
 @RestController
 @RequestMapping("/instituciones")
@@ -21,20 +20,18 @@ public class InstitucionController {
     @Autowired
     private InstitucionService institucionService;
 
-    @Autowired
-    private TipoInstitucionService tipoInstitucionService;
 
     @GetMapping("/")
-    public ResponseEntity<List<InstitucionDTO>> listarInstituciones(@RequestParam(required = false) Long tipoId) {
-        if (tipoId == null)
+    public ResponseEntity<List<InstitucionDTO>> listarInstituciones(@RequestParam(required = false) TipoInstitucion tipo) {
+        if (tipo == null)
             return ResponseEntity.ok().body(institucionService.listar());
         else
-            return ResponseEntity.ok().body(institucionService.listarPorTipoId(tipoId));
+            return ResponseEntity.ok().body(institucionService.listarPorTipo(tipo));
     }
 
     @GetMapping("/tipos-institucion")
-    public ResponseEntity<List<TipoInstitucionDTO>> listarTipos() {
-        return ResponseEntity.ok().body(tipoInstitucionService.listar());
+    public ResponseEntity<List<TipoInstitucion>> listarTipos() {
+        return ResponseEntity.ok().body(List.of(TipoInstitucion.values()));
     }
 
 }

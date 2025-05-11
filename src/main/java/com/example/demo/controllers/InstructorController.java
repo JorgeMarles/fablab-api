@@ -26,7 +26,7 @@ public class InstructorController {
     }
 
     @GetMapping("/{id}/")
-    private ResponseEntity<InstructorDetalleDTO> buscarPorId(@PathVariable(name = "id") Long id){
-        return ResponseEntity.ok().body(instructorService.buscarPorId(id));
+    private ResponseEntity<InstructorDetalleDTO> obtenerPorId(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok().body(instructorService.obtenerPorId(id));
     }
 }

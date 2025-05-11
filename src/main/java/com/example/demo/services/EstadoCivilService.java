@@ -36,7 +36,7 @@ public class EstadoCivilService {
 		return estadoCivilResponse;
 	}
 
-	public EstadoCivilDTO buscarPorId(Long id) {
+	public EstadoCivilDTO obtenerPorId(Long id) {
 		EstadoCivilDTO estadoCivilResponse = new EstadoCivilDTO();
 		estadoCivilResponse.parseFromEntity(estadoCivilRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Estado civil no encontrado.")));
@@ -60,7 +60,7 @@ public class EstadoCivilService {
 		return estadoCivilRepository.findAll();
 	}
 	
-	public Optional<EstadoCivil> buscarPorIdEntidad(Long id) {
+	public Optional<EstadoCivil> obtenerPorIdEntidad(Long id) {
 		return estadoCivilRepository.findById(id);
 	}
 }

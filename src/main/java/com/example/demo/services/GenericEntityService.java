@@ -2,10 +2,7 @@ package com.example.demo.services;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -24,7 +21,6 @@ import com.example.demo.DTO.response.SalaDTO;
 import com.example.demo.DTO.response.SemilleroDTO;
 import com.example.demo.DTO.response.TipoBeneficiarioDTO;
 import com.example.demo.DTO.response.TipoDocumentoDTO;
-import com.example.demo.DTO.response.TipoInstitucionDTO;
 import com.example.demo.DTO.response.TipoOfertaDTO;
 import com.example.demo.entities.BaseEntity;
 import com.example.demo.entities.Cargo;
@@ -47,8 +43,10 @@ import com.example.demo.repositories.GenericRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class GenericEntityService {
 
     @Data
@@ -61,11 +59,6 @@ public class GenericEntityService {
 
     @Autowired
     private ApplicationContext context;
-
-    @Autowired
-    private TipoInstitucionService tipoInstitucionService;
-
-    Logger logger = LoggerFactory.getLogger(GenericEntityService.class);
 
     private final Map<String, Mapper> entityTypeMap = new HashMap<>();
 
@@ -83,7 +76,6 @@ public class GenericEntityService {
         entityTypeMap.put("semillero", new Mapper(Semillero.class, SemilleroDTO.class));
         entityTypeMap.put("tipoBeneficiario", new Mapper(TipoBeneficiario.class, TipoBeneficiarioDTO.class));
         entityTypeMap.put("tipoDocumento", new Mapper(TipoDocumento.class, TipoDocumentoDTO.class));
-        entityTypeMap.put("tipoInstitucion", new Mapper(TipoInstitucion.class, TipoInstitucionDTO.class));
         entityTypeMap.put("tipoOferta", new Mapper(TipoOferta.class, TipoOfertaDTO.class));
     }
 
@@ -106,27 +98,27 @@ public class GenericEntityService {
             for (Map.Entry<String, Object> entry : data.entrySet()) {
                 if (!entry.getKey().equals("id") && !entry.getKey().equals("nombre")) {
                     try {
-                        if (entry.getKey().equals("id_tipo_institucion")) {
+                        if (entry.getKey().equals("tipo_institucion")) {
                             if (entityType.equals("institucion")) {
-                                Long idTipoInstitucion = Long.parseLong(entry.getValue().toString());
-                                Optional<TipoInstitucion> tipoInstitucion = tipoInstitucionService
-                                        .buscarPorIdEntidad(idTipoInstitucion);
-                                if (tipoInstitucion.isPresent()) {
-                                    entityClass.getMethod("setTipoInstitucion", TipoInstitucion.class)
-                                            .invoke(entity, tipoInstitucion.get());
-                                } else {
-                                    throw new IllegalArgumentException("No existe un tipo de Institución con ese id");
-                                }
+                                TipoInstitucion tipoInstitucion = TipoInstitucion.valueOf(entry.getValue().toString());
+                                entityClass.getMethod("setTipoInstitucion", TipoInstitucion.class)
+                                        .invoke(entity, tipoInstitucion);
                             }
                         } else {
                             entityClass.getMethod("set" + capitalize(entry.getKey()), String.class)
                                     .invoke(entity, entry.getValue().toString());
                         }
                     } catch (NoSuchMethodException e) {
-                        logger.error("No se encuenta el campo " + entry.getKey() + " en la entidad "
-                                + entityClass.getSimpleName(), e);
-                        throw new IllegalArgumentException("No se encuenta el campo " + entry.getKey() + " en la entidad "
-                                + entityClass.getSimpleName(), e);
+                        String errMsg = "No se encuentra el método set" + capitalize(entry.getKey()) + " en la clase "
+                                + entityClass.getSimpleName();
+                        log.error(errMsg);
+                        throw new IllegalArgumentException(errMsg, e);
+                    } catch (IllegalArgumentException e) {
+                        String errMsg = "El argumento utilizado es ilegal para el método set"
+                                + capitalize(entry.getKey())
+                                + " en la clase " + entityClass.getSimpleName();
+                        log.error(errMsg);
+                        throw new IllegalArgumentException(errMsg, e);
                     }
                 }
             }
@@ -142,7 +134,7 @@ public class GenericEntityService {
             return dto;
 
         } catch (Exception e) {
-            logger.error("Error al crear entidad: ", e);
+            log.error("Error al crear entidad: ", e);
             throw e;
         }
     }

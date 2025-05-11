@@ -1,10 +1,9 @@
 package com.example.demo.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +16,7 @@ import com.example.demo.entities.CategoriaOferta;
 import com.example.demo.entities.EstadoOfertaFormacion;
 import com.example.demo.entities.Institucion;
 import com.example.demo.entities.OfertaFormacion;
+import com.example.demo.entities.PlantillaCertificado;
 import com.example.demo.entities.Sesion;
 import com.example.demo.entities.TipoBeneficiario;
 import com.example.demo.entities.TipoOferta;
@@ -28,11 +28,11 @@ import com.example.demo.repositories.TipoBeneficiarioRepository;
 import com.example.demo.repositories.TipoOfertaRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class OfertaFormacionService {
-
-    Logger logger = LoggerFactory.getLogger(OfertaFormacionService.class.getName());
 
     @Autowired
     private InscripcionService inscripcionService;
@@ -56,6 +56,12 @@ public class OfertaFormacionService {
     private SesionService sesionService;
 
     @Autowired
+    private CertificadoService certificadoService;
+
+    @Autowired
+    private PlantillaService plantillaService;
+
+    @Autowired
     private FileService fileService;
 
     public OfertaDetalleDTO crearRetDto(OfertaCreacionDTO dto) throws Exception {
@@ -67,7 +73,7 @@ public class OfertaFormacionService {
 
     @Transactional
     public OfertaFormacion crear(OfertaCreacionDTO dto) throws Exception {
-        logger.info(dto.toString());
+        log.info(dto.toString());
         if (ofertaFormacionRepository.findByCodigo(dto.getCodigo()).isPresent()) {
             throw new IllegalArgumentException("Ya existe una oferta con el mismo código.");
         }
@@ -84,7 +90,6 @@ public class OfertaFormacionService {
         Institucion institucion = institucionRepository.findById(dto.getId_institucion())
                 .orElseThrow(() -> new IllegalArgumentException("Institución no encontrada"));
 
-        
         OfertaFormacion oferta = new OfertaFormacion();
         oferta.setNombre(dto.getNombre());
         oferta.setCodigo(dto.getCodigo());
@@ -112,12 +117,29 @@ public class OfertaFormacionService {
         OfertaFormacion guardada = ofertaFormacionRepository.save(oferta);
 
         int order = 1;
-        for(SesionCreacionDTO sesion : dto.getSesiones()){
+        for (SesionCreacionDTO sesion : dto.getSesiones()) {
             Sesion creada = sesionService.crear(sesion, oferta, order++);
             oferta.getSesiones().add(creada);
         }
-        logger.info("Oferta guardada: " + guardada.getId());
+        log.info("Oferta guardada: " + guardada.getId());
         return guardada;
+    }
+
+    @Transactional
+    public void finalizar(Long ofertaId, Long plantillaId) {
+
+        PlantillaCertificado plantilla = plantillaService.obtenerPorId(plantillaId);
+
+        OfertaFormacion oferta = ofertaFormacionRepository.findById(ofertaId)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe una oferta de formación con ese id"));
+        oferta.setEstado(EstadoOfertaFormacion.FINALIZADA);
+        LocalDate fechaFin = LocalDate.now();
+        oferta.getSesiones().forEach(sesion -> {
+            sesion.getInstructores().forEach(instructor -> {
+                certificadoService.crearCertificado(oferta, instructor, fechaFin, plantilla);
+            });
+        });
+        ofertaFormacionRepository.save(oferta);
     }
 
     public List<OfertaItemDTO> listarTodos() {
@@ -144,13 +166,13 @@ public class OfertaFormacionService {
         }).toList();
     }
 
-    public Optional<OfertaFormacion> obtenerPorIdEntidad(Long ofertaId){
+    public Optional<OfertaFormacion> obtenerPorIdEntidad(Long ofertaId) {
         return ofertaFormacionRepository.findById(ofertaId);
     }
 
-    public OfertaDetalleDTO obtenerPorIdDetalle(Long ofertaId){
+    public OfertaDetalleDTO obtenerPorIdDetalle(Long ofertaId) {
         Optional<OfertaFormacion> opt = this.obtenerPorIdEntidad(ofertaId);
-        if(!opt.isPresent()){
+        if (!opt.isPresent()) {
             throw new ResourceNotFoundException("No existe una oferta de formación con ese id");
         }
         OfertaDetalleDTO dto = new OfertaDetalleDTO();

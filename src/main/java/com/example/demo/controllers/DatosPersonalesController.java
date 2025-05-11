@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.request.DatosPersonalesDTO;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/datos-personales")
+@Slf4j
 public class DatosPersonalesController {
 
     // TODO desarrollar controller
@@ -19,7 +22,7 @@ public class DatosPersonalesController {
         // Lógica para registrar los datos personales
         // ...
         Long userId = 1L; // TODO sacarlo de la sesion
-        DatosPersonalesDTO datosPersonales = new DatosPersonalesDTO();
+        log.info("Consultando datos personales para el usuario con ID: {}", userId);    
         return ResponseEntity.ok("Aquí irian los datos personales");
     }
 
@@ -29,7 +32,7 @@ public class DatosPersonalesController {
         // Lógica para registrar los datos personales
         // ...
         Long userId = 1L; // TODO sacarlo de la sesion
-
+        log.info("Registrando datos personales para el usuario con ID: {}", userId);    
         return ResponseEntity.created(null).body("Guardado(n't) correctamente");
     }
 

@@ -35,7 +35,7 @@ public class TipoBeneficiarioService {
 		return tipoBeneficiarioResponse;
 	}
 	
-	public TipoBeneficiarioDTO buscarPorId(Long id) {
+	public TipoBeneficiarioDTO obtenerPorId(Long id) {
 		TipoBeneficiarioDTO tipoBeneficiarioResponse = new TipoBeneficiarioDTO();
 		tipoBeneficiarioResponse.parseFromEntity(tipoBeneficiarioRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Tipo de beneficiario no encontrado.")));
@@ -56,7 +56,7 @@ public class TipoBeneficiarioService {
 		return tipoBeneficiarioRepository.existsById(id);
 	}
 	
-	public  Optional<TipoBeneficiario> buscarPorIdEntidad(Long id) {
+	public  Optional<TipoBeneficiario> obtenerPorIdEntidad(Long id) {
 		return tipoBeneficiarioRepository.findById(id);
 	}
 	

@@ -4,13 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.example.demo.entities.TipoDato;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Mapa de cambios en campos de entidades con Dto
@@ -22,11 +20,10 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@Slf4j
 public class ChangeMap {
     private final Map<String, FieldChangeMetadata> fields = new HashMap<>();
     
-    Logger logger = LoggerFactory.getLogger(ChangeMap.class);
-
     /**
      * Adaptación para ejecutar {@code forEach()} en la clase
      * @param action
@@ -62,7 +59,7 @@ public class ChangeMap {
             return;
         }
         if(!fields.containsKey(field)){
-            logger.error("Error: propiedad "+field+" no registrada. Ignorando...");
+            log.error("Error: propiedad "+field+" no registrada. Ignorando...");
             return;
         }
         FieldChangeMetadata fm = fields.get(field);

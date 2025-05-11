@@ -2,7 +2,7 @@ package com.example.demo.entities;
 
 import java.time.LocalDateTime;
 
-import jakarta.annotation.Nullable;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -34,43 +34,46 @@ public class RegistroIngreso {
     @Enumerated(EnumType.STRING)
     private Motivo motivo;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
+    private OfertaFormacion ofertaFormacion;
+
+    @ManyToOne(optional = true)
     @JoinColumn(name = "institucion_id")
-    @Nullable
     private Institucion institucion;
 
-    @Nullable
-    private String institucionOtro;
+    @Column(nullable = true)
+    private String institucionNombre;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "programa_academico_id")
-    @Nullable
     private ProgramaAcademico programaAcademico;
 
-    @Nullable
+    @Column(nullable = true)
+    private String codigoCarrera;
+
+    @Column(nullable = true)
     private String codigo;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "sala_id")
-    @Nullable
     private Sala sala;
 
-    @Nullable
+    @Column(nullable = true)
     private String materia;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "semillero_id")
-    @Nullable
     private Semillero semillero;
 
-    @Nullable
-    private String semilleroOtro;
+    @Column(nullable = true)
+    private String semilleroNombre;
 
-    @Nullable
-    private String siglasSemilleroOtro;
+    @Column(nullable = true)
+    private String semilleroSiglas;
 
     @ManyToOne
     @JoinColumn(name = "cargo_id")
     private Cargo cargo;
-}
 
+    private String asociacion;
+}

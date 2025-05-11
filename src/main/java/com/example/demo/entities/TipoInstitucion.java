@@ -1,26 +1,18 @@
 package com.example.demo.entities;
 
-import java.util.ArrayList;
-import java.util.List;
+public enum TipoInstitucion {
+    UNIVERSIDAD("Universidad"),
+    COLEGIO("Colegio"),
+    EMPRESA("Empresa"),
+    INDEPENDIENTE("Independiente");
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+    private String nombre;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Table(name = "tipo_institucion")
-public class TipoInstitucion extends BaseEntity {
-    public TipoInstitucion(Long id, String nombre) {
-        super(id, nombre);
+    TipoInstitucion(String nombre) {
+        this.nombre = nombre;
     }
-    @OneToMany(mappedBy = "tipoInstitucion")
-    private List<Institucion> instituciones = new ArrayList<>();
+
+    public String getNombre() {
+        return nombre;
+    }
 }

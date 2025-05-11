@@ -3,8 +3,6 @@ package com.example.demo.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +17,11 @@ import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.SesionRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class SesionService {
-
-    Logger logger = LoggerFactory.getLogger(SesionService.class.getName());
     
     @Autowired
     private SesionRepository sesionRepository;
@@ -92,7 +90,7 @@ public class SesionService {
 
         Sesion sesion = new Sesion();
         
-        Optional<Sala> salaOpt = salaService.buscarPorIdEntidad(sesionDto.getId_sala());
+        Optional<Sala> salaOpt = salaService.obtenerPorIdEntidad(sesionDto.getId_sala());
         if(!salaOpt.isPresent()){
             throw new ResourceNotFoundException("No existe una sala con ese id");
         }
@@ -105,7 +103,7 @@ public class SesionService {
         sesion.setOfertaFormacion(oferta);
 
         for(Long idInstructor : sesionDto.getInstructores()) {
-            Optional<Instructor> instructorOpt = instructorService.buscarPorIdEntidad(idInstructor);
+            Optional<Instructor> instructorOpt = instructorService.obtenerPorIdEntidad(idInstructor);
             if(!instructorOpt.isPresent()){
                 throw new ResourceNotFoundException("No existe un instructor con ese id");
             }

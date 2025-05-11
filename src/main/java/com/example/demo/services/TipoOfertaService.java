@@ -42,7 +42,7 @@ public class TipoOfertaService {
         return tipoOfertaResponse;
     }
 
-    public TipoOfertaDTO buscarPorId(Long id) {
+    public TipoOfertaDTO obtenerPorId(Long id) {
         TipoOfertaDTO tipoOfertaResponse = new TipoOfertaDTO();
         tipoOfertaResponse.parseFromEntity(tipoOfertaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tipo de oferta no encontrado.")));
@@ -63,7 +63,7 @@ public class TipoOfertaService {
         return tipoOfertaRepository.existsById(id);
     }
     
-	public  Optional<TipoOferta> buscarPorIdEntidad(Long id) {
+	public  Optional<TipoOferta> obtenerPorIdEntidad(Long id) {
 		return tipoOfertaRepository.findById(id);
 	}
 	
