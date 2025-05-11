@@ -12,6 +12,7 @@ import com.example.demo.DTO.request.OfertaCreacionDTO;
 import com.example.demo.DTO.request.SesionCreacionDTO;
 import com.example.demo.DTO.response.OfertaDetalleDTO;
 import com.example.demo.DTO.response.OfertaItemDTO;
+import com.example.demo.entities.Archivo;
 import com.example.demo.entities.CategoriaOferta;
 import com.example.demo.entities.EstadoOfertaFormacion;
 import com.example.demo.entities.Institucion;
@@ -54,7 +55,10 @@ public class OfertaFormacionService {
     @Autowired
     private SesionService sesionService;
 
-    public OfertaDetalleDTO crearRetDto(OfertaCreacionDTO dto) {
+    @Autowired
+    private FileService fileService;
+
+    public OfertaDetalleDTO crearRetDto(OfertaCreacionDTO dto) throws Exception {
         OfertaDetalleDTO detalleDTO = new OfertaDetalleDTO();
         OfertaFormacion of = this.crear(dto);
         detalleDTO.parseFromEntity(of);
@@ -62,7 +66,7 @@ public class OfertaFormacionService {
     }
 
     @Transactional
-    public OfertaFormacion crear(OfertaCreacionDTO dto) {
+    public OfertaFormacion crear(OfertaCreacionDTO dto) throws Exception {
         logger.info(dto.toString());
         if (ofertaFormacionRepository.findByCodigo(dto.getCodigo()).isPresent()) {
             throw new IllegalArgumentException("Ya existe una oferta con el mismo código.");
@@ -98,6 +102,13 @@ public class OfertaFormacionService {
         oferta.setSemestre(dto.getSemestre());
         oferta.setInstitucion(institucion);
 
+        if (dto.getPieza_grafica() != null) {
+            Archivo archivo = fileService.uploadFile(dto.getPieza_grafica());
+            oferta.setPiezaGrafica(archivo);
+        } else {
+            throw new IllegalArgumentException("No se ha subido una pieza gráfica");
+        }
+
         OfertaFormacion guardada = ofertaFormacionRepository.save(oferta);
 
         int order = 1;
@@ -105,8 +116,6 @@ public class OfertaFormacionService {
             Sesion creada = sesionService.crear(sesion, oferta, order++);
             oferta.getSesiones().add(creada);
         }
-
-
         logger.info("Oferta guardada: " + guardada.getId());
         return guardada;
     }

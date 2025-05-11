@@ -5,94 +5,232 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.entities.Archivo;
 import com.example.demo.exceptions.FileException;
+import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.repositories.ArchivoRepository;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class FileService {
 
 	Logger logger = LoggerFactory.getLogger(FileService.class);
-	
-	private final String uploadDirectory = "uploads";
-	
-	public Resource getFile(String filename) throws IOException {
-		Path filePath = Paths.get(uploadDirectory).resolve(filename).normalize();
-        
-		if(!Files.exists(filePath)) {
-			throw new IOException("El archivo no existe");
-		}
-		
-        Resource resource = new PathResource(filePath.toString());
-        return resource;
-	}
-	
-	public void deleteFile(String filename) throws IOException {
-		Path filePath = Paths.get(uploadDirectory).resolve(filename).normalize();
-        
-		if(!Files.exists(filePath)) {
-			throw new IOException("El archivo no existe");
-		}
-        
-        try {
-            Files.delete(filePath);
-        } catch (IOException e) {
-            throw new IOException("No se pudo eliminar el archivo: " + filename, e);
-        }
+
+	@Value("${app.file-upload-dir:uploads}")
+	private String uploadDirectory;
+
+	@Value("${app.file-max-size:10485760}") // 10 MB
+	private long maxFileSize;
+
+	private static String staticFileEndpoint;
+
+	@Value("${app.file-endpoint-files:/files}")
+	private String fileEndpointFiles;
+
+	@PostConstruct
+	public void init() {
+		// Initialize the static field after properties are set
+		FileService.staticFileEndpoint = this.fileEndpointFiles;
 	}
 
-	public String uploadFile(MultipartFile file) throws Exception {
-		logger.info("Subiendo archivo: " + file.getOriginalFilename());
-		return "hola";
-		/*/
+	// Static method to access the file endpoint
+	public static String getFileEndpointFiles() {
+		if (staticFileEndpoint == null) {
+			// Fallback to default value if not initialized
+			return "/files";
+		}
+		return staticFileEndpoint;
+	}
+
+	@Autowired
+	private ArchivoRepository archivoRepository;
+
+	private static final String[] ALLOWED_EXTENSIONS = { ".jpg", ".png", ".jpeg", ".bmp", ".gif", ".tiff", ".tif",
+			".webp", ".ico", ".svg", ".mp4", ".avi", ".mov", ".mkv", ".flv", ".wmv", ".xls", ".xlsx", ".csv",
+			".ods", ".tsv", ".pdf", ".docx", ".doc", ".zip", ".rar", ".7z", ".txt", ".mp3" };
+
+	public String determineContentType(String filename) {
+		String extension = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
+
+		switch (extension) {
+			// Image formats
+			case "jpg":
+			case "jpeg":
+				return "image/jpeg";
+			case "png":
+				return "image/png";
+			case "bmp":
+				return "image/bmp";
+			case "gif":
+				return "image/gif";
+			case "tiff":
+			case "tif":
+				return "image/tiff";
+			case "webp":
+				return "image/webp";
+			case "ico":
+				return "image/x-icon";
+			case "svg":
+				return "image/svg+xml";
+
+			// Video formats
+			case "mp4":
+				return "video/mp4";
+			case "avi":
+				return "video/x-msvideo";
+			case "mov":
+				return "video/quicktime";
+			case "mkv":
+				return "video/x-matroska";
+			case "flv":
+				return "video/x-flv";
+			case "wmv":
+				return "video/x-ms-wmv";
+
+			// Document formats
+			case "pdf":
+				return "application/pdf";
+			case "doc":
+				return "application/msword";
+			case "docx":
+				return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+			case "txt":
+				return "text/plain";
+
+			// Spreadsheet formats
+			case "xls":
+				return "application/vnd.ms-excel";
+			case "xlsx":
+				return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+			case "csv":
+				return "text/csv";
+			case "ods":
+				return "application/vnd.oasis.opendocument.spreadsheet";
+			case "tsv":
+				return "text/tab-separated-values";
+
+			// Archive formats
+			case "zip":
+				return "application/zip";
+			case "rar":
+				return "application/x-rar-compressed";
+			case "7z":
+				return "application/x-7z-compressed";
+
+			// Audio formats
+			case "mp3":
+				return "audio/mpeg";
+
+			// Default case for unknown types
+			default:
+				return "application/octet-stream";
+		}
+	}
+
+	public Archivo getFileById(String uuid) {
+		Optional<Archivo> opt = archivoRepository.findById(uuid);
+
+		Archivo archivo = opt
+				.orElseThrow(() -> new ResourceNotFoundException("El archivo no existe en la base de datos"));
+
+		return archivo;
+	}
+
+	public Resource getFile(String uuid) throws FileException, IOException {
+
+		logger.info("uuid {}", uuid);
+
+		Archivo archivo = getFileById(uuid);
+
+		Path filePath = Paths.get(uploadDirectory).resolve(archivo.getFilename()).normalize();
+
+		if (!Files.exists(filePath)) {
+			throw new FileException("El archivo no existe en el servidor");
+		}
+
+		Resource resource = new PathResource(filePath.toString());
+		return resource;
+	}
+
+	public void deleteFile(String filename) throws IOException {
+		Path filePath = Paths.get(uploadDirectory).resolve(filename).normalize();
+
+		if (!Files.exists(filePath)) {
+			throw new IOException("El archivo no existe");
+		}
+
 		try {
+			Files.delete(filePath);
+		} catch (IOException e) {
+			throw new IOException("No se pudo eliminar el archivo: " + filename, e);
+		}
+	}
+
+	public static String getFileExtension(String fileName) {
+		return fileName.substring(fileName.lastIndexOf("."));
+	}
+
+	public static void validateExtension(String fileName, String[] validExtensions) {
+		if (!isValidExtension(fileName, validExtensions)) {
+			throw new FileException("La extension " + getFileExtension(fileName) + " del archivo " + fileName
+					+ " no está dentro de las permitidas: " + Arrays.toString(validExtensions));
+		}
+	}
+
+	public static boolean isValidExtension(String fileName, String[] validExtensions) {
+		String fileExtension = getFileExtension(fileName);
+		return Arrays.stream(validExtensions).anyMatch(ext -> fileExtension.equalsIgnoreCase(ext));
+	}
+
+	public Archivo uploadFile(MultipartFile file) throws Exception {
+		logger.info("Subiendo archivo: " + file.getOriginalFilename());
+		try {
+			validateExtension(file.getOriginalFilename(), ALLOWED_EXTENSIONS);
 			String fileName = UUID.randomUUID().toString();
 			byte[] bytes = file.getBytes();
 			String fileOriginalName = file.getOriginalFilename();
 
 			long fileSize = file.getSize();
-			long maxFileSize = 10 * 1024 * 1024;
 
 			if (fileSize > maxFileSize) {
 				throw new FileException("El tamaño del archivo es de mas de 10 MB");
 			}
 
-			if (fileOriginalName.endsWith(".jpg") || fileOriginalName.endsWith(".png") || fileOriginalName.endsWith(".jpeg")
-					|| fileOriginalName.endsWith(".bmp") || fileOriginalName.endsWith(".gif")
-					|| fileOriginalName.endsWith(".tiff") || fileOriginalName.endsWith(".tif")
-					|| fileOriginalName.endsWith(".webp") || fileOriginalName.endsWith(".ico")
-					|| fileOriginalName.endsWith(".svg") || fileOriginalName.endsWith(".mp4")
-					|| fileOriginalName.endsWith(".avi") || fileOriginalName.endsWith(".mov")
-					|| fileOriginalName.endsWith(".mkv") || fileOriginalName.endsWith(".flv")
-					|| fileOriginalName.endsWith(".wmv") || fileOriginalName.endsWith(".xls")
-					|| fileOriginalName.endsWith(".xlsx") || fileOriginalName.endsWith(".csv")
-					|| fileOriginalName.endsWith(".ods") || fileOriginalName.endsWith(".tsv")||fileOriginalName.endsWith(".zip")) {
-					String fileExtension = fileOriginalName.substring(fileOriginalName.lastIndexOf("."));
-					String newFile = fileName+fileExtension;
-					File folder =  new File(uploadDirectory);
-					
-					if(!folder.exists()) {
-						folder.mkdirs();
-					}
-					
-					Path path = Paths.get(uploadDirectory).resolve(newFile).normalize();
-					Files.write(path, bytes);
-					return path.getFileName().toString().replace("\\", "/");
-			} else {
-				throw new FileException("Ese Tipo de archivo no esta permitido, y este es el nombre:" + fileOriginalName + " y pesa: " +fileSize);
+			String fileExtension = getFileExtension(fileOriginalName);
+			String newFile = fileName + fileExtension;
+			File folder = new File(uploadDirectory);
+
+			if (!folder.exists()) {
+				folder.mkdirs();
 			}
+
+			Path path = Paths.get(uploadDirectory).resolve(newFile).normalize();
+			Files.write(path, bytes);
+			Archivo archivo = new Archivo();
+
+			archivo.setNombre(file.getOriginalFilename());
+			archivo.setExtension(fileExtension);
+			archivo.setUuid(fileName);
+
+			logger.info("newFile {}", path.toString());
+			return archivoRepository.save(archivo);
 		} catch (Exception e) {
-			throw new FileException(e.getMessage());
+			throw new FileException(e.getMessage(), e);
 		}
-			*/
 	}
 
 }
