@@ -40,9 +40,9 @@ public class ParticipanteService {
         Usuario usuario;
 
         Optional<EstadoCivil> estadoOpt = estadoCivilService
-                .buscarPorIdEntidad(participanteCreacionDTO.getId_estado_civil());
+                .obtenerPorIdEntidad(participanteCreacionDTO.getId_estado_civil());
         Optional<PoblacionEspecial> poblacionEsOpt = poblacionEspecialService
-                .buscarPorIdEntidad(participanteCreacionDTO.getId_poblacion_especial());
+                .obtenerPorIdEntidad(participanteCreacionDTO.getId_poblacion_especial());
         Optional<Usuario> usuarioExistente = usuarioService.buscarPorDocumento(participanteCreacionDTO.getDocumento());
 
         if (!estadoOpt.isPresent()) {
@@ -88,7 +88,7 @@ public class ParticipanteService {
     }
 
     public ParticipanteDetalleDTO actualizar(Long id, DatosPersonalesDTO participanteDto) throws Exception {
-        Optional<Participante> participanteOpt = this.buscarPorIdEntidad(id);
+        Optional<Participante> participanteOpt = this.obtenerPorIdEntidad(id);
 
         if (!participanteOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un participante con ese id");
@@ -97,9 +97,9 @@ public class ParticipanteService {
         Participante participante = participanteOpt.get();
         Usuario usuario;
 
-        Optional<EstadoCivil> estadoOpt = estadoCivilService.buscarPorIdEntidad(participanteDto.getId_estado_civil());
+        Optional<EstadoCivil> estadoOpt = estadoCivilService.obtenerPorIdEntidad(participanteDto.getId_estado_civil());
         Optional<PoblacionEspecial> poblacionEsOpt = poblacionEspecialService
-                .buscarPorIdEntidad(participanteDto.getId_poblacion_especial());
+                .obtenerPorIdEntidad(participanteDto.getId_poblacion_especial());
         Optional<Usuario> usuarioExistente = usuarioService.buscarPorDocumento(participanteDto.getDocumento());
 
         if (!estadoOpt.isPresent()) {
@@ -153,7 +153,7 @@ public class ParticipanteService {
         return idto;
     }
 
-    public ParticipanteDetalleDTO buscarPorId(Long id) {
+    public ParticipanteDetalleDTO obtenerPorId(Long id) {
         ParticipanteDetalleDTO iDto = new ParticipanteDetalleDTO();
         Participante participante = participanteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe un participante con ese id"));
@@ -176,7 +176,7 @@ public class ParticipanteService {
         return participanteRepository.existsById(id);
     }
 
-    public Optional<Participante> buscarPorIdEntidad(Long id) {
+    public Optional<Participante> obtenerPorIdEntidad(Long id) {
         return participanteRepository.findById(id);
     }
 

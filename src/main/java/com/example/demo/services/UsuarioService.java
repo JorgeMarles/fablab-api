@@ -42,10 +42,10 @@ public class UsuarioService {
         Usuario usuario = new Usuario();
 
         Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService
-                .buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
-        Optional<Pais> paisOpt = paisService.buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_pais()));
+                .obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
+        Optional<Pais> paisOpt = paisService.obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_pais()));
         Optional<Municipio> municipioOpt = municipioService
-                .buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_municipio()));
+                .obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_municipio()));
         if (!tipoDocumentoOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un tipo de documento con ese id");
         }
@@ -77,13 +77,13 @@ public class UsuarioService {
 
     @Transactional
     public Usuario actualizar(Long id, DatosPersonalesDTO usuarioDto) throws Exception {
-        Usuario usuario = this.buscarPorId(id);
+        Usuario usuario = this.obtenerPorIdEntidad(id);
 
         Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService
-                .buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
-        Optional<Pais> paisOpt = paisService.buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_pais()));
+                .obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
+        Optional<Pais> paisOpt = paisService.obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_pais()));
         Optional<Municipio> municipioOpt = municipioService
-                .buscarPorIdEntidad(Long.valueOf(usuarioDto.getId_municipio()));
+                .obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_municipio()));
         if (!tipoDocumentoOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un tipo de documento con ese id");
         }
@@ -113,7 +113,7 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public Usuario buscarPorId(Long id) {
+    public Usuario obtenerPorIdEntidad(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado."));
     }

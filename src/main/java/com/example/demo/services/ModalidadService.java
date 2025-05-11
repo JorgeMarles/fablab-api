@@ -36,7 +36,7 @@ public class ModalidadService {
         return modalidadResponse;
     }
 
-    public ModalidadDTO buscarPorId(Long id) {
+    public ModalidadDTO obtenerPorId(Long id) {
 		ModalidadDTO ModalidadResponse = new ModalidadDTO();
 		ModalidadResponse.parseFromEntity(modalidadRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Modalidad no encontrado.")));
@@ -56,7 +56,7 @@ public class ModalidadService {
 		return modalidadRepository.existsById(id);
 	}
 
-	public Optional<Modalidad> buscarPorIdEntidad(Long id) {
+	public Optional<Modalidad> obtenerPorIdEntidad(Long id) {
 		return modalidadRepository.findById(id);
 	}
 

@@ -39,7 +39,7 @@ public class MunicipioService {
 		return municipioResponse;
 	}
 
-	public MunicipioDTO buscarPorId(Long id) {
+	public MunicipioDTO obtenerPorId(Long id) {
 		MunicipioDTO municipioResponse = new MunicipioDTO();
 		municipioResponse.parseFromEntity(municipioRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Municipio no encontrado.")));
@@ -59,7 +59,7 @@ public class MunicipioService {
 		return municipioRepository.existsById(id);
 	}
 
-	public Optional<Municipio> buscarPorIdEntidad(Long id) {
+	public Optional<Municipio> obtenerPorIdEntidad(Long id) {
 		return municipioRepository.findById(id);
 	}
 

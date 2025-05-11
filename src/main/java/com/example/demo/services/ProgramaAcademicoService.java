@@ -54,7 +54,7 @@ public class ProgramaAcademicoService {
 		return programaAcademicoResponse;
 	}
 	
-	public ProgramaAcademicoDTO buscarPorId(Long id) {
+	public ProgramaAcademicoDTO obtenerPorId(Long id) {
 		ProgramaAcademicoDTO programaAcademicoResponse = new ProgramaAcademicoDTO();
 		programaAcademicoResponse.parseFromEntity(programaAcademicoRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Programa académico no encontrado.")));
@@ -82,7 +82,7 @@ public class ProgramaAcademicoService {
 		return programasAcademicosResponse;
 	}
 	
-	public Optional<ProgramaAcademico> buscarPorIdEntidad(Long id) {
+	public Optional<ProgramaAcademico> obtenerPorIdEntidad(Long id) {
 		return programaAcademicoRepository.findById(id);
 	}
 	

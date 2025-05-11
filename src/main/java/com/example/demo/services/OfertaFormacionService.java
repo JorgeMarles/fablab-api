@@ -128,7 +128,7 @@ public class OfertaFormacionService {
     @Transactional
     public void finalizar(Long ofertaId, Long plantillaId) {
 
-        PlantillaCertificado plantilla = plantillaService.buscarPorId(plantillaId);
+        PlantillaCertificado plantilla = plantillaService.obtenerPorId(plantillaId);
 
         OfertaFormacion oferta = ofertaFormacionRepository.findById(ofertaId)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe una oferta de formación con ese id"));

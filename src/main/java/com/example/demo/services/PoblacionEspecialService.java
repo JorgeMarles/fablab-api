@@ -38,7 +38,7 @@ public class PoblacionEspecialService {
 		return poblacionEspecialResponse;
 	}
 	
-	public PoblacionEspecialDTO buscarPorId(Long id) {
+	public PoblacionEspecialDTO obtenerPorId(Long id) {
 		PoblacionEspecialDTO poblacionEspecialResponse = new PoblacionEspecialDTO();
 		poblacionEspecialResponse.parseFromEntity(poblacionEspecialRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Poblacion especial no encontrada.")));
@@ -59,7 +59,7 @@ public class PoblacionEspecialService {
 		return poblacionEspecialRepository.existsById(id);
 	}
 	
-	public Optional<PoblacionEspecial> buscarPorIdEntidad(Long id) {
+	public Optional<PoblacionEspecial> obtenerPorIdEntidad(Long id) {
 		return poblacionEspecialRepository.findById(id);
 	}
 

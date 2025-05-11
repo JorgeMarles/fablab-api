@@ -37,7 +37,7 @@ public class SalaService {
 		return salaResponse;
 	}
 
-	public SalaDTO buscarPorId(Long id) {
+	public SalaDTO obtenerPorId(Long id) {
 		SalaDTO salaResponse = new SalaDTO();
 		salaResponse.parseFromEntity(
 				salaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Sala no encontrada.")));
@@ -57,7 +57,7 @@ public class SalaService {
 		return salaRepository.existsById(id);
 	}
 	
-	public  Optional<Sala> buscarPorIdEntidad(Long id) {
+	public  Optional<Sala> obtenerPorIdEntidad(Long id) {
 		return salaRepository.findById(id);
 	}
 	

@@ -90,7 +90,7 @@ public class SesionService {
 
         Sesion sesion = new Sesion();
         
-        Optional<Sala> salaOpt = salaService.buscarPorIdEntidad(sesionDto.getId_sala());
+        Optional<Sala> salaOpt = salaService.obtenerPorIdEntidad(sesionDto.getId_sala());
         if(!salaOpt.isPresent()){
             throw new ResourceNotFoundException("No existe una sala con ese id");
         }
@@ -103,7 +103,7 @@ public class SesionService {
         sesion.setOfertaFormacion(oferta);
 
         for(Long idInstructor : sesionDto.getInstructores()) {
-            Optional<Instructor> instructorOpt = instructorService.buscarPorIdEntidad(idInstructor);
+            Optional<Instructor> instructorOpt = instructorService.obtenerPorIdEntidad(idInstructor);
             if(!instructorOpt.isPresent()){
                 throw new ResourceNotFoundException("No existe un instructor con ese id");
             }

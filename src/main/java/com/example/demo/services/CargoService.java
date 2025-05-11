@@ -37,7 +37,7 @@ public class CargoService {
 		return cargoResponse;
 	}
 
-	public CargoDTO buscarPorId(Long id) {
+	public CargoDTO obtenerPorId(Long id) {
 		CargoDTO cargoResponse = new CargoDTO();
 		cargoResponse.parseFromEntity(
 				cargoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cargo no encontrado.")));
@@ -57,7 +57,7 @@ public class CargoService {
 		return cargoRepository.existsById(id);
 	}
 
-	public  Optional<Cargo> buscarPorIdEntidad(Long id) {
+	public  Optional<Cargo> obtenerPorIdEntidad(Long id) {
 		return cargoRepository.findById(id);
 	}
 	

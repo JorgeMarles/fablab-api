@@ -42,7 +42,7 @@ public class SemilleroService {
         return semilleroResponse;
 	}
 	
-	public SemilleroDTO buscarPorId(Long id) {
+	public SemilleroDTO obtenerPorId(Long id) {
 		SemilleroDTO semilleroResponse = new SemilleroDTO();
 		semilleroResponse.parseFromEntity(semilleroRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Semillero no encontrado.")));
@@ -62,7 +62,7 @@ public class SemilleroService {
 		return semilleroRepository.existsById(id);
 	}
 	
-	public  Optional<Semillero> buscarPorIdEntidad(Long id) {
+	public  Optional<Semillero> obtenerPorIdEntidad(Long id) {
 		return semilleroRepository.findById(id);
 	}
 	

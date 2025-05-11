@@ -39,7 +39,7 @@ public class PaisService {
 		return paisResponse;
 	}
 
-	public PaisDTO buscarPorId(Long id) {
+	public PaisDTO obtenerPorId(Long id) {
 		PaisDTO paisResponse = new PaisDTO();
 		paisResponse.parseFromEntity(
 				paisRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Pais no encontrado.")));
@@ -59,7 +59,7 @@ public class PaisService {
 		return paisRepository.existsById(id);
 	}
 
-	public Optional<Pais> buscarPorIdEntidad(Long id) {
+	public Optional<Pais> obtenerPorIdEntidad(Long id) {
 		return paisRepository.findById(id);
 	}
 

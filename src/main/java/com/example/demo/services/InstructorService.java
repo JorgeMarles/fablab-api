@@ -36,7 +36,7 @@ public class InstructorService {
         Usuario usuario;
 
         Optional<Modalidad> modalidadOpt = modalidadService
-                .buscarPorIdEntidad(Long.valueOf(instructorCreacionDTO.getId_modalidad()));
+                .obtenerPorIdEntidad(Long.valueOf(instructorCreacionDTO.getId_modalidad()));
         Optional<Usuario> usuarioExistente = usuarioService.buscarPorDocumento(instructorCreacionDTO.getDocumento());
 
         if (!modalidadOpt.isPresent()) {
@@ -79,7 +79,7 @@ public class InstructorService {
 
     @Transactional
     public InstructorDetalleDTO actualizar(Long id, DatosPersonalesDTO instructorDto) throws Exception {
-        Optional<Instructor> instructorOpt = this.buscarPorIdEntidad(id);
+        Optional<Instructor> instructorOpt = this.obtenerPorIdEntidad(id);
 
         if (!instructorOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un instructor con ese id");
@@ -89,7 +89,7 @@ public class InstructorService {
         Usuario usuario;
 
         Optional<Modalidad> modalidadOpt = modalidadService
-                .buscarPorIdEntidad(Long.valueOf(instructorDto.getId_modalidad()));
+                .obtenerPorIdEntidad(Long.valueOf(instructorDto.getId_modalidad()));
         Optional<Usuario> usuarioExistente = usuarioService.buscarPorDocumento(instructorDto.getDocumento());
 
         if (!modalidadOpt.isPresent()) {
@@ -137,7 +137,7 @@ public class InstructorService {
         return idto;
     }
 
-    public InstructorDetalleDTO buscarPorId(Long id) {
+    public InstructorDetalleDTO obtenerPorId(Long id) {
         InstructorDetalleDTO iDto = new InstructorDetalleDTO();
         Instructor instructor = instructorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe un instructor con ese id"));
@@ -169,7 +169,7 @@ public class InstructorService {
         return instructorRepository.existsById(id);
     }
 
-    public Optional<Instructor> buscarPorIdEntidad(Long id) {
+    public Optional<Instructor> obtenerPorIdEntidad(Long id) {
         return instructorRepository.findById(id);
     }
 

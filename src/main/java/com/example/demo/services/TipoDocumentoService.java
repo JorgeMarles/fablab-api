@@ -39,7 +39,7 @@ public class TipoDocumentoService {
 		return tipoDocumentoResponse;
 	}
 
-	public TipoDocumentoDTO buscarPorId(Long id) {
+	public TipoDocumentoDTO obtenerPorId(Long id) {
 		TipoDocumentoDTO tipoDocumentoResponse = new TipoDocumentoDTO();
 		tipoDocumentoResponse.parseFromEntity(tipoDocumentoRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Tipo de documento no encontrado.")));
@@ -59,7 +59,7 @@ public class TipoDocumentoService {
 		return tipoDocumentoRepository.existsById(id);
 	}
 
-	public Optional<TipoDocumento> buscarPorIdEntidad(Long id) {
+	public Optional<TipoDocumento> obtenerPorIdEntidad(Long id) {
 		return tipoDocumentoRepository.findById(id);
 	}
 
