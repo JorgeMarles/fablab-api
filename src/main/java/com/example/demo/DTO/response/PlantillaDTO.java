@@ -9,16 +9,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlantillaDTO implements IResponseDTO<PlantillaCertificado>{
+public class PlantillaDTO implements IResponseDTO<PlantillaCertificado> {
     private Long id;
     private String nombre;
     private String url;
+
     @Override
     public void parseFromEntity(PlantillaCertificado entity) {
-    	this.id = entity.getId();
+        this.id = entity.getId();
         this.nombre = entity.getNombre();
-        this.url = entity.getUrl();
+        this.url = entity.getArchivo().getUrl();
     }
-
 
 }

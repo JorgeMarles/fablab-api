@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
@@ -76,7 +77,9 @@ public class OfertaFormacion {
     @Digits(integer = 10, fraction = 0, message = "CUPOMÁXIMO debe ser un número entero de máximo 10 dígitos")
     private Integer cupoMaximo;
 
-    private String piezaGrafica;
+    @OneToOne
+    @JoinColumn(name = "pieza_grafica_id", referencedColumnName = "uuid")
+    private Archivo piezaGrafica;
 
     private Integer semestre;
 

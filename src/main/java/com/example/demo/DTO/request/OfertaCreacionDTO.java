@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.services.FileService;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,8 +27,15 @@ public class OfertaCreacionDTO {
     private Integer valor;
     private Long id_tipo_beneficiario;
     private Integer cupo_maximo;
-    private MultipartFile pieza_grafica; //La idea es que se haga set y se pase solo este objeto al service
+    private MultipartFile pieza_grafica; // La idea es que se haga set y se pase solo este objeto al service
     private Long id_institucion;
     private List<SesionCreacionDTO> sesiones;
     private Integer semestre;
+
+    public void setPieza_grafica(MultipartFile pieza_grafica) {
+        String[] validExtensions = { ".jpg", ".jpeg", ".png", ".pdf", ".svg", ".bmp", ".gif", ".tiff", ".tif",
+                ".webp", ".ico", ".svg" };
+        FileService.validateExtension(pieza_grafica.getOriginalFilename(), validExtensions);
+        this.pieza_grafica = pieza_grafica;
+    }
 }

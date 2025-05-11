@@ -9,16 +9,17 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EvidenciaDTO implements IResponseDTO<Evidencia>{
-    private Long id;
-    private String nombre;
-    private String instructor;
-    private String url;
-    @Override
-    public void parseFromEntity(Evidencia entity) {
-		this.id = entity.getId();
-		this.nombre = entity.getNombre();
-		this.instructor = entity.getInstructor().getUsuario().getNombreCompleto();
-		this.url = entity.getUrl();
-    }
+public class EvidenciaDTO implements IResponseDTO<Evidencia> {
+  private Long id;
+  private String nombre;
+  private String instructor;
+  private String url;
+
+  @Override
+  public void parseFromEntity(Evidencia entity) {
+    this.id = entity.getId();
+    this.nombre = entity.getNombre();
+    this.instructor = entity.getInstructor().getUsuario().getNombreCompleto();
+    this.url = entity.getArchivo().getUrl();
+  }
 }

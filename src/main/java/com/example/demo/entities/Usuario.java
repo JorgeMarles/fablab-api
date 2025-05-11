@@ -45,8 +45,7 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Null
-    @Column(length = 128)
+    @Column(length = 128, nullable = true)
     private String uid;
 
     @ManyToOne

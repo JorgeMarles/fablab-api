@@ -50,7 +50,6 @@ public class OfertaFormacionController {
     private ResponseEntity<OfertaDetalleDTO> crearEvidencia(@ModelAttribute OfertaCreacionDTO ofertaFormacionDto,
             @RequestParam("file") MultipartFile file) throws Exception {
         ofertaFormacionDto.setPieza_grafica(file);
-
         OfertaDetalleDTO creada = ofertaFormacionService.crearRetDto(ofertaFormacionDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

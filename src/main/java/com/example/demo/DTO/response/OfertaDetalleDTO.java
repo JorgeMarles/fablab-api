@@ -12,71 +12,70 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion>{
+public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion> {
 
-    private Long id;
-    private String nombre;
-    private String codigo;
-    private String cine;
-    private boolean extension;
-    private EstadoOfertaFormacion estado;
-    private String fecha_inicio;
-    private String fecha_fin;
-    private Integer horas;
-    private TipoOfertaDTO tipo_oferta;
-    private CategoriaDTO categoria;
-    private TipoBeneficiarioDTO tipo_beneficiario;
-    private Integer semestre;
-    private Integer valor;
-    private String pieza_grafica;
-    private InstitucionDTO institucion;
-    private List<SesionItemDTO> sesiones;
-    private List<InscritoDTO> inscritos;
-    @Override
-    public void parseFromEntity(OfertaFormacion entity) {
-    	 this.id = entity.getId();
-    	    this.nombre = entity.getNombre();
-    	    this.codigo = entity.getCodigo();
-    	    this.cine = entity.getCine();
-    	    this.extension = entity.isExtension();
-    	    this.estado = entity.getEstado();
-    	    this.fecha_inicio = entity.getFechaInicio().toString();
-    	    this.fecha_fin = entity.getFechaFin().toString();
-    	    this.horas = entity.getHoras();
+	private Long id;
+	private String nombre;
+	private String codigo;
+	private String cine;
+	private boolean extension;
+	private EstadoOfertaFormacion estado;
+	private String fecha_inicio;
+	private String fecha_fin;
+	private Integer horas;
+	private TipoOfertaDTO tipo_oferta;
+	private CategoriaDTO categoria;
+	private TipoBeneficiarioDTO tipo_beneficiario;
+	private Integer semestre;
+	private Integer valor;
+	private String pieza_grafica;
+	private InstitucionDTO institucion;
+	private List<SesionItemDTO> sesiones;
+	private List<InscritoDTO> inscritos;
 
-    	    this.tipo_oferta = new TipoOfertaDTO();
-    	    this.tipo_oferta.parseFromEntity(entity.getTipo());
+	@Override
+	public void parseFromEntity(OfertaFormacion entity) {
+		this.id = entity.getId();
+		this.nombre = entity.getNombre();
+		this.codigo = entity.getCodigo();
+		this.cine = entity.getCine();
+		this.extension = entity.isExtension();
+		this.estado = entity.getEstado();
+		this.fecha_inicio = entity.getFechaInicio().toString();
+		this.fecha_fin = entity.getFechaFin().toString();
+		this.horas = entity.getHoras();
 
-    	    this.categoria = new CategoriaDTO();
-    	    this.categoria.parseFromEntity(entity.getCategoria());
+		this.tipo_oferta = new TipoOfertaDTO();
+		this.tipo_oferta.parseFromEntity(entity.getTipo());
 
-    	    this.tipo_beneficiario = new TipoBeneficiarioDTO();
-    	    this.tipo_beneficiario.parseFromEntity(entity.getTipoBeneficiario());
+		this.categoria = new CategoriaDTO();
+		this.categoria.parseFromEntity(entity.getCategoria());
 
-    	    this.semestre = entity.getSemestre();
-    	    this.valor = entity.getValor();
-    	    this.pieza_grafica = entity.getPiezaGrafica();
+		this.tipo_beneficiario = new TipoBeneficiarioDTO();
+		this.tipo_beneficiario.parseFromEntity(entity.getTipoBeneficiario());
 
-    	    this.institucion = new InstitucionDTO();
-    	    this.institucion.parseFromEntity(entity.getInstitucion());
+		this.semestre = entity.getSemestre();
+		this.valor = entity.getValor();
+		this.pieza_grafica = entity.getPiezaGrafica().getUrl();
 
-    	    this.sesiones = entity.getSesiones().stream()
-    	        .map(sesion -> {
-    	            SesionItemDTO sesionDTO = new SesionItemDTO();
-    	            sesionDTO.parseFromEntity(sesion);
-    	            return sesionDTO;
-    	        })
-    	        .toList();
+		this.institucion = new InstitucionDTO();
+		this.institucion.parseFromEntity(entity.getInstitucion());
 
-    	    this.inscritos = entity.getInscripciones().stream()
-    	        .map(inscrito -> {
-    	            InscritoDTO inscritoDTO = new InscritoDTO();
-    	            inscritoDTO.parseFromEntity(inscrito);
-    	            return inscritoDTO;
-    	        })
-    	        .toList();
-    }
+		this.sesiones = entity.getSesiones().stream()
+				.map(sesion -> {
+					SesionItemDTO sesionDTO = new SesionItemDTO();
+					sesionDTO.parseFromEntity(sesion);
+					return sesionDTO;
+				})
+				.toList();
 
+		this.inscritos = entity.getInscripciones().stream()
+				.map(inscrito -> {
+					InscritoDTO inscritoDTO = new InscritoDTO();
+					inscritoDTO.parseFromEntity(inscrito);
+					return inscritoDTO;
+				})
+				.toList();
+	}
 
-    
 }
