@@ -1,18 +1,17 @@
 package com.example.demo.services;
 import java.util.List;
-import java.util.Map;
-import jakarta.transaction.Transactional;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.demo.exceptions.ResourceNotFoundException;
+
 import com.example.demo.DTO.request.RegistroIngresoDTO;
 import com.example.demo.DTO.response.IngresoFablabItemDTO;
 import com.example.demo.entities.Motivo;
 import com.example.demo.entities.RegistroIngreso;
 import com.example.demo.entities.Usuario;
 import com.example.demo.repositories.RegistroIngresoRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class RegistroIngresoService {

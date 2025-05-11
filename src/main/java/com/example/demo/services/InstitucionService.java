@@ -3,22 +3,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import jakarta.transaction.Transactional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.demo.exceptions.ResourceNotFoundException;
+
 import com.example.demo.DTO.response.InstitucionDTO;
 import com.example.demo.entities.Institucion;
 import com.example.demo.entities.TipoInstitucion;
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.InstitucionRepository;
 
-@Service
-public class InstitucionService {
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+@Service
+@Slf4j
+public class InstitucionService {
 
 	@Autowired
 	private InstitucionRepository institucionRepository;

@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -47,8 +45,10 @@ import com.example.demo.repositories.GenericRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class GenericEntityService {
 
     @Data
@@ -64,8 +64,6 @@ public class GenericEntityService {
 
     @Autowired
     private TipoInstitucionService tipoInstitucionService;
-
-    Logger logger = LoggerFactory.getLogger(GenericEntityService.class);
 
     private final Map<String, Mapper> entityTypeMap = new HashMap<>();
 
@@ -123,7 +121,7 @@ public class GenericEntityService {
                                     .invoke(entity, entry.getValue().toString());
                         }
                     } catch (NoSuchMethodException e) {
-                        logger.error("No se encuenta el campo " + entry.getKey() + " en la entidad "
+                        log.error("No se encuenta el campo " + entry.getKey() + " en la entidad "
                                 + entityClass.getSimpleName(), e);
                         throw new IllegalArgumentException("No se encuenta el campo " + entry.getKey() + " en la entidad "
                                 + entityClass.getSimpleName(), e);
@@ -142,7 +140,7 @@ public class GenericEntityService {
             return dto;
 
         } catch (Exception e) {
-            logger.error("Error al crear entidad: ", e);
+            log.error("Error al crear entidad: ", e);
             throw e;
         }
     }
