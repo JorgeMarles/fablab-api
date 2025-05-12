@@ -15,10 +15,14 @@ public class OfertaItemDTO implements IResponseDTO<OfertaFormacion> {
     private Long id;
     private String nombre;
     private EstadoOfertaFormacion estado;
+    private CategoriaDTO categoria;
+
     @Override
     public void parseFromEntity(OfertaFormacion entity) {
     	this.id = entity.getId();
         this.nombre = entity.getNombre();
         this.estado = entity.getEstado();
+        this.categoria = new CategoriaDTO();
+        this.categoria.parseFromEntity(entity.getCategoria());
     }
 }
