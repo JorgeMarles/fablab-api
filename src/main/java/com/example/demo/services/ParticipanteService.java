@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.request.DatosPersonalesDTO;
 import com.example.demo.DTO.response.DatosPersonalesResponseDTO;
-import com.example.demo.DTO.response.ParticipanteDetalleDTO;
 import com.example.demo.DTO.response.ParticipanteItemDTO;
 import com.example.demo.entities.EstadoCivil;
 import com.example.demo.entities.Participante;
@@ -64,7 +63,7 @@ public class ParticipanteService {
         return idto;
     }
 
-    public ParticipanteDetalleDTO actualizar(Long id, DatosPersonalesDTO participanteDto) throws Exception {
+    public DatosPersonalesResponseDTO actualizar(Long id, DatosPersonalesDTO participanteDto) throws Exception {
         Optional<Participante> participanteOpt = this.obtenerPorIdEntidad(id);
 
         if (!participanteOpt.isPresent()) {
@@ -97,18 +96,18 @@ public class ParticipanteService {
 
         participante = participanteRepository.save(participante);
 
-        ParticipanteDetalleDTO idto = new ParticipanteDetalleDTO();
-        idto.parseFromEntity(participante);
+        DatosPersonalesResponseDTO idto = new DatosPersonalesResponseDTO();
+        idto.parseFromEntity(participante.getUsuario());
 
         return idto;
     }
 
-    public ParticipanteDetalleDTO obtenerPorId(Long id) {
-        ParticipanteDetalleDTO iDto = new ParticipanteDetalleDTO();
+    public DatosPersonalesResponseDTO obtenerPorId(Long id) {
+        DatosPersonalesResponseDTO iDto = new DatosPersonalesResponseDTO();
         Participante participante = participanteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe un participante con ese id"));
 
-        iDto.parseFromEntity(participante);
+        iDto.parseFromEntity(participante.getUsuario());
         return iDto;
     }
 

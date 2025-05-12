@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.DTO.response.InstructorDetalleDTO;
+import com.example.demo.DTO.response.DatosPersonalesResponseDTO;
 import com.example.demo.DTO.response.InstructorItemDTO;
 import com.example.demo.services.InstructorService;
 
@@ -26,7 +26,7 @@ public class InstructorController {
     }
 
     @GetMapping("/{id}/")
-    private ResponseEntity<InstructorDetalleDTO> obtenerPorId(@PathVariable(name = "id") Long id){
+    private ResponseEntity<DatosPersonalesResponseDTO> obtenerPorId(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok().body(instructorService.obtenerPorId(id));
     }
 }
