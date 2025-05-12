@@ -3,6 +3,7 @@ package com.example.demo.services;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,6 +73,18 @@ public class OfertaFormacionService {
     }
 
     @Transactional
+    public OfertaFormacion switchEstado(Long idOferta) throws Exception {
+        OfertaFormacion oferta = ofertaFormacionRepository.findById(idOferta)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe una oferta de formación con ese id"));
+        if(oferta.getEstado() == EstadoOfertaFormacion.ACTIVA) {
+            oferta.setEstado(EstadoOfertaFormacion.INACTIVA);
+        } else if(oferta.getEstado() == EstadoOfertaFormacion.INACTIVA) {
+            oferta.setEstado(EstadoOfertaFormacion.ACTIVA);
+        }
+        return ofertaFormacionRepository.save(oferta);
+    }
+
+    @Transactional
     public OfertaFormacion crear(OfertaCreacionDTO dto) throws Exception {
         log.info(dto.toString());
         if (ofertaFormacionRepository.findByCodigo(dto.getCodigo()).isPresent()) {
@@ -123,6 +136,95 @@ public class OfertaFormacionService {
         }
         log.info("Oferta guardada: " + guardada.getId());
         return guardada;
+    }
+
+    @Transactional
+    public OfertaFormacion editar(Long idOferta, OfertaCreacionDTO ofertaDto) throws Exception {
+
+        OfertaFormacion oferta = obtenerPorIdEntidad(idOferta)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe una oferta de formación con ese id"));
+
+        // Campos estaticos
+        oferta.setNombre(ofertaDto.getNombre());
+        oferta.setCodigo(ofertaDto.getCodigo());
+        oferta.setCine(ofertaDto.getCine());
+        oferta.setExtension(ofertaDto.isExtension());
+        oferta.setEstado(EstadoOfertaFormacion.ACTIVA);
+        oferta.setFechaInicio(ofertaDto.getFecha_inicio());
+        oferta.setFechaFin(ofertaDto.getFecha_fin());
+        oferta.setHoras(ofertaDto.getHoras());
+        oferta.setValor(ofertaDto.getValor());
+        oferta.setCupoMaximo(ofertaDto.getCupo_maximo());
+        oferta.setSemestre(ofertaDto.getSemestre());
+
+        // Campos de referencia
+        TipoOferta tipo = tipoOfertaRepository.findById(ofertaDto.getId_tipo())
+                .orElseThrow(() -> new IllegalArgumentException("Tipo de oferta no encontrado"));
+        oferta.setTipo(tipo);
+        CategoriaOferta categoria = categoriaOfertaRepository.findById(ofertaDto.getId_categoria())
+                .orElseThrow(() -> new IllegalArgumentException("Categoría de oferta no encontrada"));
+        oferta.setCategoria(categoria);
+        TipoBeneficiario tipoBeneficiario = tipoBeneficiarioRepository.findById(ofertaDto.getId_tipo_beneficiario())
+                .orElseThrow(() -> new IllegalArgumentException("Tipo de beneficiario no encontrado"));
+        oferta.setTipoBeneficiario(tipoBeneficiario);
+        Institucion institucion = institucionRepository.findById(ofertaDto.getId_institucion())
+                .orElseThrow(() -> new IllegalArgumentException("Institución no encontrada"));
+        oferta.setInstitucion(institucion);
+
+        // Campos de archivo
+        if (ofertaDto.getPieza_grafica() != null) {
+            // Store the old archivo UUID for later deletion
+            String oldArchivoUuid = null;
+            if (oferta.getPiezaGrafica() != null) {
+                oldArchivoUuid = oferta.getPiezaGrafica().getUuid();
+            }
+
+            // Upload new file and create new archivo
+            Archivo archivo = fileService.uploadFile(ofertaDto.getPieza_grafica());
+
+            // Update relationship
+            oferta.setPiezaGrafica(archivo);
+
+            // Save to update relationships in database
+            oferta = ofertaFormacionRepository.save(oferta);
+
+            // Now it's safe to delete the old file (after DB relationship is updated)
+            if (oldArchivoUuid != null) {
+                try {
+                    fileService.deleteFile(oldArchivoUuid);
+                } catch (Exception e) {
+                    log.error("Error al eliminar el archivo anterior: " + e.getMessage());
+                }
+            }
+        }
+
+        List<Sesion> sesionesARemover = oferta.getSesiones().stream()
+                .filter(sesion -> ofertaDto.getSesiones().stream()
+                        .noneMatch(s -> s.getId() != null && s.getId().equals(sesion.getId())))
+                .collect(Collectors.toList());
+
+        for (Sesion sesion : sesionesARemover) {
+            log.info("Eliminando sesión: " + sesion.getId());
+            sesionService.eliminar(sesion);
+            oferta.getSesiones().remove(sesion);
+        }
+
+        int order = 1;
+        for (SesionCreacionDTO sesionDto : ofertaDto.getSesiones()) {
+            if (sesionDto.getId() != null) {
+                Sesion sesion = oferta.getSesiones().stream()
+                        .filter(s -> s.getId() != null && s.getId().equals(sesionDto.getId())).findFirst()
+                        .orElseThrow(
+                                () -> new ResourceNotFoundException(
+                                        "No existe una sesión con id " + sesionDto.getId()));
+                sesionService.editar(sesion, sesionDto, order++);
+            } else {
+                Sesion nuevaSesion = sesionService.crear(sesionDto, oferta, order++);
+                oferta.getSesiones().add(nuevaSesion);
+            }
+        }
+
+        return ofertaFormacionRepository.save(oferta);
     }
 
     @Transactional

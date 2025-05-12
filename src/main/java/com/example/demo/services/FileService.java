@@ -164,17 +164,20 @@ public class FileService {
 		return resource;
 	}
 
-	public void deleteFile(String filename) throws IOException {
-		Path filePath = Paths.get(uploadDirectory).resolve(filename).normalize();
+	public void deleteFile(String uuid) throws IOException {
+		Archivo archivo = getFileById(uuid);
+
+		Path filePath = Paths.get(uploadDirectory).resolve(archivo.getFilename()).normalize();
 
 		if (!Files.exists(filePath)) {
-			throw new IOException("El archivo no existe");
+			throw new IOException("El archivo "+filePath.toString()+" no existe");
 		}
 
 		try {
 			Files.delete(filePath);
+			archivoRepository.delete(archivo);
 		} catch (IOException e) {
-			throw new IOException("No se pudo eliminar el archivo: " + filename, e);
+			throw new IOException("No se pudo eliminar el archivo: " + archivo.getFilename(), e);
 		}
 	}
 
