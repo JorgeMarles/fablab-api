@@ -12,7 +12,7 @@ import com.example.demo.entities.OfertaFormacion;
 public interface OfertaFormacionRepository extends JpaRepository<OfertaFormacion, Long> {
     Optional<OfertaFormacion> findByCodigo(String codigo);
 
-    Optional<OfertaFormacion> findByCine(String cine);
+    Optional<OfertaFormacion> findByCine(Integer cine);
 
     List<OfertaFormacion> findByExtension(boolean extension);
 
