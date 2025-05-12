@@ -114,4 +114,40 @@ public class SesionService {
         return sesionRepository.save(sesion);
     }
 
+    @Transactional
+    public void eliminar(Sesion sesion) {
+        sesion.clearInstructores();
+        sesionRepository.delete(sesion);
+    }
+
+    @Transactional
+    public Sesion editar(Sesion sesion, SesionCreacionDTO sesionDto, int order) {
+
+
+        Optional<Sala> salaOpt = salaService.obtenerPorIdEntidad(sesionDto.getId_sala());
+        if(!salaOpt.isPresent()){
+            throw new ResourceNotFoundException("No existe una sala con ese id");
+        }
+
+        sesion.setNombre(sesion.getOfertaFormacion().getNombre()+" - Sesión "+order);
+        sesion.setFecha(sesionDto.getFecha());
+        sesion.setInicio(sesionDto.getInicio());
+        sesion.setFin(sesionDto.getFin());
+        sesion.setSala(salaOpt.get());
+        
+        sesion.clearInstructores();
+
+        sesion = sesionRepository.save(sesion);
+
+        for(Long idInstructor : sesionDto.getInstructores()) {
+            Optional<Instructor> instructorOpt = instructorService.obtenerPorIdEntidad(idInstructor);
+            if(!instructorOpt.isPresent()){
+                throw new ResourceNotFoundException("No existe un instructor con ese id");
+            }
+            sesion.addInstructor(instructorOpt.get());
+        }
+
+        return sesionRepository.save(sesion);
+    }
+
 }

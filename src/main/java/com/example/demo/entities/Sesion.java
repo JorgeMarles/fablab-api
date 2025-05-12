@@ -51,4 +51,22 @@ public class Sesion {
 
     @OneToMany(mappedBy = "sesion")
     private List<Asistencia> asistencias = new ArrayList<>();
+
+     public void addInstructor(Instructor instructor) {
+        instructores.add(instructor);
+        instructor.getSesiones().add(this);
+    }
+    
+    public void removeInstructor(Instructor instructor) {
+        instructores.remove(instructor);
+        instructor.getSesiones().remove(this);
+    }
+    
+    public void clearInstructores() {
+        // Save a temporary copy to avoid concurrent modification
+        List<Instructor> tempInstructores = new ArrayList<>(this.instructores);
+        for (Instructor instructor : tempInstructores) {
+            removeInstructor(instructor);
+        }
+    }
 }

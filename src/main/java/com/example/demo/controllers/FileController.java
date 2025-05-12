@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.services.FileService;
+import com.example.demo.utils.Pair;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,16 +26,16 @@ public class FileController {
 
     @GetMapping("/{uuid}/")
     public ResponseEntity<Resource> serveFile(@PathVariable String uuid) throws IOException {
-        Resource resource = fileService.getFile(uuid);
+        Pair<String,Resource> p = fileService.getFile(uuid);
         // Determine content type
-        String contentType = fileService.determineContentType(resource.getFilename());
+        String contentType = fileService.determineContentType(p.getSecond().getFilename());
 
         // Build response with inline disposition (display in browser)
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + p.getFirst() + "\"")
                 .header(HttpHeaders.CACHE_CONTROL, "max-age=3600")
-                .body(resource);
+                .body(p.getSecond());
         /*
          * return ResponseEntity.ok()
          * .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +

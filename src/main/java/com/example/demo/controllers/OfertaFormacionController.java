@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,6 +65,24 @@ public class OfertaFormacionController {
             throws Exception {
         ofertaFormacionService.finalizar(idOferta, idPlantilla);
         return ResponseEntity.ok("Oferta finalizada");
+    }
+
+    @PutMapping("/{id}/")
+    private ResponseEntity<OfertaDetalleDTO> editar(@PathVariable(name = "id") Long idOferta,
+            @ModelAttribute OfertaCreacionDTO ofertaFormacionDto, @RequestParam("file") MultipartFile file)
+            throws Exception {
+        ofertaFormacionDto.setPieza_grafica(file);
+        OfertaDetalleDTO editada = new OfertaDetalleDTO();
+        editada.parseFromEntity(ofertaFormacionService.editar(idOferta, ofertaFormacionDto));
+        return ResponseEntity.ok(editada);
+    }
+
+    @PutMapping("/{id}/switch-estado/")
+    private ResponseEntity<OfertaDetalleDTO> editar(@PathVariable(name = "id") Long idOferta)
+            throws Exception {
+        OfertaDetalleDTO editada = new OfertaDetalleDTO();
+        editada.parseFromEntity(ofertaFormacionService.switchEstado(idOferta));
+        return ResponseEntity.ok(editada);
     }
 
     @GetMapping("/")

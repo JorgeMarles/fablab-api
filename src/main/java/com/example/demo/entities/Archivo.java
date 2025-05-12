@@ -38,7 +38,6 @@ public class Archivo {
     }
 
     public String getUrl() {
-        System.out.println("fileEndpointFiles = " + FileService.getFileEndpointFiles());
         return FileService.getFileEndpointFiles() + "/" + uuid.toString() + "/";
     }
 }
