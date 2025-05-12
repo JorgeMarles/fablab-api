@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+import com.google.firebase.auth.FirebaseAuthException;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex) {
         log.error("Error de argumento ilegal: ", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(createErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(FirebaseAuthException.class)
+    public ResponseEntity<Object> handleFirebaseAuthException(FirebaseAuthException ex) {
+        log.error("Error de autenticación de Firebase: ", ex);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(createErrorResponse(ex.getMessage()));
     }
     
     @ExceptionHandler(ConstraintViolationException.class)

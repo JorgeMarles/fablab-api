@@ -46,21 +46,7 @@ public class InstructorService {
         if (usuarioExistente.isPresent()) {
             usuario = usuarioExistente.get();
         } else {
-            DatosPersonalesDTO ucdto = new DatosPersonalesDTO();
-            ucdto.setCorreo_personal(instructorCreacionDTO.getCorreo_personal());
-            ucdto.setDocumento(instructorCreacionDTO.getDocumento());
-            ucdto.setFecha_expedicion(instructorCreacionDTO.getFecha_expedicion());
-            ucdto.setFecha_nacimiento(instructorCreacionDTO.getFecha_nacimiento());
-            ucdto.setId_municipio(instructorCreacionDTO.getId_municipio());
-            ucdto.setId_pais(instructorCreacionDTO.getId_pais());
-            ucdto.setId_tipo_documento(instructorCreacionDTO.getId_tipo_documento());
-            ucdto.setPrimer_apellido(instructorCreacionDTO.getPrimer_apellido());
-            ucdto.setPrimer_nombre(instructorCreacionDTO.getPrimer_nombre());
-            ucdto.setSegundo_apellido(instructorCreacionDTO.getSegundo_apellido());
-            ucdto.setSegundo_nombre(instructorCreacionDTO.getSegundo_nombre());
-            ucdto.setSexo(instructorCreacionDTO.getSexo());
-            ucdto.setTelefono(instructorCreacionDTO.getTelefono());
-            usuario = usuarioService.crear(ucdto);
+            usuario = usuarioService.crear(instructorCreacionDTO, null);
         }
 
         instructor.setActivo(true);
@@ -86,48 +72,22 @@ public class InstructorService {
         }
 
         Instructor instructor = instructorOpt.get();
-        Usuario usuario;
 
         Optional<Modalidad> modalidadOpt = modalidadService
                 .obtenerPorIdEntidad(Long.valueOf(instructorDto.getId_modalidad()));
-        Optional<Usuario> usuarioExistente = usuarioService.buscarPorDocumento(instructorDto.getDocumento());
 
         if (!modalidadOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe una modalidad con ese id");
         }
-
-        if (!usuarioExistente.isPresent()) {
-            throw new ResourceNotFoundException("No existe un usuario con ese id");
-        }
-
         ChangeMap changes = new ChangeMap();
-
-        DatosPersonalesDTO ucdto = new DatosPersonalesDTO();
-        ucdto.setCorreo_personal(instructorDto.getCorreo_personal());
-        ucdto.setDocumento(instructorDto.getDocumento());
-        ucdto.setFecha_expedicion(instructorDto.getFecha_expedicion());
-        ucdto.setFecha_nacimiento(instructorDto.getFecha_nacimiento());
-        ucdto.setId_municipio(instructorDto.getId_municipio());
-        ucdto.setId_pais(instructorDto.getId_pais());
-        ucdto.setId_tipo_documento(instructorDto.getId_tipo_documento());
-        ucdto.setPrimer_apellido(instructorDto.getPrimer_apellido());
-        ucdto.setPrimer_nombre(instructorDto.getPrimer_nombre());
-        ucdto.setSegundo_apellido(instructorDto.getSegundo_apellido());
-        ucdto.setSegundo_nombre(instructorDto.getSegundo_nombre());
-        ucdto.setSexo(instructorDto.getSexo());
-        ucdto.setTelefono(instructorDto.getTelefono());
-        usuario = usuarioService.crear(ucdto);
 
         instructor.registerValues(changes, true);
         instructorDto.registerChanges(changes);
-
-        usuarioService.actualizar(id, ucdto);
 
         instructor.setActivo(true);
         instructor.setDireccion(instructorDto.getDireccion());
         instructor.setEntidad(instructorDto.getEntidad());
         instructor.setModalidad(modalidadOpt.get());
-        instructor.setUsuario(usuario);
 
         instructor = instructorRepository.save(instructor);
 

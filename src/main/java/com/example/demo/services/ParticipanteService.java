@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.request.DatosPersonalesDTO;
+import com.example.demo.DTO.response.DatosPersonalesResponseDTO;
 import com.example.demo.DTO.response.ParticipanteDetalleDTO;
 import com.example.demo.DTO.response.ParticipanteItemDTO;
 import com.example.demo.entities.EstadoCivil;
@@ -35,15 +36,18 @@ public class ParticipanteService {
     private PoblacionEspecialService poblacionEspecialService;
 
     @Transactional
-    public ParticipanteDetalleDTO crearParticipante(DatosPersonalesDTO participanteCreacionDTO) {
+    public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO participanteCreacionDTO, Usuario existente)
+            throws Exception {
         Participante participante = new Participante();
-        Usuario usuario;
 
         Optional<EstadoCivil> estadoOpt = estadoCivilService
                 .obtenerPorIdEntidad(participanteCreacionDTO.getId_estado_civil());
         Optional<PoblacionEspecial> poblacionEsOpt = poblacionEspecialService
                 .obtenerPorIdEntidad(participanteCreacionDTO.getId_poblacion_especial());
         Optional<Usuario> usuarioExistente = usuarioService.buscarPorDocumento(participanteCreacionDTO.getDocumento());
+        if (existente != null) {
+            usuarioExistente = Optional.of(existente);
+        }
 
         if (!estadoOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un estado civil con ese id");
@@ -53,24 +57,12 @@ public class ParticipanteService {
             throw new ResourceNotFoundException("No existe una población especial con ese id");
         }
 
+        Usuario usuario;
+
         if (usuarioExistente.isPresent()) {
-            usuario = usuarioExistente.get();
+            usuario = usuarioService.actualizar(usuarioExistente.get().getId(), participanteCreacionDTO);
         } else {
-            DatosPersonalesDTO ucdto = new DatosPersonalesDTO();
-            ucdto.setCorreo_personal(participanteCreacionDTO.getCorreo_personal());
-            ucdto.setDocumento(participanteCreacionDTO.getDocumento());
-            ucdto.setFecha_expedicion(participanteCreacionDTO.getFecha_expedicion());
-            ucdto.setFecha_nacimiento(participanteCreacionDTO.getFecha_nacimiento());
-            ucdto.setId_municipio(participanteCreacionDTO.getId_municipio());
-            ucdto.setId_pais(participanteCreacionDTO.getId_pais());
-            ucdto.setId_tipo_documento(participanteCreacionDTO.getId_tipo_documento());
-            ucdto.setPrimer_apellido(participanteCreacionDTO.getPrimer_apellido());
-            ucdto.setPrimer_nombre(participanteCreacionDTO.getPrimer_nombre());
-            ucdto.setSegundo_apellido(participanteCreacionDTO.getSegundo_apellido());
-            ucdto.setSegundo_nombre(participanteCreacionDTO.getSegundo_nombre());
-            ucdto.setSexo(participanteCreacionDTO.getSexo());
-            ucdto.setTelefono(participanteCreacionDTO.getTelefono());
-            usuario = usuarioService.crear(ucdto);
+            usuario = usuarioService.crear(participanteCreacionDTO, null);
         }
 
         participante.setCorreoInstitucional(participanteCreacionDTO.getCorreo_institucional());
@@ -81,8 +73,8 @@ public class ParticipanteService {
 
         participante = participanteRepository.save(participante);
 
-        ParticipanteDetalleDTO idto = new ParticipanteDetalleDTO();
-        idto.parseFromEntity(participante);
+        DatosPersonalesResponseDTO idto = new DatosPersonalesResponseDTO();
+        idto.parseFromEntity(participante.getUsuario());
 
         return idto;
     }
@@ -95,12 +87,10 @@ public class ParticipanteService {
         }
 
         Participante participante = participanteOpt.get();
-        Usuario usuario;
 
         Optional<EstadoCivil> estadoOpt = estadoCivilService.obtenerPorIdEntidad(participanteDto.getId_estado_civil());
         Optional<PoblacionEspecial> poblacionEsOpt = poblacionEspecialService
                 .obtenerPorIdEntidad(participanteDto.getId_poblacion_especial());
-        Optional<Usuario> usuarioExistente = usuarioService.buscarPorDocumento(participanteDto.getDocumento());
 
         if (!estadoOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un estado civil con ese id");
@@ -110,42 +100,17 @@ public class ParticipanteService {
             throw new ResourceNotFoundException("No existe una población especial con ese id");
         }
 
-        if(!usuarioExistente.isPresent()){
-            throw new ResourceNotFoundException("No existe un usuario con ese id");
-        }
-
         ChangeMap changes = new ChangeMap();
 
-        DatosPersonalesDTO ucdto = new DatosPersonalesDTO();
-        ucdto.setCorreo_personal(participanteDto.getCorreo_personal());
-        ucdto.setDocumento(participanteDto.getDocumento());
-        ucdto.setFecha_expedicion(participanteDto.getFecha_expedicion());
-        ucdto.setFecha_nacimiento(participanteDto.getFecha_nacimiento());
-        ucdto.setId_municipio(participanteDto.getId_municipio());
-        ucdto.setId_pais(participanteDto.getId_pais());
-        ucdto.setId_tipo_documento(participanteDto.getId_tipo_documento());
-        ucdto.setPrimer_apellido(participanteDto.getPrimer_apellido());
-        ucdto.setPrimer_nombre(participanteDto.getPrimer_nombre());
-        ucdto.setSegundo_apellido(participanteDto.getSegundo_apellido());
-        ucdto.setSegundo_nombre(participanteDto.getSegundo_nombre());
-        ucdto.setSexo(participanteDto.getSexo());
-        ucdto.setTelefono(participanteDto.getTelefono());
-
-        usuario = usuarioExistente.get();
         participante.registerValues(changes, true);
         participanteDto.registerChanges(changes);
-
-        usuarioService.actualizar(id, ucdto);
 
         participante.setCorreoInstitucional(participanteDto.getCorreo_institucional());
         participante.setDireccionInstitucional(participanteDto.getDireccion_institucional());
         participante.setEstadoCivil(estadoOpt.get());
         participante.setPoblacionEspecial(poblacionEsOpt.get());
-        participante.setUsuario(usuario);
 
         participante = participanteRepository.save(participante);
-
-        
 
         ParticipanteDetalleDTO idto = new ParticipanteDetalleDTO();
         idto.parseFromEntity(participante);

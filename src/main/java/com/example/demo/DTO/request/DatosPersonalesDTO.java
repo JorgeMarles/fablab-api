@@ -56,6 +56,8 @@ public class DatosPersonalesDTO {
     @Mappeable(mapsTo = "modalidad")
     private Long id_modalidad;
 
+    private String password;
+
     public void registerChanges(ChangeMap map) throws Exception{
         for (Field field : this.getClass().getDeclaredFields()) {
             Mappeable mappeable = field.getAnnotation(Mappeable.class);

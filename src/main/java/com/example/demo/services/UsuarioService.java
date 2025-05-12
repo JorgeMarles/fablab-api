@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.request.DatosPersonalesDTO;
+import com.example.demo.DTO.response.DatosPersonalesResponseDTO;
 import com.example.demo.entities.Municipio;
 import com.example.demo.entities.Pais;
 import com.example.demo.entities.TipoDocumento;
@@ -31,16 +32,19 @@ public class UsuarioService {
     @Autowired
     private MunicipioService municipioService;
 
+    @Autowired
+    private ParticipanteService participanteService;
+
+    @Autowired
+    private InstructorService instructorService;
+
     @Transactional
     public Usuario crear(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 
     @Transactional
-    public Usuario crear(DatosPersonalesDTO usuarioDto) {
-
-        Usuario usuario = new Usuario();
-
+    public Usuario crear(DatosPersonalesDTO usuarioDto, Usuario usuario) {
         Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService
                 .obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
         Optional<Pais> paisOpt = paisService.obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_pais()));
@@ -56,6 +60,10 @@ public class UsuarioService {
 
         if (!municipioOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un municipio con ese id");
+        }
+
+        if(usuario == null) {
+            usuario = new Usuario();
         }
 
         usuario.setCorreoPersonal(usuarioDto.getCorreo_personal());
@@ -96,7 +104,6 @@ public class UsuarioService {
             throw new ResourceNotFoundException("No existe un municipio con ese id");
         }
 
-        usuario.setCorreoPersonal(usuarioDto.getCorreo_personal());
         usuario.setDocumento(usuarioDto.getDocumento());
         usuario.setFechaExpedicion(usuarioDto.getFecha_expedicion());
         usuario.setFechaNacimiento(usuarioDto.getFecha_nacimiento());
@@ -109,6 +116,12 @@ public class UsuarioService {
         usuario.setSexo(usuarioDto.getSexo());
         usuario.setTelefono(usuarioDto.getTelefono());
         usuario.setTipoDocumento(tipoDocumentoOpt.get());
+
+        if(usuario.getParticipante() != null) {
+            participanteService.actualizar(usuario.getParticipante().getId(), usuarioDto);
+        } else if (usuario.getInstructor() != null) {
+            instructorService.actualizar(usuario.getInstructor().getId(), usuarioDto);
+        }
 
         return usuarioRepository.save(usuario);
     }
@@ -128,5 +141,12 @@ public class UsuarioService {
 
     public Optional<Usuario> buscarPorDocumento(String documento) {
         return usuarioRepository.findByDocumento(documento);
+    }
+
+    public DatosPersonalesResponseDTO obtenerPorId(Long usuarioId) {
+        Usuario usuario = this.obtenerPorIdEntidad(usuarioId);
+        DatosPersonalesResponseDTO dto = new DatosPersonalesResponseDTO();
+        dto.parseFromEntity(usuario);
+        return dto;
     }
 }

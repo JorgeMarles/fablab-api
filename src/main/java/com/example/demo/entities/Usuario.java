@@ -3,6 +3,7 @@ package com.example.demo.entities;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.example.demo.utils.ChangeMap;
@@ -36,8 +37,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@ToString(exclude = {"instructor", "administrador", "participante", "historicoUsuarios", "registroIngresos"})
-@EqualsAndHashCode(exclude = {"instructor", "administrador", "participante", "historicoUsuarios", "registroIngresos"})
+@ToString(exclude = { "instructor", "administrador", "participante", "historicoUsuarios", "registroIngresos" })
+@EqualsAndHashCode(exclude = { "instructor", "administrador", "participante", "historicoUsuarios", "registroIngresos" })
 @Table(name = "usuario")
 public class Usuario {
 
@@ -118,7 +119,7 @@ public class Usuario {
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Participante participante;
-    
+
     @OneToMany(mappedBy = "usuario")
     private List<RegistroIngreso> registroIngresos = new ArrayList<>();;
 
@@ -133,7 +134,10 @@ public class Usuario {
                 field.setAccessible(true);
                 try {
                     Object value = field.get(this);
-                    if(observable.tipo() == TipoDato.ENTITY){
+                    if (value == null) {
+                        continue;
+                    }
+                    if (observable.tipo() == TipoDato.ENTITY) {
                         value = value.getClass().getMethod("getId").invoke(value);
                     }
                     map.registerOldValue(field.getName(), value, observable.tipo());
@@ -144,7 +148,37 @@ public class Usuario {
         }
     }
 
-    public static List<String> getFields(){
+    public void setNombreCompleto(String nombreCompleto) {
+        String[] nombres = nombreCompleto.split(" ");
+        this.primerNombre = nombres[0];
+        if (nombres.length == 2) {
+            this.primerApellido = nombres[1];
+        } else if (nombres.length > 1) {
+            this.segundoNombre = nombres[1];
+        }
+        if (nombres.length > 2) {
+            this.primerApellido = nombres[2];
+        }
+        if (nombres.length > 3) {
+            this.segundoApellido = nombres[3];
+        }
+    }
+
+    public List<String> getRoles() {
+        List<String> roles = new LinkedList<>();
+        if (instructor != null) {
+            roles.add("ROLE_INSTRUCTOR");
+        }
+        if (administrador != null) {
+            roles.add("ROLE_ADMINISTRADOR");
+        }
+        if (participante != null) {
+            roles.add("ROLE_PARTICIPANTE");
+        }
+        return roles;
+    }
+
+    public static List<String> getFields() {
         List<String> fields = new ArrayList<>();
         for (Field field : Usuario.class.getDeclaredFields()) {
             Observable observable = field.getAnnotation(Observable.class);
