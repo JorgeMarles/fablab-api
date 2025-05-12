@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class OfertaCreacionDTO {
     private String nombre;
     private String codigo;
-    private String cine;
+    private Integer cine;
     private boolean extension;
     private LocalDate fecha_inicio;
     private LocalDate fecha_fin;

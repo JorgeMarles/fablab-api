@@ -42,8 +42,8 @@ public class OfertaFormacion {
     private String codigo;
 
     @NotNull(message = "CINE no puede ser nulo")
-    @Pattern(regexp = "\\d{1,4}", message = "CINE debe contener solo números y máximo 4 dígitos")
-    private String cine;
+    @Digits(integer = 4, fraction = 0, message = "Codigo CINE debe ser un codigo numerico de máximo 4 dígitos")
+    private Integer cine;
 
     @NotNull(message = "EXTENSIÓN no puede ser nulo")
     private boolean extension;

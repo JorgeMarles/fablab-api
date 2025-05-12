@@ -17,7 +17,7 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion> {
 	private Long id;
 	private String nombre;
 	private String codigo;
-	private String cine;
+	private Integer cine;
 	private boolean extension;
 	private EstadoOfertaFormacion estado;
 	private String fecha_inicio;
