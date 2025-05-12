@@ -39,8 +39,15 @@ public class UsuarioService {
     private InstructorService instructorService;
 
     @Transactional
-    public Usuario crear(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+    public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO usuarioDto, Usuario usuario) throws Exception {
+        Usuario usuarioCreado = this.crear(usuarioDto, usuario);
+        return participanteService.crearParticipante(usuarioDto, usuarioCreado);
+    }
+
+    @Transactional
+    public DatosPersonalesResponseDTO crearInstructor(DatosPersonalesDTO usuarioDto, Usuario usuario) throws Exception {
+        Usuario usuarioCreado = this.crear(usuarioDto, usuario);
+        return instructorService.crearInstructor(usuarioDto, usuarioCreado);
     }
 
     @Transactional

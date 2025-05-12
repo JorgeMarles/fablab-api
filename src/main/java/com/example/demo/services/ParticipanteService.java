@@ -27,9 +27,6 @@ public class ParticipanteService {
     private ParticipanteRepository participanteRepository;
 
     @Autowired
-    private UsuarioService usuarioService;
-
-    @Autowired
     private EstadoCivilService estadoCivilService;
 
     @Autowired
@@ -44,10 +41,6 @@ public class ParticipanteService {
                 .obtenerPorIdEntidad(participanteCreacionDTO.getId_estado_civil());
         Optional<PoblacionEspecial> poblacionEsOpt = poblacionEspecialService
                 .obtenerPorIdEntidad(participanteCreacionDTO.getId_poblacion_especial());
-        Optional<Usuario> usuarioExistente = usuarioService.buscarPorDocumento(participanteCreacionDTO.getDocumento());
-        if (existente != null) {
-            usuarioExistente = Optional.of(existente);
-        }
 
         if (!estadoOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un estado civil con ese id");
@@ -57,19 +50,11 @@ public class ParticipanteService {
             throw new ResourceNotFoundException("No existe una población especial con ese id");
         }
 
-        Usuario usuario;
-
-        if (usuarioExistente.isPresent()) {
-            usuario = usuarioService.actualizar(usuarioExistente.get().getId(), participanteCreacionDTO);
-        } else {
-            usuario = usuarioService.crear(participanteCreacionDTO, null);
-        }
-
         participante.setCorreoInstitucional(participanteCreacionDTO.getCorreo_institucional());
         participante.setDireccionInstitucional(participanteCreacionDTO.getDireccion_institucional());
         participante.setEstadoCivil(estadoOpt.get());
         participante.setPoblacionEspecial(poblacionEsOpt.get());
-        participante.setUsuario(usuario);
+        participante.setUsuario(existente);
 
         participante = participanteRepository.save(participante);
 

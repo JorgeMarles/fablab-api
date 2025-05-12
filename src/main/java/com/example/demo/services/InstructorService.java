@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.request.DatosPersonalesDTO;
-import com.example.demo.DTO.response.InstructorDetalleDTO;
+import com.example.demo.DTO.response.DatosPersonalesResponseDTO;
 import com.example.demo.DTO.response.InstructorItemDTO;
 import com.example.demo.entities.Instructor;
 import com.example.demo.entities.Modalidad;
@@ -25,46 +25,34 @@ public class InstructorService {
     private InstructorRepository instructorRepository;
 
     @Autowired
-    private UsuarioService usuarioService;
-
-    @Autowired
     private ModalidadService modalidadService;
 
     @Transactional
-    public InstructorDetalleDTO crearInstructor(DatosPersonalesDTO instructorCreacionDTO) throws Exception {
+    public DatosPersonalesResponseDTO crearInstructor(DatosPersonalesDTO instructorCreacionDTO, Usuario existente) throws Exception {
         Instructor instructor = new Instructor();
-        Usuario usuario;
 
         Optional<Modalidad> modalidadOpt = modalidadService
                 .obtenerPorIdEntidad(Long.valueOf(instructorCreacionDTO.getId_modalidad()));
-        Optional<Usuario> usuarioExistente = usuarioService.buscarPorDocumento(instructorCreacionDTO.getDocumento());
 
         if (!modalidadOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe una modalidad con ese id");
-        }
-
-        if (usuarioExistente.isPresent()) {
-            usuario = usuarioExistente.get();
-        } else {
-            usuario = usuarioService.crear(instructorCreacionDTO, null);
-        }
-
+        } 
         instructor.setActivo(true);
         instructor.setDireccion(instructorCreacionDTO.getDireccion());
         instructor.setEntidad(instructorCreacionDTO.getEntidad());
         instructor.setModalidad(modalidadOpt.get());
-        instructor.setUsuario(usuario);
+        instructor.setUsuario(existente);
 
         instructor = instructorRepository.save(instructor);
 
-        InstructorDetalleDTO idto = new InstructorDetalleDTO();
-        idto.parseFromEntity(instructor);
+        DatosPersonalesResponseDTO idto = new DatosPersonalesResponseDTO();
+        idto.parseFromEntity(instructor.getUsuario());
 
         return idto;
     }
 
     @Transactional
-    public InstructorDetalleDTO actualizar(Long id, DatosPersonalesDTO instructorDto) throws Exception {
+    public DatosPersonalesResponseDTO actualizar(Long id, DatosPersonalesDTO instructorDto) throws Exception {
         Optional<Instructor> instructorOpt = this.obtenerPorIdEntidad(id);
 
         if (!instructorOpt.isPresent()) {
@@ -91,18 +79,18 @@ public class InstructorService {
 
         instructor = instructorRepository.save(instructor);
 
-        InstructorDetalleDTO idto = new InstructorDetalleDTO();
-        idto.parseFromEntity(instructor);
+        DatosPersonalesResponseDTO idto = new DatosPersonalesResponseDTO();
+        idto.parseFromEntity(instructor.getUsuario());
 
         return idto;
     }
 
-    public InstructorDetalleDTO obtenerPorId(Long id) {
-        InstructorDetalleDTO iDto = new InstructorDetalleDTO();
+    public DatosPersonalesResponseDTO obtenerPorId(Long id) {
+        DatosPersonalesResponseDTO iDto = new DatosPersonalesResponseDTO();
         Instructor instructor = instructorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe un instructor con ese id"));
 
-        iDto.parseFromEntity(instructor);
+        iDto.parseFromEntity(instructor.getUsuario());
         return iDto;
     }
 
