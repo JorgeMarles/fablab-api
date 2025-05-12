@@ -20,6 +20,7 @@ import com.example.demo.entities.Archivo;
 import com.example.demo.exceptions.FileException;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.ArchivoRepository;
+import com.example.demo.utils.Pair;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -148,7 +149,7 @@ public class FileService {
 		return archivo;
 	}
 
-	public Resource getFile(String uuid) throws FileException, IOException {
+	public Pair<String,Resource> getFile(String uuid) throws FileException, IOException {
 
 		log.info("uuid {}", uuid);
 
@@ -161,7 +162,7 @@ public class FileService {
 		}
 
 		Resource resource = new PathResource(filePath.toString());
-		return resource;
+		return new Pair<>(archivo.getNombre(), resource);
 	}
 
 	public void deleteFile(String uuid) throws IOException {
@@ -170,7 +171,7 @@ public class FileService {
 		Path filePath = Paths.get(uploadDirectory).resolve(archivo.getFilename()).normalize();
 
 		if (!Files.exists(filePath)) {
-			throw new IOException("El archivo "+filePath.toString()+" no existe");
+			throw new IOException("El archivo " + filePath.toString() + " no existe");
 		}
 
 		try {
