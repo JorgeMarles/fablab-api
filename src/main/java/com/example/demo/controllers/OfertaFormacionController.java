@@ -86,6 +86,7 @@ public class OfertaFormacionController {
     }
 
     @GetMapping("/")
+    //TODO filtrar por tipo de oferta, y/o por categoria, y/o por beneficiario y/o por tipo institucion
     // @Preauthorize admin
     public ResponseEntity<List<OfertaItemDTO>> listarTodos() {
         return ResponseEntity.ok().body(ofertaFormacionService.listarTodos());

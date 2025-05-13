@@ -1,5 +1,8 @@
 package com.example.demo.DTO.response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.example.demo.entities.Sesion;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +20,7 @@ public class SesionItemDTO implements IResponseDTO<Sesion> {
     private String inicio;
     private String fin;
     private SalaDTO sala;
+    private List<InstructorItemDTO> instructores = new ArrayList<>();
 
     @Override
     public void parseFromEntity(Sesion entity) {
@@ -27,5 +31,10 @@ public class SesionItemDTO implements IResponseDTO<Sesion> {
         this.fin = entity.getFin().toString();
         this.sala = new SalaDTO();
         this.sala.parseFromEntity(entity.getSala());
+        this.instructores = entity.getInstructores().stream().map(instructor -> {
+            InstructorItemDTO dto = new InstructorItemDTO();
+            dto.parseFromEntity(instructor);
+            return dto;
+        }).toList();
     }
 }
