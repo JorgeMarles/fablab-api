@@ -69,7 +69,7 @@ public class OfertaFormacionController {
 
     @PutMapping("/{id}/")
     private ResponseEntity<OfertaDetalleDTO> editar(@PathVariable(name = "id") Long idOferta,
-            @ModelAttribute OfertaCreacionDTO ofertaFormacionDto, @RequestParam("file") MultipartFile file)
+            @ModelAttribute OfertaCreacionDTO ofertaFormacionDto, @RequestParam(value = "file", required = false) MultipartFile file)
             throws Exception {
         ofertaFormacionDto.setPieza_grafica(file);
         OfertaDetalleDTO editada = new OfertaDetalleDTO();
