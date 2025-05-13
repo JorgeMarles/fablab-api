@@ -29,6 +29,7 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion> {
 	private Integer semestre;
 	private Integer valor;
 	private String pieza_grafica;
+	private Integer cupo_maximo;
 	private InstitucionDTO institucion;
 	private List<SesionItemDTO> sesiones;
 	private List<InscritoDTO> inscritos;
@@ -44,6 +45,7 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion> {
 		this.fecha_inicio = entity.getFechaInicio().toString();
 		this.fecha_fin = entity.getFechaFin().toString();
 		this.horas = entity.getHoras();
+		this.cupo_maximo = entity.getCupoMaximo();
 
 		this.tipo_oferta = new TipoOfertaDTO();
 		this.tipo_oferta.parseFromEntity(entity.getTipo());
