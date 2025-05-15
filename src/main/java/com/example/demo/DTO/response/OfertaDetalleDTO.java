@@ -32,6 +32,7 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion> {
 	private InstitucionDTO institucion;
 	private List<SesionItemDTO> sesiones;
 	private List<InscritoDTO> inscritos;
+	private Integer cupo_maximo;
 
 	@Override
 	public void parseFromEntity(OfertaFormacion entity) {
@@ -44,6 +45,7 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion> {
 		this.fecha_inicio = entity.getFechaInicio().toString();
 		this.fecha_fin = entity.getFechaFin().toString();
 		this.horas = entity.getHoras();
+		this.cupo_maximo = entity.getCupoMaximo();
 
 		this.tipo_oferta = new TipoOfertaDTO();
 		this.tipo_oferta.parseFromEntity(entity.getTipo());

@@ -252,6 +252,14 @@ public class OfertaFormacionService {
         }).toList();
     }
 
+    public List<OfertaItemDTO> listarPorCategoria(Long categoriaId) {
+        return ofertaFormacionRepository.findByCategoria_Id(categoriaId).stream().map(oferta -> {
+            OfertaItemDTO item = new OfertaItemDTO();
+            item.parseFromEntity(oferta);
+            return item;
+        }).filter(oferta -> oferta.getEstado() != EstadoOfertaFormacion.INACTIVA).toList();
+    }
+
     public List<OfertaItemDTO> listarParticipante(Long participanteId) {
         return inscripcionService.inscripcionesPorParticipante(participanteId).stream().map(inscripcion -> {
             OfertaItemDTO item = new OfertaItemDTO();
