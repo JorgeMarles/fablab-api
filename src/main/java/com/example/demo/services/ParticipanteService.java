@@ -15,6 +15,7 @@ import com.example.demo.entities.PoblacionEspecial;
 import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.ParticipanteRepository;
+import com.example.demo.repositories.UsuarioRepository;
 import com.example.demo.utils.ChangeMap;
 
 import jakarta.transaction.Transactional;
@@ -30,6 +31,9 @@ public class ParticipanteService {
 
     @Autowired
     private PoblacionEspecialService poblacionEspecialService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Transactional
     public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO participanteCreacionDTO, Usuario existente)
@@ -53,6 +57,7 @@ public class ParticipanteService {
         participante.setDireccionInstitucional(participanteCreacionDTO.getDireccion_institucional());
         participante.setEstadoCivil(estadoOpt.get());
         participante.setPoblacionEspecial(poblacionEsOpt.get());
+        existente = usuarioRepository.save(existente);
         participante.setUsuario(existente);
         existente.setParticipante(participante);
 
