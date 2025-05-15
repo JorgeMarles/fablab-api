@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.request.RegistroIngresoDTO;
 import com.example.demo.DTO.response.IngresoFablabItemDTO;
+import com.example.demo.entities.Usuario;
 import com.example.demo.services.RegistroIngresoService;
 
 @RestController
@@ -29,7 +31,7 @@ public class RegistroIngresoController {
 
     @PostMapping("/")
     public ResponseEntity<IngresoFablabItemDTO> registrarIngresoFablab(@RequestBody RegistroIngresoDTO registroIngresoDTO) {
-        Long userId = 1L; // TODO sacarlo de la sesion
+        Long userId = ((Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         IngresoFablabItemDTO ingresoFablabItemDTO = registroIngresoService.crear(registroIngresoDTO, userId);
         return ResponseEntity.created(null).body(ingresoFablabItemDTO);
     }

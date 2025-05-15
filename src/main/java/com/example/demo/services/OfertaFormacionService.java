@@ -94,8 +94,11 @@ public class OfertaFormacionService {
     public void inscribir(Long idParticipante, Long idOferta) {
         OfertaFormacion oferta = ofertaFormacionRepository.findById(idOferta)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe una oferta de formación con ese id"));
-        Participante participante = participanteService.obtenerPorIdEntidad(idParticipante)
-                .orElseThrow(() -> new ResourceNotFoundException("No existe un participante con ese id"));
+        Participante participante = participanteService.obtenerPorIdEntidad(idParticipante).orElseGet(() -> {
+            Participante nuevoParticipante = new Participante();
+            nuevoParticipante.setId(idParticipante);
+            return nuevoParticipante;
+        });
         if (oferta.getEstado() == EstadoOfertaFormacion.ACTIVA) {
             inscripcionService.crear(oferta, participante);
         } else {
