@@ -107,6 +107,8 @@ public class UsuarioService {
         usuario.setTelefono(usuarioDto.getTelefono());
         usuario.setTipoDocumento(tipoDocumentoOpt.get());
 
+        usuario.setHasPersonalData(usuario.getDocumento() != null);
+
         return usuarioRepository.save(usuario);
     }
 
@@ -150,6 +152,8 @@ public class UsuarioService {
         } else if (usuario.getInstructor() != null) {
             instructorService.actualizar(usuario.getInstructor().getId(), usuarioDto);
         }
+
+        usuario.setHasPersonalData(true);
         DatosPersonalesResponseDTO dto = new DatosPersonalesResponseDTO();
         dto.parseFromEntity(usuarioRepository.save(usuario));
         return dto;
