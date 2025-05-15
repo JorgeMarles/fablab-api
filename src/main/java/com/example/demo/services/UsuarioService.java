@@ -109,6 +109,8 @@ public class UsuarioService {
 
         usuario.setHasPersonalData(usuario.getDocumento() != null);
 
+        log.info("Usuario actualizado: {} ", usuario.getHasPersonalData());
+
         return usuarioRepository.save(usuario);
     }
 
@@ -146,16 +148,16 @@ public class UsuarioService {
         usuario.setSexo(usuarioDto.getSexo());
         usuario.setTelefono(usuarioDto.getTelefono());
         usuario.setTipoDocumento(tipoDocumentoOpt.get());
-
+        usuario.setHasPersonalData(true);
         if (usuario.getParticipante() != null) {
             participanteService.actualizar(usuario.getParticipante().getId(), usuarioDto);
         } else if (usuario.getInstructor() != null) {
             instructorService.actualizar(usuario.getInstructor().getId(), usuarioDto);
         }
-
-        usuario.setHasPersonalData(true);
         DatosPersonalesResponseDTO dto = new DatosPersonalesResponseDTO();
         dto.parseFromEntity(usuarioRepository.save(usuario));
+        log.info("Usuario actualizado: {} " + usuario.getId(), usuario.getHasPersonalData());
+
         return dto;
     }
 
