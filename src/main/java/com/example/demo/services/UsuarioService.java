@@ -98,7 +98,7 @@ public class UsuarioService {
         usuario.setDocumento(usuarioDto.getDocumento());
         usuario.setFechaExpedicion(usuarioDto.getFecha_expedicion());
         usuario.setFechaNacimiento(usuarioDto.getFecha_nacimiento());
-        usuario.setMunicipio(municipioOpt.get());
+        usuario.setMunicipio(municipioOpt.orElse(null));
         usuario.setPais(paisOpt.get());
         usuario.setPrimerApellido(usuarioDto.getPrimer_apellido());
         usuario.setPrimerNombre(usuarioDto.getPrimer_nombre());
