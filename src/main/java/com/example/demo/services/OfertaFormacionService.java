@@ -18,6 +18,7 @@ import com.example.demo.entities.CategoriaOferta;
 import com.example.demo.entities.EstadoOfertaFormacion;
 import com.example.demo.entities.Institucion;
 import com.example.demo.entities.OfertaFormacion;
+import com.example.demo.entities.Participante;
 import com.example.demo.entities.PlantillaCertificado;
 import com.example.demo.entities.Sesion;
 import com.example.demo.entities.TipoBeneficiario;
@@ -67,6 +68,9 @@ public class OfertaFormacionService {
     @Autowired
     private FileService fileService;
 
+    @Autowired
+    private ParticipanteService participanteService;
+
     public OfertaDetalleDTO crearRetDto(OfertaCreacionDTO dto) {
         OfertaDetalleDTO detalleDTO = new OfertaDetalleDTO();
         OfertaFormacion of = this.crear(dto);
@@ -84,6 +88,19 @@ public class OfertaFormacionService {
             oferta.setEstado(EstadoOfertaFormacion.ACTIVA);
         }
         return ofertaFormacionRepository.save(oferta);
+    }
+
+    @Transactional
+    public void inscribir(Long idParticipante, Long idOferta) {
+        OfertaFormacion oferta = ofertaFormacionRepository.findById(idOferta)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe una oferta de formación con ese id"));
+        Participante participante = participanteService.obtenerPorIdEntidad(idParticipante)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe un participante con ese id"));
+        if (oferta.getEstado() == EstadoOfertaFormacion.ACTIVA) {
+            inscripcionService.crear(oferta, participante);
+        } else {
+            throw new IllegalArgumentException("La oferta no está activa");
+        }
     }
 
     @Transactional

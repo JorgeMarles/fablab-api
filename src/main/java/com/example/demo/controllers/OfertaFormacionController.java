@@ -62,6 +62,13 @@ public class OfertaFormacionController {
         return ResponseEntity.created(location).body(creada);
     }
 
+    @PostMapping("/{id}/inscribir/")
+    private ResponseEntity<String> inscribir(@PathVariable(name = "id") Long idOferta) throws Exception {
+        Long id = ((Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        ofertaFormacionService.inscribir(id, idOferta);
+        return ResponseEntity.ok("Inscripción exitosa");
+    }
+
     @PostMapping("/{id}/finalizar/{idPlantilla}/")
     private ResponseEntity<String> finalizarOferta(@PathVariable(name = "id") Long idOferta,
             @RequestBody Long idPlantilla)
