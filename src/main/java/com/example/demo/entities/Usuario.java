@@ -55,7 +55,7 @@ public class Usuario {
 
     @Size(max = 30, message = "El numero de documento no puede exceder 30 caracteres")
     @Observable(tipo = TipoDato.STRING)
-    @Column(nullable = true)
+    @Column(nullable = true, unique = true)
     private String documento;
 
     @Observable(tipo = TipoDato.DATE)
