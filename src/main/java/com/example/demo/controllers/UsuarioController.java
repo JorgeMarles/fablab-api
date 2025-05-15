@@ -57,7 +57,7 @@ public class UsuarioController {
             @RequestBody DatosPersonalesDTO datosPersonales) throws Exception {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         
-        return ResponseEntity.created(null).body(participanteService.crearParticipante(datosPersonales, usuario));
+        return ResponseEntity.created(null).body(usuarioService.crearParticipante(datosPersonales, usuario));
     }
 
     @PutMapping("/datos-personales/")
