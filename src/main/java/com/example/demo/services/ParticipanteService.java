@@ -54,6 +54,7 @@ public class ParticipanteService {
         participante.setEstadoCivil(estadoOpt.get());
         participante.setPoblacionEspecial(poblacionEsOpt.get());
         participante.setUsuario(existente);
+        existente.setParticipante(participante);
 
         participante = participanteRepository.save(participante);
 
