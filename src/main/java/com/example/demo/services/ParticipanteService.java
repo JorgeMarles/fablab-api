@@ -57,7 +57,8 @@ public class ParticipanteService {
         participante.setDireccionInstitucional(participanteCreacionDTO.getDireccion_institucional());
         participante.setEstadoCivil(estadoOpt.get());
         participante.setPoblacionEspecial(poblacionEsOpt.get());
-        existente = usuarioRepository.save(existente);
+        existente = usuarioRepository.findById(existente.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("No existe un usuario con ese id"));
         participante.setUsuario(existente);
         existente.setParticipante(participante);
 
