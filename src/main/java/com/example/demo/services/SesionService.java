@@ -85,6 +85,17 @@ public class SesionService {
         return dto;
     }
 
+    public void validar(SesionCreacionDTO sesionDto){
+        if(!salaService.existe(sesionDto.getId_sala())){
+            throw new ResourceNotFoundException("No existe una sala con ese id");
+        }
+        for(Long idInstructor : sesionDto.getInstructores()) {
+            if(!instructorService.existe(idInstructor)){
+                throw new ResourceNotFoundException("No existe un instructor con ese id");
+            }
+        }
+    }
+
     @Transactional
     public Sesion crear(SesionCreacionDTO sesionDto, OfertaFormacion oferta, int order) {
 

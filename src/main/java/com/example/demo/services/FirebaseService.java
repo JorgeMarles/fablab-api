@@ -14,8 +14,6 @@ import com.example.demo.DTO.request.DatosPersonalesDTO;
 import com.example.demo.DTO.response.UserInfoDTO;
 import com.example.demo.entities.Participante;
 import com.example.demo.entities.Usuario;
-import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.repositories.ParticipanteRepository;
 import com.example.demo.repositories.UsuarioRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -31,9 +29,6 @@ public class FirebaseService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private ParticipanteRepository participanteRepository;
 
     // Create user in Firebase and in local database
     @Transactional

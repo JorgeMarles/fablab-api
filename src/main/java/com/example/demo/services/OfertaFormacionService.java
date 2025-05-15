@@ -106,6 +106,10 @@ public class OfertaFormacionService {
             Institucion institucion = institucionRepository.findById(dto.getId_institucion())
                     .orElseThrow(() -> new IllegalArgumentException("Institución no encontrada"));
 
+            for(SesionCreacionDTO sesion : dto.getSesiones()) {
+                sesionService.validar(sesion);
+            }
+
             OfertaFormacion oferta = new OfertaFormacion();
             oferta.setNombre(dto.getNombre());
             oferta.setCodigo(dto.getCodigo());
