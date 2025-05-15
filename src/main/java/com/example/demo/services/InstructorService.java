@@ -52,6 +52,19 @@ public class InstructorService {
     }
 
     @Transactional
+    public void switchEstado(Long id) throws Exception {
+        Optional<Instructor> instructorOpt = this.obtenerPorIdEntidad(id);
+
+        if (!instructorOpt.isPresent()) {
+            throw new ResourceNotFoundException("No existe un instructor con ese id");
+        }
+
+        Instructor instructor = instructorOpt.get();
+        instructor.setActivo(!instructor.getActivo());
+        instructorRepository.save(instructor);
+    }
+
+    @Transactional
     public DatosPersonalesResponseDTO actualizar(Long id, DatosPersonalesDTO instructorDto) throws Exception {
         Optional<Instructor> instructorOpt = this.obtenerPorIdEntidad(id);
 

@@ -14,6 +14,8 @@ import com.example.demo.entities.TipoDocumento;
 import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.UsuarioRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserRecord;
 
 import jakarta.transaction.Transactional;
 
@@ -45,8 +47,17 @@ public class UsuarioService {
     }
 
     @Transactional
-    public DatosPersonalesResponseDTO crearInstructor(DatosPersonalesDTO usuarioDto, Usuario usuario) throws Exception {
-        Usuario usuarioCreado = this.crear(usuarioDto, usuario);
+    public DatosPersonalesResponseDTO crearInstructor(DatosPersonalesDTO usuarioDto) throws Exception {
+        UserRecord.CreateRequest request = new UserRecord.CreateRequest()
+                .setEmail(usuarioDto.getCorreo_personal())
+                .setPassword(usuarioDto.getPassword())
+                .setDisplayName(usuarioDto.getNombreCompleto())
+                .setEmailVerified(false);
+        
+        UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
+        Usuario existente = this.buscarPorDocumento(usuarioDto.getDocumento()).orElse(null);
+        Usuario usuarioCreado = this.crear(usuarioDto, existente);
+        usuarioCreado.setUid(userRecord.getUid());
         return instructorService.crearInstructor(usuarioDto, usuarioCreado);
     }
 
@@ -91,7 +102,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario actualizar(Long id, DatosPersonalesDTO usuarioDto) throws Exception {
+    public DatosPersonalesResponseDTO actualizar(Long id, DatosPersonalesDTO usuarioDto) throws Exception {
         Usuario usuario = this.obtenerPorIdEntidad(id);
 
         Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService
@@ -129,8 +140,9 @@ public class UsuarioService {
         } else if (usuario.getInstructor() != null) {
             instructorService.actualizar(usuario.getInstructor().getId(), usuarioDto);
         }
-
-        return usuarioRepository.save(usuario);
+        DatosPersonalesResponseDTO dto = new DatosPersonalesResponseDTO();
+        dto.parseFromEntity(usuarioRepository.save(usuario));
+        return dto;
     }
 
     public Usuario obtenerPorIdEntidad(Long id) {

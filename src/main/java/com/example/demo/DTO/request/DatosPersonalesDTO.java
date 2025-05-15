@@ -58,6 +58,10 @@ public class DatosPersonalesDTO {
 
     private String password;
 
+    public String getNombreCompleto() {
+        return this.primer_nombre + " " + this.segundo_nombre + " " + this.primer_apellido + " " + this.segundo_apellido;
+    }
+
     public void registerChanges(ChangeMap map) throws Exception{
         for (Field field : this.getClass().getDeclaredFields()) {
             Mappeable mappeable = field.getAnnotation(Mappeable.class);

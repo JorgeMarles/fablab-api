@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DatosPersonalesResponseDTO implements IResponseDTO<Usuario> {
-    //Usuario
+    // Usuario
     private Long id;
     private String primer_nombre;
     private String segundo_nombre;
@@ -26,12 +26,12 @@ public class DatosPersonalesResponseDTO implements IResponseDTO<Usuario> {
     private MunicipioDTO municipio;
     private String telefono;
     private String correo_personal;
-    //Participante
+    // Participante
     private String correo_institucional;
     private String direccion_institucional;
     private PoblacionEspecialDTO poblacion_especial;
     private EstadoCivilDTO estado_civil;
-    //Instructor
+    // Instructor
     private String direccion;
     private String entidad;
     private ModalidadDTO modalidad;
@@ -46,42 +46,52 @@ public class DatosPersonalesResponseDTO implements IResponseDTO<Usuario> {
         this.setPrimer_apellido(entity.getPrimerApellido());
         this.setSegundo_apellido(entity.getSegundoApellido());
         this.setDocumento(entity.getDocumento());
-        this.setFecha_expedicion(entity.getFechaExpedicion().toString());
+        if (entity.getFechaExpedicion() != null)
+            this.setFecha_expedicion(entity.getFechaExpedicion().toString());
         this.setSexo(entity.getSexo());
-        this.setFecha_nacimiento(entity.getFechaNacimiento().toString());
+        if (entity.getFechaNacimiento() != null)
+            this.setFecha_nacimiento(entity.getFechaNacimiento().toString());
         this.setTelefono(entity.getTelefono());
         this.setCorreo_personal(entity.getCorreoPersonal());
         this.setSexo(entity.getSexo());
 
-        this.setTipo_documento(new TipoDocumentoDTO());
-        this.getTipo_documento().parseFromEntity(entity.getTipoDocumento());
+        if (entity.getTipoDocumento() != null) {
+            this.setTipo_documento(new TipoDocumentoDTO());
+            this.getTipo_documento().parseFromEntity(entity.getTipoDocumento());
+        }
 
-        this.setPais(new PaisDTO());
-        this.getPais().parseFromEntity(entity.getPais());
-
-        this.setMunicipio(new MunicipioDTO());
-        this.getMunicipio().parseFromEntity(entity.getMunicipio());
+        if (entity.getPais() != null) {
+            this.setPais(new PaisDTO());
+            this.getPais().parseFromEntity(entity.getPais());
+        }
+        if (entity.getMunicipio() != null) {
+            this.setMunicipio(new MunicipioDTO());
+            this.getMunicipio().parseFromEntity(entity.getMunicipio());
+        }
 
         // Instructor
         if (entity.getInstructor() != null) {
             this.setDireccion(entity.getInstructor().getDireccion());
             this.setEntidad(entity.getInstructor().getEntidad());
             this.setActivo(entity.getInstructor().getActivo());
-
-            this.setModalidad(new ModalidadDTO());
-            this.getModalidad().parseFromEntity(entity.getInstructor().getModalidad());
+            if (entity.getInstructor().getModalidad() != null) {
+                this.setModalidad(new ModalidadDTO());
+                this.getModalidad().parseFromEntity(entity.getInstructor().getModalidad());
+            }
         }
 
         // Participante
         if (entity.getParticipante() != null) {
             this.setCorreo_institucional(entity.getParticipante().getCorreoInstitucional());
             this.setDireccion_institucional(entity.getParticipante().getDireccionInstitucional());
-
-            this.setEstado_civil(new EstadoCivilDTO());
-            this.getEstado_civil().parseFromEntity(entity.getParticipante().getEstadoCivil());
-
-            this.setPoblacion_especial(new PoblacionEspecialDTO());
-            this.getPoblacion_especial().parseFromEntity(entity.getParticipante().getPoblacionEspecial());
+            if (entity.getParticipante().getEstadoCivil() != null) {
+                this.setEstado_civil(new EstadoCivilDTO());
+                this.getEstado_civil().parseFromEntity(entity.getParticipante().getEstadoCivil());
+            }
+            if (entity.getParticipante().getPoblacionEspecial() != null) {
+                this.setPoblacion_especial(new PoblacionEspecialDTO());
+                this.getPoblacion_especial().parseFromEntity(entity.getParticipante().getPoblacionEspecial());
+            }
         }
 
     }

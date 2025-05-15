@@ -55,20 +55,22 @@ public class Usuario {
     private TipoDocumento tipoDocumento;
 
     @Size(max = 30, message = "El numero de documento no puede exceder 30 caracteres")
-    @NotNull(message = "El numero de documento no puede ser nulo")
     @Observable(tipo = TipoDato.STRING)
+    @Column(nullable = true)
     private String documento;
 
     @Observable(tipo = TipoDato.DATE)
+    @Column(nullable = true)
     private LocalDate fechaExpedicion;
 
-    @NotNull(message = "Primer apellido no puede ser nulo")
     @Size(max = 50, message = "Primer apellido no puede exceder 50 caracteres")
     @Observable(tipo = TipoDato.STRING)
+    @Column(nullable = true)
     private String primerApellido;
 
     @Size(max = 50, message = "Segundo apellido no puede exceder 50 caracteres")
     @Observable(tipo = TipoDato.STRING)
+    @Column(nullable = true)
     private String segundoApellido;
 
     @NotNull(message = "Primer nombre no puede ser nulo")
@@ -78,13 +80,16 @@ public class Usuario {
 
     @Size(max = 50, message = "Segundo nombre no puede exceder 50 caracteres")
     @Observable(tipo = TipoDato.STRING)
+    @Column(nullable = true)
     private String segundoNombre;
 
     @Enumerated(EnumType.STRING)
     @Observable(tipo = TipoDato.ENUM)
+    @Column(nullable = true)
     private Sexo sexo;
 
     @Observable(tipo = TipoDato.DATE)
+    @Column(nullable = true)
     private LocalDate fechaNacimiento;
 
     @ManyToOne
@@ -97,15 +102,15 @@ public class Usuario {
     @Observable(tipo = TipoDato.ENTITY)
     private Municipio municipio;
 
-    @Null
     @Pattern(regexp = "^[0-9]{15}$", message = "El telefono debe contener 15 digitos")
     @Observable(tipo = TipoDato.STRING)
+    @Column(nullable = true)
     private String telefono;
 
-    @Null
     @Size(max = 200, message = "El correo no puede exceder 200 caracteres")
     @Email(message = "El correo debe tener un formato válido")
     @Observable(tipo = TipoDato.STRING)
+    @Column(nullable = true)
     private String correoPersonal;
 
     @OneToMany(mappedBy = "usuario")
@@ -117,7 +122,7 @@ public class Usuario {
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Administrador administrador;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Participante participante;
 
     @OneToMany(mappedBy = "usuario")
