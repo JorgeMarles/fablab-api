@@ -18,6 +18,7 @@ import com.example.demo.repositories.ParticipanteRepository;
 import com.example.demo.repositories.UsuarioRepository;
 import com.example.demo.utils.ChangeMap;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -35,11 +36,34 @@ public class ParticipanteService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Transactional
-    public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO participanteCreacionDTO, Usuario existente)
-{
-        Participante participante = new Participante();
+    @Autowired
+    private EntityManager entityManager;
 
+    @Transactional
+    public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO participanteCreacionDTO, Usuario existente) {
+        // Load the latest Usuario state
+        existente = usuarioRepository.findById(existente.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("No existe un usuario con ese id"));
+
+        Participante participante;
+
+        // Check if Usuario already has a Participante
+        if (existente.getParticipante() != null) {
+            // Use the existing participante
+            participante = existente.getParticipante();
+
+            // Make sure it's managed by the current session
+            if (!entityManager.contains(participante)) {
+                participante = entityManager.merge(participante);
+            }
+        } else {
+            // Create new participante
+            participante = new Participante();
+            participante.setUsuario(existente);
+            existente.setParticipante(participante);
+        }
+
+        // Set properties
         Optional<EstadoCivil> estadoOpt = estadoCivilService
                 .obtenerPorIdEntidad(participanteCreacionDTO.getId_estado_civil());
         Optional<PoblacionEspecial> poblacionEsOpt = poblacionEspecialService
@@ -57,12 +81,9 @@ public class ParticipanteService {
         participante.setDireccionInstitucional(participanteCreacionDTO.getDireccion_institucional());
         participante.setEstadoCivil(estadoOpt.get());
         participante.setPoblacionEspecial(poblacionEsOpt.get());
-        existente = usuarioRepository.findById(existente.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("No existe un usuario con ese id"));
-        participante.setUsuario(existente);
-        existente.setParticipante(participante);
 
-        participante = participanteRepository.save(participante);
+        // Save and flush to ensure changes are persistent
+        participante = participanteRepository.saveAndFlush(participante);
 
         DatosPersonalesResponseDTO idto = new DatosPersonalesResponseDTO();
         idto.parseFromEntity(participante.getUsuario());
