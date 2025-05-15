@@ -33,7 +33,7 @@ public class ParticipanteService {
 
     @Transactional
     public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO participanteCreacionDTO, Usuario existente)
-            throws Exception {
+{
         Participante participante = new Participante();
 
         Optional<EstadoCivil> estadoOpt = estadoCivilService

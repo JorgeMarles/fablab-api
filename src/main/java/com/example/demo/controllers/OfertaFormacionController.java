@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import com.example.demo.DTO.response.OfertaDetalleDTO;
 import com.example.demo.DTO.response.OfertaItemDTO;
 import com.example.demo.DTO.response.TipoBeneficiarioDTO;
 import com.example.demo.DTO.response.TipoOfertaDTO;
+import com.example.demo.entities.Usuario;
 import com.example.demo.services.CategoriaOfertaService;
 import com.example.demo.services.OfertaFormacionService;
 import com.example.demo.services.TipoBeneficiarioService;
@@ -61,7 +63,8 @@ public class OfertaFormacionController {
     }
 
     @PostMapping("/{id}/finalizar/{idPlantilla}/")
-    private ResponseEntity<String> finalizarOferta(@PathVariable(name = "id") Long idOferta, @RequestBody Long idPlantilla)
+    private ResponseEntity<String> finalizarOferta(@PathVariable(name = "id") Long idOferta,
+            @RequestBody Long idPlantilla)
             throws Exception {
         ofertaFormacionService.finalizar(idOferta, idPlantilla);
         return ResponseEntity.ok("Oferta finalizada");
@@ -69,9 +72,11 @@ public class OfertaFormacionController {
 
     @PutMapping("/{id}/")
     private ResponseEntity<OfertaDetalleDTO> editar(@PathVariable(name = "id") Long idOferta,
-            @ModelAttribute OfertaCreacionDTO ofertaFormacionDto, @RequestParam(value = "file", required = false) MultipartFile file)
+            @ModelAttribute OfertaCreacionDTO ofertaFormacionDto,
+            @RequestParam(name = "file", required = false) MultipartFile file)
             throws Exception {
-        ofertaFormacionDto.setPieza_grafica(file);
+        if (file != null)
+            ofertaFormacionDto.setPieza_grafica(file);
         OfertaDetalleDTO editada = new OfertaDetalleDTO();
         editada.parseFromEntity(ofertaFormacionService.editar(idOferta, ofertaFormacionDto));
         return ResponseEntity.ok(editada);
@@ -86,25 +91,26 @@ public class OfertaFormacionController {
     }
 
     @GetMapping("/")
-    //TODO filtrar por tipo de oferta, y/o por categoria, y/o por beneficiario y/o por tipo institucion
     // @Preauthorize admin
-    public ResponseEntity<List<OfertaItemDTO>> listarTodos() {
+    public ResponseEntity<List<OfertaItemDTO>> listarTodos(
+            @RequestParam(value = "categoria_id", required = false) Long categoriaId) {
+        if (categoriaId != null) {
+            return ResponseEntity.ok().body(ofertaFormacionService.listarPorCategoria(categoriaId));
+        }
         return ResponseEntity.ok().body(ofertaFormacionService.listarTodos());
     }
 
     @GetMapping("/instructor/")
     // preauth instructor
     public ResponseEntity<List<OfertaItemDTO>> listarInstructor() {
-        // TODO: Sacar del userdetails del authorization
-        Long id = 3L;
+        Long id = ((Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         return ResponseEntity.ok().body(ofertaFormacionService.listarInstructor(id));
     }
 
     @GetMapping("/participante/")
     // preauth instructor
     public ResponseEntity<List<OfertaItemDTO>> listarParticipante() {
-        // TODO: Sacar del userdetails del authorization
-        Long id = 3L;
+        Long id = ((Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         return ResponseEntity.ok().body(ofertaFormacionService.listarParticipante(id));
     }
 

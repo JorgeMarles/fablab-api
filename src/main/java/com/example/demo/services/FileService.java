@@ -198,7 +198,7 @@ public class FileService {
 		return Arrays.stream(validExtensions).anyMatch(ext -> fileExtension.equalsIgnoreCase(ext));
 	}
 
-	public Archivo uploadFile(MultipartFile file) throws Exception {
+	public Archivo uploadFile(MultipartFile file) throws FileException, IOException {
 		log.info("Subiendo archivo: " + file.getOriginalFilename());
 		try {
 			validateExtension(file.getOriginalFilename(), ALLOWED_EXTENSIONS);
