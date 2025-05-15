@@ -43,7 +43,7 @@ public class InstructorController {
         return ResponseEntity.ok().body(usuarioService.actualizar(id, datosPersonales));
     }
 
-    @PutMapping("/{id}/deshabilitar")
+    @PutMapping("/{id}/deshabilitar/")
     private ResponseEntity<String> switchEstado(@PathVariable(name = "id") Long id) throws Exception{
         instructorService.switchEstado(id);
         return ResponseEntity.ok().body("Se ha cambiado el estado del instructor correctamente");

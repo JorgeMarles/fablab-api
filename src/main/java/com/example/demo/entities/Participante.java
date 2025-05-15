@@ -17,7 +17,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,7 +47,6 @@ public class Participante {
     @Column(nullable = true)
     private String correoInstitucional;
 
-    @Null
     @Size(max = 200, message = "La dirección institucional no puede exceder 200 caracteres")
     @Observable(tipo = TipoDato.STRING)
     @Column(nullable = true)

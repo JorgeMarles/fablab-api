@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -63,32 +64,60 @@ public class FirebaseService {
         String uid = token.getUid();
         String correo = token.getEmail();
         String nombre = token.getName();
-        Optional<Usuario> usuarioUidOpt = usuarioRepository.findByUid(uid);
-        Optional<Usuario> usuarioCorreoOpt = usuarioRepository.findByCorreoPersonal(correo);
-        Usuario response = null;
-        if (!usuarioUidOpt.isPresent() && !usuarioCorreoOpt.isPresent()) {
-            log.info("El usuario no existe en la base de datos, creando nuevo usuario");
+
+        try {
+            // First try to find by uid
+            Optional<Usuario> usuarioUidOpt = usuarioRepository.findByUid(uid);
+            if (usuarioUidOpt.isPresent()) {
+                return usuarioUidOpt.get();
+            }
+
+            // Then try to find by email
+            Optional<Usuario> usuarioCorreoOpt = usuarioRepository.findByCorreoPersonal(correo);
+            if (usuarioCorreoOpt.isPresent()) {
+                Usuario usuario = usuarioCorreoOpt.get();
+                usuario.setUid(uid);
+                return usuarioRepository.save(usuario);
+            }
+
+            // Create new if not found
             Usuario usuario = new Usuario();
             usuario.setUid(uid);
             usuario.setCorreoPersonal(correo);
             usuario.setNombreCompleto(nombre);
+
             Participante participante = new Participante();
             participante.setUsuario(usuario);
             usuario.setParticipante(participante);
-            response = usuarioRepository.save(usuario);
 
-        } else if (!usuarioUidOpt.isPresent() && usuarioCorreoOpt.isPresent()) {
-            log.info("El correo ya existe en la base de datos, actualizando uid");
-            Usuario usuario = usuarioCorreoOpt.get();
-            usuario.setUid(uid);
+            return usuarioRepository.save(usuario);
 
-            response = usuarioRepository.save(usuario);
-        } else {
-            // Por obligacion, aqui el usuario debe tener las 2
-            // es imposible que tenga uid sin correo
-            response = usuarioUidOpt.get();
+        } catch (DataIntegrityViolationException e) {
+            // If constraint violation occurs, try again after a short delay
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+
+            // Find the user that was created by another thread
+            Optional<Usuario> retryUser = usuarioRepository.findByUid(uid);
+            if (retryUser.isPresent()) {
+                return retryUser.get();
+            }
+
+            retryUser = usuarioRepository.findByCorreoPersonal(correo);
+            if (retryUser.isPresent()) {
+                Usuario usuario = retryUser.get();
+                if (usuario.getUid() == null) {
+                    usuario.setUid(uid);
+                    return usuarioRepository.save(usuario);
+                }
+                return usuario;
+            }
+
+            throw new RuntimeException("Failed to create or find user after constraint violation", e);
         }
-        return response;
     }
 
     // Get user data including roles

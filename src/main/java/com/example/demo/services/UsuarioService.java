@@ -44,7 +44,7 @@ public class UsuarioService {
     private InstructorService instructorService;
 
     @Transactional
-    public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO usuarioDto, Usuario usuario){
+    public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO usuarioDto, Usuario usuario) {
         Usuario usuarioCreado = this.crear(usuarioDto, usuario);
         return participanteService.crearParticipante(usuarioDto, usuarioCreado);
     }
@@ -67,7 +67,7 @@ public class UsuarioService {
             log.error("Error: ", e);
             throw new IllegalArgumentException(e);
         }
-        
+
     }
 
     @Transactional
@@ -117,24 +117,25 @@ public class UsuarioService {
         Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService
                 .obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
         Optional<Pais> paisOpt = paisService.obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_pais()));
-        Optional<Municipio> municipioOpt = municipioService
-                .obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_municipio()));
-        if (!tipoDocumentoOpt.isPresent()) {
-            throw new ResourceNotFoundException("No existe un tipo de documento con ese id");
-        }
-
         if (!paisOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe un pais con ese id");
         }
-
-        if (!municipioOpt.isPresent()) {
-            throw new ResourceNotFoundException("No existe un municipio con ese id");
+        Optional<Municipio> municipioOpt = Optional.empty();
+        if (paisOpt.get().getCodigo().equals("170")) {
+            municipioOpt = municipioService
+                    .obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_municipio()));
+            if (!municipioOpt.isPresent()) {
+                throw new ResourceNotFoundException("No existe un municipio con ese id");
+            }
+        }
+        if (!tipoDocumentoOpt.isPresent()) {
+            throw new ResourceNotFoundException("No existe un tipo de documento con ese id");
         }
 
         usuario.setDocumento(usuarioDto.getDocumento());
         usuario.setFechaExpedicion(usuarioDto.getFecha_expedicion());
         usuario.setFechaNacimiento(usuarioDto.getFecha_nacimiento());
-        usuario.setMunicipio(municipioOpt.get());
+        usuario.setMunicipio(municipioOpt.orElse(null));
         usuario.setPais(paisOpt.get());
         usuario.setPrimerApellido(usuarioDto.getPrimer_apellido());
         usuario.setPrimerNombre(usuarioDto.getPrimer_nombre());

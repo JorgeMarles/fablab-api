@@ -45,7 +45,7 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 128, nullable = true)
+    @Column(length = 128, nullable = true, unique = true)
     private String uid;
 
     @ManyToOne
@@ -101,7 +101,7 @@ public class Usuario {
     @Observable(tipo = TipoDato.ENTITY)
     private Municipio municipio;
 
-    @Pattern(regexp = "^[0-9]{15}$", message = "El telefono debe contener 15 digitos")
+    @Pattern(regexp = "^[0-9]{1,15}$", message = "El telefono debe contener 15 digitos")
     @Observable(tipo = TipoDato.STRING)
     @Column(nullable = true)
     private String telefono;
@@ -109,7 +109,7 @@ public class Usuario {
     @Size(max = 200, message = "El correo no puede exceder 200 caracteres")
     @Email(message = "El correo debe tener un formato válido")
     @Observable(tipo = TipoDato.STRING)
-    @Column(nullable = true)
+    @Column(nullable = true, unique = true)
     private String correoPersonal;
 
     @OneToMany(mappedBy = "usuario")
