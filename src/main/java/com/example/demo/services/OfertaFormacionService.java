@@ -23,13 +23,16 @@ import com.example.demo.entities.PlantillaCertificado;
 import com.example.demo.entities.Sesion;
 import com.example.demo.entities.TipoBeneficiario;
 import com.example.demo.entities.TipoOferta;
+import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.FileException;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.CategoriaOfertaRepository;
 import com.example.demo.repositories.InstitucionRepository;
 import com.example.demo.repositories.OfertaFormacionRepository;
+import com.example.demo.repositories.ParticipanteRepository;
 import com.example.demo.repositories.TipoBeneficiarioRepository;
 import com.example.demo.repositories.TipoOfertaRepository;
+import com.example.demo.repositories.UsuarioRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +58,12 @@ public class OfertaFormacionService {
 
     @Autowired
     private InstitucionRepository institucionRepository;
+
+    @Autowired
+    private ParticipanteRepository participanteRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private SesionService sesionService;
@@ -95,9 +104,12 @@ public class OfertaFormacionService {
         OfertaFormacion oferta = ofertaFormacionRepository.findById(idOferta)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe una oferta de formación con ese id"));
         Participante participante = participanteService.obtenerPorIdEntidad(idParticipante).orElseGet(() -> {
+            Usuario usuario = usuarioRepository.findById(idParticipante)
+                    .orElseThrow(() -> new ResourceNotFoundException("No existe un usuario con ese id"));
             Participante nuevoParticipante = new Participante();
-            nuevoParticipante.setId(idParticipante);
-            return nuevoParticipante;
+            nuevoParticipante.setUsuario(usuario);
+            
+            return participanteRepository.save(nuevoParticipante);
         });
         if (oferta.getEstado() == EstadoOfertaFormacion.ACTIVA) {
             inscripcionService.crear(oferta, participante);
