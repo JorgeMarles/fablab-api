@@ -127,6 +127,7 @@ public class FirebaseService {
         usuarioRepository.findByUid(firebaseUid).ifPresent(user -> {
             userData.setNombre(user.getNombreCompleto());
             userData.setRoles(user.getRoles());
+            userData.setHasPersonalData(user.getHasPersonalData());
         });
 
         return userData;

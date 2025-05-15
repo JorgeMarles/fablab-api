@@ -112,6 +112,9 @@ public class Usuario {
     @Column(nullable = true, unique = true)
     private String correoPersonal;
 
+    @Column(columnDefinition = "boolean default false")
+    private Boolean hasPersonalData = false;
+
     @OneToMany(mappedBy = "usuario")
     private List<HistoricoUsuario> historicoUsuarios = new ArrayList<>();;
 

@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class UserInfoDTO {
     private String nombre;
     private List<String> roles = new LinkedList<>();
+    private Boolean hasPersonalData = false;
 }
