@@ -128,7 +128,7 @@ public class OfertaFormacionService {
         }
 
         OfertaFormacion guardada = ofertaFormacionRepository.save(oferta);
-
+        log.info("Sesiones: "+ dto.getSesiones().size());
         int order = 1;
         for (SesionCreacionDTO sesion : dto.getSesiones()) {
             Sesion creada = sesionService.crear(sesion, oferta, order++);
