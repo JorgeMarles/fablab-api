@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .requestMatchers("/api-docs/**").permitAll()
                 .requestMatchers("/docs/**").permitAll()
                 .requestMatchers("/files/**").permitAll()
+                .requestMatchers("/ofertas/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)

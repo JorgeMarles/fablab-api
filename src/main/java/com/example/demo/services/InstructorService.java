@@ -28,7 +28,7 @@ public class InstructorService {
     private ModalidadService modalidadService;
 
     @Transactional
-    public DatosPersonalesResponseDTO crearInstructor(DatosPersonalesDTO instructorCreacionDTO, Usuario existente) throws Exception {
+    public DatosPersonalesResponseDTO crearInstructor(DatosPersonalesDTO instructorCreacionDTO, Usuario existente) {
         Instructor instructor = new Instructor();
 
         Optional<Modalidad> modalidadOpt = modalidadService
@@ -52,7 +52,7 @@ public class InstructorService {
     }
 
     @Transactional
-    public void switchEstado(Long id) throws Exception {
+    public void switchEstado(Long id) {
         Optional<Instructor> instructorOpt = this.obtenerPorIdEntidad(id);
 
         if (!instructorOpt.isPresent()) {
