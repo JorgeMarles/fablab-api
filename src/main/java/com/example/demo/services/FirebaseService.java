@@ -84,7 +84,7 @@ public class FirebaseService {
             Usuario usuario = new Usuario();
             usuario.setUid(uid);
             usuario.setCorreoPersonal(correo);
-            usuario.setNombreCompleto(nombre);
+            usuario.setNombreCompleto(nombre == null ? "" : nombre);
 
             Participante participante = new Participante();
             participante.setUsuario(usuario);
