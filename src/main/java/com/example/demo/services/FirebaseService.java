@@ -49,6 +49,14 @@ public class FirebaseService {
         return usuarioRepository.save(usuario);
     }
 
+    public void changeEmail(String uid, String newEmail) throws FirebaseAuthException {
+        // Change email in Firebase
+        UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(uid)
+                .setEmail(newEmail);
+
+        FirebaseAuth.getInstance().updateUser(request);
+    }
+
     // Verify Firebase ID token
     public FirebaseToken verifyToken(String idToken) throws FirebaseAuthException {
         return FirebaseAuth.getInstance().verifyIdToken(idToken);

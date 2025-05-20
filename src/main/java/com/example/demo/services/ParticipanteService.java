@@ -16,7 +16,6 @@ import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.ParticipanteRepository;
 import com.example.demo.repositories.UsuarioRepository;
-import com.example.demo.utils.ChangeMap;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -111,11 +110,6 @@ public class ParticipanteService {
         if (!poblacionEsOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe una población especial con ese id");
         }
-
-        ChangeMap changes = new ChangeMap();
-
-        participante.registerValues(changes, true);
-        participanteDto.registerChanges(changes);
 
         participante.setCorreoInstitucional(participanteDto.getCorreo_institucional());
         participante.setDireccionInstitucional(participanteDto.getDireccion_institucional());

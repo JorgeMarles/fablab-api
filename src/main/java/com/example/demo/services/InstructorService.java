@@ -14,7 +14,6 @@ import com.example.demo.entities.Modalidad;
 import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.InstructorRepository;
-import com.example.demo.utils.ChangeMap;
 
 import jakarta.transaction.Transactional;
 
@@ -80,11 +79,6 @@ public class InstructorService {
         if (!modalidadOpt.isPresent()) {
             throw new ResourceNotFoundException("No existe una modalidad con ese id");
         }
-        ChangeMap changes = new ChangeMap();
-
-        instructor.registerValues(changes, true);
-        instructorDto.registerChanges(changes);
-
         instructor.setActivo(true);
         instructor.setDireccion(instructorDto.getDireccion());
         instructor.setEntidad(instructorDto.getEntidad());

@@ -43,36 +43,31 @@ public class UsuarioService {
     @Autowired
     private InstructorService instructorService;
 
+    @Autowired
+    private FirebaseService firebaseService;
+
     @Transactional
     public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO usuarioDto, Usuario usuario) {
-        Usuario usuarioCreado = this.crear(usuarioDto, usuario);
+        Usuario usuarioCreado = this.crear(usuarioDto, usuario, false);
         return participanteService.crearParticipante(usuarioDto, usuarioCreado);
     }
 
     @Transactional
     public DatosPersonalesResponseDTO crearInstructor(DatosPersonalesDTO usuarioDto) {
-        UserRecord.CreateRequest request = new UserRecord.CreateRequest()
-                .setEmail(usuarioDto.getCorreo_personal())
-                .setPassword(usuarioDto.getPassword())
-                .setDisplayName(usuarioDto.getNombreCompleto())
-                .setEmailVerified(false);
-
         try {
-            UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
             Usuario existente = this.buscarPorDocumento(usuarioDto.getDocumento()).orElse(null);
-            Usuario usuarioCreado = this.crear(usuarioDto, existente);
-            usuarioCreado.setUid(userRecord.getUid());
+            Usuario usuarioCreado = this.crear(usuarioDto, existente, true);
+            usuarioCreado = firebaseService.createUser(usuarioCreado, usuarioDto);
             return instructorService.crearInstructor(usuarioDto, usuarioCreado);
         } catch (FirebaseAuthException e) {
             log.error("Error: ", e);
             throw new IllegalArgumentException(e);
         }
-
     }
 
     @Transactional
-    public Usuario crear(DatosPersonalesDTO usuarioDto, Usuario usuario) {
-       Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService
+    public Usuario crear(DatosPersonalesDTO usuarioDto, Usuario usuario, boolean setCorreo) {
+        Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService
                 .obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
         Optional<Pais> paisOpt = paisService.obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_pais()));
         if (!paisOpt.isPresent()) {
@@ -94,7 +89,9 @@ public class UsuarioService {
             usuario = new Usuario();
         }
 
-        usuario.setCorreoPersonal(usuarioDto.getCorreo_personal());
+        if (setCorreo) {
+            usuario.setCorreoPersonal(usuarioDto.getCorreo_personal());
+        }
         usuario.setDocumento(usuarioDto.getDocumento());
         usuario.setFechaExpedicion(usuarioDto.getFecha_expedicion());
         usuario.setFechaNacimiento(usuarioDto.getFecha_nacimiento());
@@ -150,6 +147,12 @@ public class UsuarioService {
         usuario.setTelefono(usuarioDto.getTelefono());
         usuario.setTipoDocumento(tipoDocumentoOpt.get());
         usuario.setHasPersonalData(true);
+
+        if (usuario.getAdministrador() != null || usuario.getInstructor() != null) {
+            firebaseService.changeEmail(usuario.getUid(), usuarioDto.getCorreo_personal());
+            usuario.setCorreoPersonal(usuarioDto.getCorreo_personal());
+        }
+
         if (usuario.getParticipante() != null) {
             participanteService.actualizar(usuario.getParticipante().getId(), usuarioDto);
         } else if (usuario.getInstructor() != null) {
