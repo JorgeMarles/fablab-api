@@ -14,9 +14,7 @@ import com.example.demo.entities.TipoDocumento;
 import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.UsuarioRepository;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;

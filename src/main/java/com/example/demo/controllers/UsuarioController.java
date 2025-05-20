@@ -16,7 +16,6 @@ import com.example.demo.DTO.response.DatosPersonalesResponseDTO;
 import com.example.demo.DTO.response.UserInfoDTO;
 import com.example.demo.entities.Usuario;
 import com.example.demo.services.FirebaseService;
-import com.example.demo.services.ParticipanteService;
 import com.example.demo.services.UsuarioService;
 import com.google.firebase.auth.FirebaseToken;
 
@@ -32,9 +31,6 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
-
-    @Autowired
-    private ParticipanteService participanteService;
 
     @GetMapping("/roles/")
     public ResponseEntity<?> getRoles(HttpServletRequest request) {

@@ -14,11 +14,13 @@ public class InstructorItemDTO implements IResponseDTO<Instructor> {
     private Long id;
     private String nombre;
     private String correo;
+    private Boolean activo;
     @Override
     public void parseFromEntity(Instructor entity) {
     	this.id = entity.getId();
         this.nombre = entity.getUsuario().getNombreCompleto();
         this.correo = entity.getUsuario().getCorreoPersonal();
+        this.activo = entity.getActivo();
     }
 
 }

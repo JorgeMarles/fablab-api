@@ -67,8 +67,13 @@ INSERT INTO pais (id, codigo, nombre) VALUES
 (4, '950', 'México'),
 (5, '164', 'Argentina');
 
-INSERT INTO institucion (id, nombre, tipo_institucion) VALUE 
+INSERT INTO institucion (id, nombre, tipo_institucion) VALUES 
 (NULL, "Universidad 1", "UNIVERSIDAD"),
 (NULL, "Colegio 1", "COLEGIO"),
 (NULL, "Empresa 1", "EMPRESA"),
 (NULL, "Indep 1", "INDEPENDIENTE");
+
+INSERT INTO semillero (id, nombre, siglas) VALUES 
+(NULL, "Semillero 1", "S1"),
+(NULL, "Semillero 2", "S2"),
+(NULL, "Semillero 3", "S3");
