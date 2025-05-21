@@ -1,6 +1,6 @@
 package com.example.demo.DTO.request;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.example.demo.entities.TipoMovimiento;
 
@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MovimientoCreacionDTO {
     private Long id_instructor;
-    private LocalDate fecha;
+    private LocalDateTime fecha;
     private TipoMovimiento tipo;
 }

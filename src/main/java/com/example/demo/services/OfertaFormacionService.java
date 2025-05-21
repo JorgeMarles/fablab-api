@@ -1,7 +1,7 @@
 package com.example.demo.services;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -298,7 +298,7 @@ public class OfertaFormacionService {
         OfertaFormacion oferta = ofertaFormacionRepository.findById(ofertaId)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe una oferta de formación con ese id"));
         oferta.setEstado(EstadoOfertaFormacion.FINALIZADA);
-        LocalDate fechaFin = LocalDate.now();
+        LocalDateTime fechaFin = LocalDateTime.now();
         oferta.getSesiones().forEach(sesion -> {
             sesion.getInstructores().forEach(instructor -> {
                 certificadoService.crearCertificado(oferta, instructor, fechaFin, plantilla);

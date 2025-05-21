@@ -69,7 +69,7 @@ public class OfertaFormacionController {
         return ResponseEntity.ok("Inscripción exitosa");
     }
 
-    @PostMapping("/{id}/finalizar/{idPlantilla}/")
+    @PostMapping("/{id}/finalizar/")
     private ResponseEntity<String> finalizarOferta(@PathVariable(name = "id") Long idOferta,
             @RequestBody Long idPlantilla)
             throws Exception {
