@@ -12,14 +12,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MovimientoDTO implements IResponseDTO<Movimiento> {
     private Long id;
-    private String nombre;
+    private InstructorItemDTO instructor;
     private String fecha;
     private TipoMovimiento tipoMovimiento;
 
     @Override
     public void parseFromEntity(Movimiento entity) {
         this.id = entity.getId();
-        this.nombre = entity.getInstructor().getUsuario().getNombreCompleto();
+        this.instructor = new InstructorItemDTO();
+        this.instructor.parseFromEntity(entity.getInstructor());
         this.fecha = entity.getFecha().toString();
         this.tipoMovimiento = entity.getTipoMovimiento();
     }

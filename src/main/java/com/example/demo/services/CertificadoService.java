@@ -68,14 +68,18 @@ public class CertificadoService {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PdfDocument pdf = new PdfDocument(new PdfWriter(out));
         PdfDocument plantilla = new PdfDocument(new PdfReader(resource.getFile()));
+        
 
         Document document = new Document(pdf);
+        plantilla.copyPagesTo(1, plantilla.getNumberOfPages(), pdf);
         log.info("Paginas {}", plantilla.getNumberOfPages());
         for (int page = 1; page <= plantilla.getNumberOfPages(); page++) {
             String text = PdfTextExtractor.getTextFromPage(plantilla.getPage(page));
             if(text != null){
+                log.info("Texto extraído de la página {}: {}", page, text);
                 for (Map.Entry<String, String> entry : data.entrySet()) {
-                    text = text.replace(entry.getKey(), entry.getValue());
+                    text = text.replace(entry.getKey().toUpperCase(), entry.getValue());
+                    text = text.replace(entry.getKey().toLowerCase(), entry.getValue());
                     log.info("Reemplazando {} por {}", entry.getKey(), entry.getValue());
                 }
                 document.add(new Paragraph(text));
