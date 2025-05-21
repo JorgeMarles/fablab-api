@@ -157,4 +157,11 @@ public class FirebaseService {
         return new UsernamePasswordAuthenticationToken(
                 user, firebaseToken, authorities);
     }
+
+    public void changePassword(String uid, String newPassword) throws FirebaseAuthException {
+        UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(uid)
+                .setPassword(newPassword);
+
+        FirebaseAuth.getInstance().updateUser(request);
+    }
 }

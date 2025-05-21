@@ -37,6 +37,13 @@ public class MovimientoService {
     }
 
     @Transactional
+    public void eliminarMovimiento(Long id) {
+        Movimiento movimiento = movimientoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe un movimiento con el id: " + id));
+        movimientoRepository.delete(movimiento);
+    }
+
+    @Transactional
     public List<MovimientoDTO> listar() {
         return movimientoRepository.findAll().stream()
                 .map(movimiento -> {

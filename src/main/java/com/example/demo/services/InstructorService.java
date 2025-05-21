@@ -26,6 +26,9 @@ public class InstructorService {
     @Autowired
     private ModalidadService modalidadService;
 
+    @Autowired
+    private FirebaseService firebaseService;
+
     @Transactional
     public DatosPersonalesResponseDTO crearInstructor(DatosPersonalesDTO instructorCreacionDTO, Usuario existente) {
         Instructor instructor = new Instructor();
@@ -83,6 +86,8 @@ public class InstructorService {
         instructor.setDireccion(instructorDto.getDireccion());
         instructor.setEntidad(instructorDto.getEntidad());
         instructor.setModalidad(modalidadOpt.get());
+
+        firebaseService.changePassword(instructor.getUsuario().getUid(), instructorDto.getPassword());
 
         instructor = instructorRepository.save(instructor);
 

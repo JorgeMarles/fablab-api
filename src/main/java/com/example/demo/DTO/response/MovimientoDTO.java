@@ -14,7 +14,7 @@ public class MovimientoDTO implements IResponseDTO<Movimiento> {
     private Long id;
     private InstructorItemDTO instructor;
     private String fecha;
-    private TipoMovimiento tipoMovimiento;
+    private TipoMovimiento tipo;
 
     @Override
     public void parseFromEntity(Movimiento entity) {
@@ -22,7 +22,7 @@ public class MovimientoDTO implements IResponseDTO<Movimiento> {
         this.instructor = new InstructorItemDTO();
         this.instructor.parseFromEntity(entity.getInstructor());
         this.fecha = entity.getFecha().toString();
-        this.tipoMovimiento = entity.getTipoMovimiento();
+        this.tipo = entity.getTipoMovimiento();
     }
 
 }
