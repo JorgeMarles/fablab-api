@@ -32,7 +32,7 @@ public class MovimientoController {
         return ResponseEntity.ok().body(movimientoService.listar());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/")
     public void eliminarMovimiento(@PathVariable(name = "id", required = true) Long id) {
         movimientoService.eliminarMovimiento(id);
     }
