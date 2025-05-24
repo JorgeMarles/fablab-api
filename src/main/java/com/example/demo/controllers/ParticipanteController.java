@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.request.DatosPersonalesDTO;
 import com.example.demo.DTO.response.DatosPersonalesResponseDTO;
+import com.example.demo.DTO.response.ParticipanteItemDTO;
+import com.example.demo.services.OfertaFormacionService;
 import com.example.demo.services.UsuarioService;
 
 @RestController
@@ -22,6 +24,9 @@ public class ParticipanteController {
     
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private OfertaFormacionService ofertaFormacionService;
 
     @PostMapping("/")
     public ResponseEntity<DatosPersonalesResponseDTO> crearParticipante(@RequestBody DatosPersonalesDTO participanteDTO) {
@@ -38,5 +43,11 @@ public class ParticipanteController {
     @GetMapping("/search/")
     public ResponseEntity<List<DatosPersonalesResponseDTO>> obtenerParticipantePorEmail(@RequestBody String q) {
         return ResponseEntity.ok(usuarioService.buscar(q));
+    }
+
+    @GetMapping("/no-inscritos/{id}/")
+    public ResponseEntity<List<ParticipanteItemDTO>> obtenerParticipantesNoInscritos(@PathVariable Long id) {
+        List<ParticipanteItemDTO> participantes = ofertaFormacionService.obtenerParticipantesNoInscritos(id);
+        return ResponseEntity.ok(participantes);
     }
 }

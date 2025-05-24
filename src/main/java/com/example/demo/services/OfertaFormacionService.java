@@ -13,6 +13,7 @@ import com.example.demo.DTO.request.OfertaCreacionDTO;
 import com.example.demo.DTO.request.SesionCreacionDTO;
 import com.example.demo.DTO.response.OfertaDetalleDTO;
 import com.example.demo.DTO.response.OfertaItemDTO;
+import com.example.demo.DTO.response.ParticipanteItemDTO;
 import com.example.demo.entities.Archivo;
 import com.example.demo.entities.CategoriaOferta;
 import com.example.demo.entities.EstadoOfertaFormacion;
@@ -355,6 +356,24 @@ public class OfertaFormacionService {
             item.parseFromEntity(oferta);
             return item;
         }).toList();
+    }
+
+    public List<ParticipanteItemDTO> obtenerParticipantesNoInscritos(Long ofertaId) {
+        if(!ofertaFormacionRepository.existsById(ofertaId)){
+            throw new ResourceNotFoundException("No existe una oferta de formación con ese id");
+        }
+
+        List<Participante> participantesInscritos = inscripcionService
+                .inscripcionesPorOfertaFormacion(ofertaId).stream()
+                .map(inscripcion -> inscripcion.getParticipante()).toList();
+        //TODO: optimizar el O(n^2) luego lo optimizo lo juro
+        return participanteRepository.findAll().stream()
+                .filter(participante -> !participantesInscritos.contains(participante))
+                .map(participante -> {
+                    ParticipanteItemDTO dto = new ParticipanteItemDTO();
+                    dto.parseFromEntity(participante);
+                    return dto;
+                }).toList();
     }
 
     public Optional<OfertaFormacion> obtenerPorIdEntidad(Long ofertaId) {
