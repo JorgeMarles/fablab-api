@@ -133,6 +133,11 @@ public class ParticipanteService {
         return iDto;
     }
 
+    public List<Participante> buscar(String q) {
+        List<Participante> participantes = participanteRepository.findBySearch(q);
+        return participantes;
+    }
+
     public List<ParticipanteItemDTO> listar() {
         List<ParticipanteItemDTO> participanteesResponse = participanteRepository.findAll().stream()
                 .map(participante -> {
