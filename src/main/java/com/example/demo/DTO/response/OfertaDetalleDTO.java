@@ -25,12 +25,12 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion> {
 	private Integer horas;
 	private TipoOfertaDTO tipo_oferta;
 	private CategoriaDTO categoria;
-	private TipoBeneficiarioDTO tipo_beneficiario;
+	private List<TipoBeneficiarioDTO> tipos_beneficiario;
 	private Integer semestre;
 	private Integer valor;
 	private String pieza_grafica;
 	private Integer cupo_maximo;
-	private InstitucionDTO institucion;
+	private List<InstitucionDTO> instituciones;
 	private List<SesionItemDTO> sesiones;
 	private List<InscritoDTO> inscritos;
 
@@ -53,16 +53,25 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion> {
 		this.categoria = new CategoriaDTO();
 		this.categoria.parseFromEntity(entity.getCategoria());
 
-		this.tipo_beneficiario = new TipoBeneficiarioDTO();
-		this.tipo_beneficiario.parseFromEntity(entity.getTipoBeneficiario());
+		this.tipos_beneficiario = entity.getTiposBeneficiario().stream()
+				.map(tipo -> {
+					TipoBeneficiarioDTO tipoDTO = new TipoBeneficiarioDTO();
+					tipoDTO.parseFromEntity(tipo);
+					return tipoDTO;
+				})
+				.toList();
 
 		this.semestre = entity.getSemestre();
 		this.valor = entity.getValor();
 		this.pieza_grafica = entity.getPiezaGrafica().getUrl();
 
-		this.institucion = new InstitucionDTO();
-		this.institucion.parseFromEntity(entity.getInstitucion());
-
+		this.instituciones = entity.getInstituciones().stream()
+				.map(institucion -> {
+					InstitucionDTO institucionDTO = new InstitucionDTO();
+					institucionDTO.parseFromEntity(institucion);
+					return institucionDTO;
+				})
+				.toList();
 		this.sesiones = entity.getSesiones().stream()
 				.map(sesion -> {
 					SesionItemDTO sesionDTO = new SesionItemDTO();
