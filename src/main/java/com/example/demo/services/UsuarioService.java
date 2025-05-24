@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import com.example.demo.DTO.request.DatosPersonalesDTO;
 import com.example.demo.DTO.response.DatosPersonalesResponseDTO;
 import com.example.demo.entities.Municipio;
 import com.example.demo.entities.Pais;
+import com.example.demo.entities.Participante;
 import com.example.demo.entities.TipoDocumento;
 import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.ResourceNotFoundException;
@@ -166,6 +168,17 @@ public class UsuarioService {
     public Usuario obtenerPorIdEntidad(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado."));
+    }
+
+    public List<DatosPersonalesResponseDTO> buscar(String q){
+        List<Participante> participantes = participanteService.buscar(q);
+        List<DatosPersonalesResponseDTO> dtos = new ArrayList<>();
+        for (Participante ptcp : participantes) {
+            DatosPersonalesResponseDTO dto = new DatosPersonalesResponseDTO();
+            dto.parseFromEntity(ptcp.getUsuario());
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
     public List<Usuario> listar() {
