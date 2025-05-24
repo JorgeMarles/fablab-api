@@ -107,6 +107,11 @@ public class OfertaFormacionController {
         return ResponseEntity.ok().body(ofertaFormacionService.listarTodos());
     }
 
+    @GetMapping("/activas/")
+    public ResponseEntity<List<OfertaItemDTO>> listarActivas() {
+        return ResponseEntity.ok().body(ofertaFormacionService.listarActivas());
+    }
+
     @GetMapping("/instructor/")
     // preauth instructor
     public ResponseEntity<List<OfertaItemDTO>> listarInstructor() {

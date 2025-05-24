@@ -331,6 +331,14 @@ public class OfertaFormacionService {
         }).filter(oferta -> oferta.getEstado() != EstadoOfertaFormacion.INACTIVA).toList();
     }
 
+    public List<OfertaItemDTO> listarActivas() {
+        return ofertaFormacionRepository.findAll().stream().map(oferta -> {
+            OfertaItemDTO item = new OfertaItemDTO();
+            item.parseFromEntity(oferta);
+            return item;
+        }).filter(oferta -> oferta.getEstado() != EstadoOfertaFormacion.INACTIVA).toList();
+    }
+
     public List<OfertaItemDTO> listarInstructor(Long instructorId) {
         return ofertaFormacionRepository.findByInstructorId(instructorId).stream().map(oferta -> {
             OfertaItemDTO item = new OfertaItemDTO();

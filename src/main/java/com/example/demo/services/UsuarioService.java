@@ -45,7 +45,7 @@ public class UsuarioService {
     private FirebaseService firebaseService;
 
     @Transactional
-    public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO usuarioDto, Usuario usuario) {
+    public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO usuarioDto, Usuario usuario, boolean setCorreo) {
         Usuario usuarioCreado = this.crear(usuarioDto, usuario, false);
         return participanteService.crearParticipante(usuarioDto, usuarioCreado);
     }
