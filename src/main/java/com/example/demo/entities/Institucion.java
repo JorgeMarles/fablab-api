@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,7 @@ public class Institucion extends BaseEntity {
     @OneToMany(mappedBy = "institucion")
     private List<RegistroIngreso> registroIngresos = new ArrayList<>();;
 
-    @OneToMany(mappedBy = "institucion")
+    @ManyToMany(mappedBy = "instituciones")
     private List<OfertaFormacion> ofertasFormacion = new ArrayList<>();;
 }
 

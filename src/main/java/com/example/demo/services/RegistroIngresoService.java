@@ -149,7 +149,7 @@ public class RegistroIngresoService {
 		Optional<OfertaFormacion> oferta = ofertaFormacionService
 				.obtenerPorIdEntidad(registroIngresoDTO.getId_oferta_formacion());
 		if (oferta.isPresent()) {
-			if(oferta.get().getInstitucion().getTipoInstitucion() != tipo) {
+			if(oferta.get().getInstituciones().stream().anyMatch(institucion -> institucion.getTipoInstitucion() != tipo)) {
 				throw new IllegalArgumentException("La oferta de formación no es del tipo esperado.");
 			}
 			registroIngreso.setOfertaFormacion(oferta.get());

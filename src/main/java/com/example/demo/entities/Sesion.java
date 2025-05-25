@@ -24,8 +24,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@ToString(exclude = {"instructores", "ofertaFormacion"})
-@EqualsAndHashCode(exclude = {"instructores", "ofertaFormacion"})
+@ToString(exclude = { "instructores", "ofertaFormacion" })
+@EqualsAndHashCode(exclude = { "instructores", "ofertaFormacion" })
 @Table(name = "sesion")
 public class Sesion {
     @Id
@@ -41,7 +41,7 @@ public class Sesion {
 
     @ManyToOne
     @JoinColumn(name = "sala_id")
-    private Sala sala;    
+    private Sala sala;
 
     @OneToMany(mappedBy = "sesion")
     private List<Evidencia> evidencias = new ArrayList<>();
@@ -52,16 +52,16 @@ public class Sesion {
     @OneToMany(mappedBy = "sesion")
     private List<Asistencia> asistencias = new ArrayList<>();
 
-     public void addInstructor(Instructor instructor) {
+    public void addInstructor(Instructor instructor) {
         instructores.add(instructor);
         instructor.getSesiones().add(this);
     }
-    
+
     public void removeInstructor(Instructor instructor) {
         instructores.remove(instructor);
         instructor.getSesiones().remove(this);
     }
-    
+
     public void clearInstructores() {
         // Save a temporary copy to avoid concurrent modification
         List<Instructor> tempInstructores = new ArrayList<>(this.instructores);

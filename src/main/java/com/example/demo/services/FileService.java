@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.entities.Archivo;
+import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.FileException;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.ArchivoRepository;
@@ -149,7 +150,74 @@ public class FileService {
 		return archivo;
 	}
 
-	public Pair<String,Resource> getFile(String uuid) throws FileException, IOException {
+	public Pair<String,Resource> getPlantilla(String uuid) throws FileException, IOException {
+
+		Archivo archivo = getFileById(uuid);
+
+		if(archivo.getPlantillaCertificado() == null){
+			throw new FileException("El archivo no es un certificado");
+		}
+
+		Path filePath = Paths.get(uploadDirectory).resolve(archivo.getFilename()).normalize();
+
+		log.info("serving file with uuid {}", uuid);
+
+		if (!Files.exists(filePath)) {
+			throw new FileException("El archivo no existe en el servidor");
+		}
+
+		Resource resource = new PathResource(filePath.toString());
+		return new Pair<>(archivo.getNombre(), resource);
+	}
+
+	public Pair<String,Resource> getEvidencia(String uuid, Usuario usuario) throws FileException, IOException {
+
+		Archivo archivo = getFileById(uuid);
+
+		if(archivo.getEvidencia() == null){
+			throw new FileException("El archivo no es un certificado");
+		}
+
+		if(usuario.getAdministrador() == null){
+			Long userId = usuario.getId();
+			if(archivo.getEvidencia().getSesion().getInstructores().stream().noneMatch(i -> i.getId() == userId)){
+				throw new ResourceNotFoundException("Este usuario no es instructor de la sesión");
+			}
+		}
+		
+		Path filePath = Paths.get(uploadDirectory).resolve(archivo.getFilename()).normalize();
+
+		log.info("serving file with uuid {}", uuid);
+
+		if (!Files.exists(filePath)) {
+			throw new FileException("El archivo no existe en el servidor");
+		}
+
+		Resource resource = new PathResource(filePath.toString());
+		return new Pair<>(archivo.getNombre(), resource);
+	}
+
+	public Pair<String, Resource> getPiezaGrafica(String uuid) throws FileException, IOException {
+
+		Archivo archivo = getFileById(uuid);
+
+		if(archivo.getOfertaFormacion() == null){
+			throw new FileException("El archivo no es una pieza grafica");
+		}
+
+		Path filePath = Paths.get(uploadDirectory).resolve(archivo.getFilename()).normalize();
+
+		log.info("serving file with uuid {}", uuid);
+
+		if (!Files.exists(filePath)) {
+			throw new FileException("El archivo no existe en el servidor");
+		}
+
+		Resource resource = new PathResource(filePath.toString());
+		return new Pair<>(archivo.getNombre(), resource);
+	}
+
+	public Pair<String, Resource> getFile(String uuid) throws FileException, IOException {
 
 		log.info("uuid {}", uuid);
 

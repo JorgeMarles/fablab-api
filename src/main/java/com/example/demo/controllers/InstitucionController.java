@@ -20,18 +20,13 @@ public class InstitucionController {
     @Autowired
     private InstitucionService institucionService;
 
-
     @GetMapping("/")
-    public ResponseEntity<List<InstitucionDTO>> listarInstituciones(@RequestParam(required = false) TipoInstitucion tipo) {
+    public ResponseEntity<List<InstitucionDTO>> listarInstituciones(
+            @RequestParam(required = false) TipoInstitucion tipo) {
         if (tipo == null)
             return ResponseEntity.ok().body(institucionService.listar());
         else
             return ResponseEntity.ok().body(institucionService.listarPorTipo(tipo));
-    }
-
-    @GetMapping("/tipos-institucion")
-    public ResponseEntity<List<TipoInstitucion>> listarTipos() {
-        return ResponseEntity.ok().body(List.of(TipoInstitucion.values()));
     }
 
 }

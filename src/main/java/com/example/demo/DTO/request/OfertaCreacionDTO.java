@@ -25,10 +25,10 @@ public class OfertaCreacionDTO {
     private Long id_tipo;
     private Long id_categoria;
     private Integer valor;
-    private Long id_tipo_beneficiario;
+    private List<Long> tipos_beneficiario;
     private Integer cupo_maximo;
     private MultipartFile pieza_grafica; // La idea es que se haga set y se pase solo este objeto al service
-    private Long id_institucion;
+    private List<Long> instituciones;
     private List<SesionCreacionDTO> sesiones;
     private Integer semestre;
 

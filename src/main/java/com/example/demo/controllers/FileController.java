@@ -27,6 +27,78 @@ public class FileController {
     @Autowired
     FileService fileService;
 
+    @GetMapping("/piezas/{uuid}/")
+    public ResponseEntity<Resource> serveFilePieza(@PathVariable String uuid) throws IOException {
+        Pair<String,Resource> p = fileService.getPiezaGrafica(uuid);
+        // Determine content type
+        String contentType = fileService.determineContentType(p.getSecond().getFilename());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof String) {
+            log.info("User is anonymous {} ", principal);
+        } else if (principal instanceof Usuario) {
+            log.info("User is authenticated {} ", ((Usuario) principal).toString());
+        } else {
+            log.warn("Unknown principal type: {}", principal.getClass().getName());
+        }
+        
+        // Build response with inline disposition (display in browser)
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + p.getFirst() + "\"")
+                .header(HttpHeaders.CACHE_CONTROL, "max-age=3600")
+                .body(p.getSecond());
+    }
+
+    @GetMapping("/evidencias/{uuid}/")
+    //Preauthorize admin or instructor
+    public ResponseEntity<Resource> serveFileEvidencia(@PathVariable String uuid) throws IOException {
+        Usuario user = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Pair<String,Resource> p = fileService.getEvidencia(uuid, user);
+        // Determine content type
+        String contentType = fileService.determineContentType(p.getSecond().getFilename());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof String) {
+            log.info("User is anonymous {} ", principal);
+        } else if (principal instanceof Usuario) {
+            log.info("User is authenticated {} ", ((Usuario) principal).toString());
+        } else {
+            log.warn("Unknown principal type: {}", principal.getClass().getName());
+        }
+        
+        // Build response with inline disposition (display in browser)
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + p.getFirst() + "\"")
+                .header(HttpHeaders.CACHE_CONTROL, "max-age=3600")
+                .body(p.getSecond());
+    }
+
+    @GetMapping("/plantillas/{uuid}/")
+    //Preauthorize admin
+    public ResponseEntity<Resource> serveFileCertificado(@PathVariable String uuid) throws IOException {
+        Pair<String,Resource> p = fileService.getPlantilla(uuid);
+        // Determine content type
+        String contentType = fileService.determineContentType(p.getSecond().getFilename());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof String) {
+            log.info("User is anonymous {} ", principal);
+        } else if (principal instanceof Usuario) {
+            log.info("User is authenticated {} ", ((Usuario) principal).toString());
+        } else {
+            log.warn("Unknown principal type: {}", principal.getClass().getName());
+        }
+        
+        // Build response with inline disposition (display in browser)
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + p.getFirst() + "\"")
+                .header(HttpHeaders.CACHE_CONTROL, "max-age=3600")
+                .body(p.getSecond());
+    }
+
     @GetMapping("/{uuid}/")
     public ResponseEntity<Resource> serveFile(@PathVariable String uuid) throws IOException {
         Pair<String,Resource> p = fileService.getFile(uuid);

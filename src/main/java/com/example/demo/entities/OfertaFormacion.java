@@ -11,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -66,9 +68,11 @@ public class OfertaFormacion {
     private TipoOferta tipo;
 
     //REVISAR
-    @ManyToOne
-    @JoinColumn(name = "tipo_beneficiario_id")
-    private TipoBeneficiario tipoBeneficiario;
+    @ManyToMany
+    @JoinTable(name = "oferta_tipobeneficiario",
+            joinColumns = @JoinColumn(name = "oferta_id"),
+            inverseJoinColumns = @JoinColumn(name = "tipo_beneficiario_id"))
+    private List<TipoBeneficiario> tiposBeneficiario;
 
     private Integer valor;
 
@@ -83,9 +87,11 @@ public class OfertaFormacion {
     private Integer semestre;
 
     //REVISAR
-    @ManyToOne
-    @JoinColumn(name = "institucion_id")
-    private Institucion institucion;
+    @ManyToMany
+    @JoinTable(name = "oferta_institucion",
+            joinColumns = @JoinColumn(name = "oferta_id"),
+            inverseJoinColumns = @JoinColumn(name = "institucion_id"))
+    private List<Institucion> instituciones;
 
     @OneToMany(mappedBy = "ofertaFormacion")
     private List<Sesion> sesiones = new ArrayList<>();
@@ -95,4 +101,38 @@ public class OfertaFormacion {
 
     @OneToMany(mappedBy = "ofertaFormacion")
     private List<Certificado> certificados = new ArrayList<>();
+
+    public void addInstitucion(Institucion institucion) {
+        instituciones.add(institucion);
+        institucion.getOfertasFormacion().add(this);
+    }
+
+    public void removeInstitucion(Institucion institucion) {
+        instituciones.remove(institucion);
+        institucion.getOfertasFormacion().remove(this);
+    }
+
+    public void addTipoBeneficiario(TipoBeneficiario tipoBeneficiario) {
+        tiposBeneficiario.add(tipoBeneficiario);
+        tipoBeneficiario.getOfertasFormacion().add(this);
+    }
+
+    public void removeTipoBeneficiario(TipoBeneficiario tipoBeneficiario) {
+        tiposBeneficiario.remove(tipoBeneficiario);
+        tipoBeneficiario.getOfertasFormacion().remove(this);
+    }
+
+    public void clearTiposBeneficiario() {
+        for (TipoBeneficiario tipoBeneficiario : tiposBeneficiario) {
+            tipoBeneficiario.getOfertasFormacion().remove(this);
+        }
+        tiposBeneficiario.clear();
+    }
+
+    public void clearInstituciones() {
+        for (Institucion institucion : instituciones) {
+            institucion.getOfertasFormacion().remove(this);
+        }
+        instituciones.clear();
+    }
 }

@@ -13,6 +13,7 @@ import com.example.demo.DTO.request.OfertaCreacionDTO;
 import com.example.demo.DTO.request.SesionCreacionDTO;
 import com.example.demo.DTO.response.OfertaDetalleDTO;
 import com.example.demo.DTO.response.OfertaItemDTO;
+import com.example.demo.DTO.response.ParticipanteItemDTO;
 import com.example.demo.entities.Archivo;
 import com.example.demo.entities.CategoriaOferta;
 import com.example.demo.entities.EstadoOfertaFormacion;
@@ -108,7 +109,7 @@ public class OfertaFormacionService {
                     .orElseThrow(() -> new ResourceNotFoundException("No existe un usuario con ese id"));
             Participante nuevoParticipante = new Participante();
             nuevoParticipante.setUsuario(usuario);
-            
+
             return participanteRepository.save(nuevoParticipante);
         });
         if (oferta.getEstado() == EstadoOfertaFormacion.ACTIVA) {
@@ -132,13 +133,12 @@ public class OfertaFormacionService {
             CategoriaOferta categoria = categoriaOfertaRepository.findById(dto.getId_categoria())
                     .orElseThrow(() -> new IllegalArgumentException("Categoría de oferta no encontrada"));
 
-            TipoBeneficiario tipoBeneficiario = tipoBeneficiarioRepository.findById(dto.getId_tipo_beneficiario())
-                    .orElseThrow(() -> new IllegalArgumentException("Tipo de beneficiario no encontrado"));
+            List<TipoBeneficiario> tiposBeneficiario = tipoBeneficiarioRepository
+                    .findAllById(dto.getTipos_beneficiario());
 
-            Institucion institucion = institucionRepository.findById(dto.getId_institucion())
-                    .orElseThrow(() -> new IllegalArgumentException("Institución no encontrada"));
+            List<Institucion> instituciones = institucionRepository.findAllById(dto.getInstituciones());
 
-            for(SesionCreacionDTO sesion : dto.getSesiones()) {
+            for (SesionCreacionDTO sesion : dto.getSesiones()) {
                 sesionService.validar(sesion);
             }
 
@@ -153,11 +153,11 @@ public class OfertaFormacionService {
             oferta.setHoras(dto.getHoras());
             oferta.setTipo(tipo);
             oferta.setCategoria(categoria);
-            oferta.setTipoBeneficiario(tipoBeneficiario);
+            oferta.setTiposBeneficiario(tiposBeneficiario);
             oferta.setValor(dto.getValor());
             oferta.setCupoMaximo(dto.getCupo_maximo());
             oferta.setSemestre(dto.getSemestre());
-            oferta.setInstitucion(institucion);
+            oferta.setInstituciones(instituciones);
 
             if (dto.getPieza_grafica() != null) {
                 Archivo archivo = fileService.uploadFile(dto.getPieza_grafica());
@@ -215,12 +215,23 @@ public class OfertaFormacionService {
             CategoriaOferta categoria = categoriaOfertaRepository.findById(ofertaDto.getId_categoria())
                     .orElseThrow(() -> new IllegalArgumentException("Categoría de oferta no encontrada"));
             oferta.setCategoria(categoria);
-            TipoBeneficiario tipoBeneficiario = tipoBeneficiarioRepository.findById(ofertaDto.getId_tipo_beneficiario())
-                    .orElseThrow(() -> new IllegalArgumentException("Tipo de beneficiario no encontrado"));
-            oferta.setTipoBeneficiario(tipoBeneficiario);
-            Institucion institucion = institucionRepository.findById(ofertaDto.getId_institucion())
-                    .orElseThrow(() -> new IllegalArgumentException("Institución no encontrada"));
-            oferta.setInstitucion(institucion);
+
+            oferta.clearInstituciones();
+
+            oferta.clearTiposBeneficiario();
+
+            List<TipoBeneficiario> tiposBeneficiario = tipoBeneficiarioRepository
+                    .findAllById(ofertaDto.getTipos_beneficiario());
+
+            List<Institucion> instituciones = institucionRepository.findAllById(ofertaDto.getInstituciones());
+
+            for (TipoBeneficiario tipoBeneficiario : tiposBeneficiario) {
+                oferta.addTipoBeneficiario(tipoBeneficiario);
+            }
+
+            for (Institucion institucion : instituciones) {
+                oferta.addInstitucion(institucion);
+            }
 
             // Campos de archivo
             if (ofertaDto.getPieza_grafica() != null) {
@@ -345,6 +356,24 @@ public class OfertaFormacionService {
             item.parseFromEntity(oferta);
             return item;
         }).toList();
+    }
+
+    public List<ParticipanteItemDTO> obtenerParticipantesNoInscritos(Long ofertaId) {
+        if(!ofertaFormacionRepository.existsById(ofertaId)){
+            throw new ResourceNotFoundException("No existe una oferta de formación con ese id");
+        }
+
+        List<Participante> participantesInscritos = inscripcionService
+                .inscripcionesPorOfertaFormacion(ofertaId).stream()
+                .map(inscripcion -> inscripcion.getParticipante()).toList();
+        //TODO: optimizar el O(n^2) luego lo optimizo lo juro
+        return participanteRepository.findAll().stream()
+                .filter(participante -> !participantesInscritos.contains(participante))
+                .map(participante -> {
+                    ParticipanteItemDTO dto = new ParticipanteItemDTO();
+                    dto.parseFromEntity(participante);
+                    return dto;
+                }).toList();
     }
 
     public Optional<OfertaFormacion> obtenerPorIdEntidad(Long ofertaId) {
