@@ -12,14 +12,15 @@ import lombok.NoArgsConstructor;
 public class EvidenciaDTO implements IResponseDTO<Evidencia> {
   private Long id;
   private String nombre;
-  private String instructor;
+  private InstructorItemDTO instructor;
   private String url;
 
   @Override
   public void parseFromEntity(Evidencia entity) {
     this.id = entity.getId();
     this.nombre = entity.getNombre();
-    this.instructor = entity.getInstructor().getUsuario().getNombreCompleto();
+    this.instructor = new InstructorItemDTO();
+    this.instructor.parseFromEntity(entity.getInstructor());
     this.url = entity.getArchivo().getUrl();
   }
 }
