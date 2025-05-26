@@ -131,7 +131,10 @@ public class Usuario {
     private List<RegistroIngreso> registroIngresos = new ArrayList<>();;
 
     public String getNombreCompleto() {
-        return primerNombre + " " + segundoNombre + " " + primerApellido + " " + segundoApellido;
+        return (primerNombre == null ? "" : primerNombre) + " " + 
+               (segundoNombre == null ? "" : segundoNombre) + " " +
+               (primerApellido == null ? "" : primerApellido) + " " +
+               (segundoApellido == null ? "" : segundoApellido);
     }
 
     public void registerValues(ChangeMap map) throws Exception {
