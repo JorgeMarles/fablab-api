@@ -16,7 +16,7 @@ public class PlantillaCreacionDTO {
     private MultipartFile archivo;
 
     public void setArchivo(MultipartFile archivo) {
-        String[] validExtensions = { ".pdf" };
+        String[] validExtensions = { ".doc" };
         FileService.validateExtension(archivo.getOriginalFilename(), validExtensions);
         this.archivo = archivo;
     }

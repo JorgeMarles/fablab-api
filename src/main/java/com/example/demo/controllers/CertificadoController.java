@@ -58,12 +58,12 @@ public class CertificadoController {
     @GetMapping("/{id}/")
     public ResponseEntity<Resource> obtenerCertificado(@PathVariable Long id) throws FileException, IOException {
         Resource r = certificadoService.generarCertificado(id);
-        String contentType = fileService.determineContentType("Certificado.pdf");
+        String contentType = fileService.determineContentType("Certificado.doc");
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"Certificado.pdf\"")
-                .header(HttpHeaders.CACHE_CONTROL, "max-age=3600")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"Certificado.doc\"")
+                .header(HttpHeaders.CACHE_CONTROL, "max-age=1")
                 .body(r);
     }
 

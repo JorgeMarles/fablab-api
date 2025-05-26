@@ -1,11 +1,18 @@
 package com.example.demo.services;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.usermodel.Range;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -19,12 +26,6 @@ import com.example.demo.entities.PlantillaCertificado;
 import com.example.demo.exceptions.FileException;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.CertificadoRepository;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,42 +56,35 @@ public class CertificadoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Certificado no encontrado."));
     }
 
+    private static final DateTimeFormatter SPANISH_FORMATTER = DateTimeFormatter
+            .ofPattern("EEEE, d 'de' MMMM 'de' yyyy 'a las' h:mm:ss a", Locale.forLanguageTag("es-CO"));
+    
+
     public Resource generarCertificado(Long id) throws FileException, IOException {
         Certificado certificado = this.obtenerPorId(id);
         Map<String, String> data = new HashMap<>();
         data.put("{{NOMBRE_INSTRUCTOR}}", certificado.getInstructor().getUsuario().getNombreCompleto());
         data.put("{{NOMBRE_OFERTA}}", certificado.getOfertaFormacion().getNombre());
-        data.put("{{FECHA}}", certificado.getFecha().toString());
+        data.put("{{FECHA}}", certificado.getFecha().format(SPANISH_FORMATTER));
         data.put("{{ID}}", certificado.getId().toString());
         Archivo archivo = certificado.getPlantilla().getArchivo();
         Resource resource = fileService.getFile(archivo.getUuid()).getSecond();
         log.info("Plantilla {}", resource.getFilename());
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter(out));
-        PdfDocument plantilla = new PdfDocument(new PdfReader(resource.getFile()));
-        
-
-        Document document = new Document(pdf);
-        plantilla.copyPagesTo(1, plantilla.getNumberOfPages(), pdf);
-        log.info("Paginas {}", plantilla.getNumberOfPages());
-        for (int page = 1; page <= plantilla.getNumberOfPages(); page++) {
-            String text = PdfTextExtractor.getTextFromPage(plantilla.getPage(page));
-            if(text != null){
-                log.info("Texto extraído de la página {}: {}", page, text);
-                for (Map.Entry<String, String> entry : data.entrySet()) {
-                    text = text.replace(entry.getKey().toUpperCase(), entry.getValue());
-                    text = text.replace(entry.getKey().toLowerCase(), entry.getValue());
-                    log.info("Reemplazando {} por {}", entry.getKey(), entry.getValue());
-                }
-                document.add(new Paragraph(text));
-            } else {
-                log.warn("No se pudo extraer texto de la página {}", page);
+        try (InputStream inputStream = new FileInputStream(resource.getFile());
+                POIFSFileSystem fileSystem = new POIFSFileSystem(inputStream)) {
+            HWPFDocument doc = new HWPFDocument(fileSystem);
+            // replace text in doc and save changes
+            Range range = doc.getRange();
+            for (Map.Entry<String, String> entry : data.entrySet()) {
+                log.info("Reemplazando {} por {}", entry.getKey(), entry.getValue());
+                range.replaceText(entry.getKey(), entry.getValue());
             }
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            doc.write(out);
+            doc.close();
+            Resource certificadoFinal = new ByteArrayResource(out.toByteArray());
+            return certificadoFinal;
         }
 
-        document.close();
-        plantilla.close();
-        Resource certificadoFinal = new ByteArrayResource(out.toByteArray());
-        return certificadoFinal;
     }
 }
