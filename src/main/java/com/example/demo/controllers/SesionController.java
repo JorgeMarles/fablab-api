@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.DTO.request.EvidenciaCreacionDTO;
 import com.example.demo.DTO.response.SesionDTO;
+import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.FileException;
 import com.example.demo.services.EvidenciaService;
 import com.example.demo.services.SesionService;
@@ -38,8 +40,10 @@ public class SesionController {
     @PostMapping("/{id}/evidencias/")
     //Preauthorize admin or instructor (?) o solo instructor
     public ResponseEntity<?> subirEvidencia(@PathVariable(name = "id") Long id, @RequestBody EvidenciaCreacionDTO evidenciaDTO, @RequestParam("file") MultipartFile file) throws FileException, IOException {
+        Long idInstructor = ((Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         evidenciaDTO.setArchivo(file);
         evidenciaDTO.setId_sesion(id);
+        evidenciaDTO.setId_instructor(idInstructor);
         return ResponseEntity.ok().body(evidenciaService.crear(evidenciaDTO));
     }
 
