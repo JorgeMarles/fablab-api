@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,6 +74,12 @@ public class OfertaFormacionController {
     private ResponseEntity<String> inscribirParticipante(@PathVariable(name = "id") Long idOferta, @PathVariable(name = "participanteId") Long participanteId) throws Exception {
         ofertaFormacionService.inscribir(participanteId, idOferta);
         return ResponseEntity.ok("Inscripción exitosa");
+    }
+
+    @DeleteMapping("/{id}/desinscribir-participante/{participanteId}/")
+    private ResponseEntity<String> desinscribirParticipante(@PathVariable(name = "id") Long idOferta, @PathVariable(name = "participanteId") Long participanteId) throws Exception {
+        ofertaFormacionService.desinscribir(participanteId, idOferta);
+        return ResponseEntity.ok("Desinscripción exitosa");
     }
 
     @PostMapping("/{id}/finalizar/")

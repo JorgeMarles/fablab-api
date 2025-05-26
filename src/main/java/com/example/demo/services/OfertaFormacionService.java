@@ -120,6 +120,11 @@ public class OfertaFormacionService {
     }
 
     @Transactional
+    public void desinscribir(Long idParticipante, Long idOferta) {
+       inscripcionService.eliminar(idParticipante, idOferta);
+    }
+
+    @Transactional
     public OfertaFormacion crear(OfertaCreacionDTO dto) {
         String fileUuid = null;
         try {

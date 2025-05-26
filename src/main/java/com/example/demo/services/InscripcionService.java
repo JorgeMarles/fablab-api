@@ -52,4 +52,21 @@ public class InscripcionService {
 
         return inscripcionRepository.save(inscripcion);
     }
+
+    @Transactional
+    public void eliminar(Long idParticipante, Long idOfertaFormacion) {
+        Inscripcion inscripcion = inscripcionRepository.findByParticipante_IdAndOfertaFormacion_Id(idParticipante, idOfertaFormacion)
+                .orElseThrow(() -> new IllegalArgumentException("Inscripción no encontrada."));
+        
+        // Eliminar las asistencias asociadas a la inscripción
+        for (Asistencia asistencia : inscripcion.getOfertaFormacion().getSesiones().stream()
+                .flatMap(sesion -> sesion.getAsistencias().stream()).toList()) {
+            if (asistencia.getParticipante().equals(inscripcion.getParticipante())) {
+                asistenciaRepository.delete(asistencia);
+            }
+        }
+
+        // Eliminar la inscripción
+        inscripcionRepository.delete(inscripcion);
+    }
 }
