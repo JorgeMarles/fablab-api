@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +39,7 @@ public class SesionController {
 
     @PostMapping("/{id}/evidencias/")
     //Preauthorize admin or instructor (?) o solo instructor
-    public ResponseEntity<?> subirEvidencia(@PathVariable(name = "id") Long id, @RequestBody EvidenciaCreacionDTO evidenciaDTO, @RequestParam("file") MultipartFile file) throws FileException, IOException {
+    public ResponseEntity<?> subirEvidencia(@PathVariable(name = "id") Long id, @ModelAttribute EvidenciaCreacionDTO evidenciaDTO, @RequestParam("file") MultipartFile file) throws FileException, IOException {
         Long idInstructor = ((Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         evidenciaDTO.setArchivo(file);
         evidenciaDTO.setId_sesion(id);
