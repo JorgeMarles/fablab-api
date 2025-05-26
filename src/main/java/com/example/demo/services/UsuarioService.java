@@ -48,7 +48,7 @@ public class UsuarioService {
 
     @Transactional
     public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO usuarioDto, Usuario usuario, boolean setCorreo) {
-        Usuario usuarioCreado = this.crear(usuarioDto, usuario, false);
+        Usuario usuarioCreado = this.crear(usuarioDto, usuario, setCorreo);
         return participanteService.crearParticipante(usuarioDto, usuarioCreado);
     }
 
