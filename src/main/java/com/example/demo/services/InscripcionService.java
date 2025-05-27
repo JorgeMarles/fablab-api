@@ -61,7 +61,7 @@ public class InscripcionService {
         // Eliminar las asistencias asociadas a la inscripción
         for (Asistencia asistencia : inscripcion.getOfertaFormacion().getSesiones().stream()
                 .flatMap(sesion -> sesion.getAsistencias().stream()).toList()) {
-            if (asistencia.getParticipante().equals(inscripcion.getParticipante())) {
+            if (asistencia.getParticipante().getId().equals(idParticipante)) {
                 asistenciaRepository.delete(asistencia);
             }
         }
