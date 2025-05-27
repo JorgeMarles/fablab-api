@@ -1,7 +1,7 @@
 package com.example.demo.utils;
 
 public class StringGenerator {
-    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int DEFAULT_LENGTH = 5;
 
     public static String generateRandomString() {

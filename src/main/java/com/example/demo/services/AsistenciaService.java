@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -8,12 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.response.AsistenciaDTO;
+import com.example.demo.DTO.response.AsistenciaTokenDTO;
 import com.example.demo.entities.Asistencia;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.AsistenciaRepository;
 import com.example.demo.utils.StringGenerator;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.jodah.expiringmap.ExpiringMap;
 
@@ -21,11 +25,20 @@ import net.jodah.expiringmap.ExpiringMap;
 @Slf4j
 public class AsistenciaService {
 
+    private static final long EXPIRATION_MINUTES = 1; // Tiempo de expiración en minutos
+
     @Autowired
     private AsistenciaRepository asistenciaRepository;
 
-    private ExpiringMap<Long, String> tokens = ExpiringMap.builder()
-            .expiration(1, TimeUnit.MINUTES) // 1 minuto
+    @Data
+    @AllArgsConstructor
+    private static class TokenValue {
+        private String token;
+        private LocalDateTime expiracion;
+    }
+
+    private ExpiringMap<Long, TokenValue> tokens = ExpiringMap.builder()
+            .expiration(EXPIRATION_MINUTES, TimeUnit.MINUTES) // Tiempo de expiración del token
             .maxSize(1000) // Tamaño máximo del mapa
             .asyncExpirationListener((key, value) -> {
                 generarToken((Long) key);
@@ -53,17 +66,19 @@ public class AsistenciaService {
 
     private void generarToken(Long id) {
         String tokenGenerado = StringGenerator.generateRandomString();
-        tokens.put(id, tokenGenerado);
-        log.info("Token generado para ID {}: {}", id, tokenGenerado);
+        LocalDateTime expiracion = LocalDateTime.now().plusMinutes(EXPIRATION_MINUTES);
+        tokens.put(id, new TokenValue(tokenGenerado, expiracion));
+        log.info("Token generado para ID {}: {}, vence el {}", id, tokenGenerado, expiracion);
     }
 
-    public String getToken(Long idSesion) {
-        String token = tokens.get(idSesion);
+    public AsistenciaTokenDTO getToken(Long idSesion) {
+        TokenValue token = tokens.get(idSesion);
         if (token == null) {
             throw new ResourceNotFoundException(
                     "No se encontró un token de asistencia activo para la sesión " + idSesion);
         }
-        return token;
+        AsistenciaTokenDTO dto = new AsistenciaTokenDTO(token.getToken(), token.getExpiracion());
+        return dto;
     }
 
     @Transactional
@@ -89,13 +104,14 @@ public class AsistenciaService {
             return;
         }
 
-        String tokenGenerado = this.tokens.get(idSesion);
+        TokenValue tokenGenerado = this.tokens.get(idSesion);
 
-        if(tokenGenerado == null) {
-            throw new ResourceNotFoundException("No se encontró un token de asistencia activo para la sesión " + idSesion);
+        if (tokenGenerado == null) {
+            throw new ResourceNotFoundException(
+                    "No se encontró un token de asistencia activo para la sesión " + idSesion);
         }
 
-        if (!tokenGenerado.equals(token)) {
+        if (!tokenGenerado.getToken().equals(token)) {
             throw new IllegalArgumentException("Token de asistencia inválido.");
         }
 

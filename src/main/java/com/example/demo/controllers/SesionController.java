@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.DTO.request.EvidenciaCreacionDTO;
 import com.example.demo.DTO.response.AsistenciaDTO;
+import com.example.demo.DTO.response.AsistenciaTokenDTO;
 import com.example.demo.DTO.response.SesionDTO;
 import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.FileException;
@@ -71,10 +71,8 @@ public class SesionController {
     }
 
     @GetMapping("/{id}/asistencias/token/")
-    public ResponseEntity<?> getToken(@PathVariable(name = "id") Long id) {
-        Map<String, String> token = new HashMap<>();
-        token.put("token", asistenciaService.getToken(id));
-        return ResponseEntity.ok().body(token);
+    public ResponseEntity<AsistenciaTokenDTO> getToken(@PathVariable(name = "id") Long id) {
+        return ResponseEntity.ok().body(asistenciaService.getToken(id));
     }
 
     @GetMapping("/{id}/asistencias/")
