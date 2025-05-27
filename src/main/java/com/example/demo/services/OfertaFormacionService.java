@@ -121,7 +121,7 @@ public class OfertaFormacionService {
 
     @Transactional
     public void desinscribir(Long idParticipante, Long idOferta) {
-       inscripcionService.eliminar(idParticipante, idOferta);
+        inscripcionService.eliminar(idParticipante, idOferta);
     }
 
     @Transactional
@@ -146,6 +146,8 @@ public class OfertaFormacionService {
             for (SesionCreacionDTO sesion : dto.getSesiones()) {
                 sesionService.validar(sesion);
             }
+
+            dto.replaceNull();
 
             OfertaFormacion oferta = new OfertaFormacion();
             oferta.setNombre(dto.getNombre());
@@ -199,6 +201,8 @@ public class OfertaFormacionService {
         try {
             OfertaFormacion oferta = obtenerPorIdEntidad(idOferta)
                     .orElseThrow(() -> new ResourceNotFoundException("No existe una oferta de formación con ese id"));
+
+            ofertaDto.replaceNull();
 
             // Campos estaticos
             oferta.setNombre(ofertaDto.getNombre());
@@ -364,14 +368,14 @@ public class OfertaFormacionService {
     }
 
     public List<ParticipanteItemDTO> obtenerParticipantesNoInscritos(Long ofertaId) {
-        if(!ofertaFormacionRepository.existsById(ofertaId)){
+        if (!ofertaFormacionRepository.existsById(ofertaId)) {
             throw new ResourceNotFoundException("No existe una oferta de formación con ese id");
         }
 
         List<Participante> participantesInscritos = inscripcionService
                 .inscripcionesPorOfertaFormacion(ofertaId).stream()
                 .map(inscripcion -> inscripcion.getParticipante()).toList();
-        //TODO: optimizar el O(n^2) luego lo optimizo lo juro
+        // TODO: optimizar el O(n^2) luego lo optimizo lo juro
         return participanteRepository.findAll().stream()
                 .filter(participante -> !participantesInscritos.contains(participante))
                 .map(participante -> {

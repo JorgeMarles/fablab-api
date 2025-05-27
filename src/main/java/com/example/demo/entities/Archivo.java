@@ -38,6 +38,15 @@ public class Archivo {
     }
 
     public String getUrl() {
-        return FileService.getFileEndpointFiles() + "/" + uuid.toString() + "/";
+        if(this.evidencia != null) {
+            return FileService.getFileEndpointFiles("evidencias") + "/" + uuid.toString() + "/";
+        }
+        if(this.plantillaCertificado != null) {
+            return FileService.getFileEndpointFiles("certificados") + "/" + uuid.toString() + "/";
+        }
+        if(this.ofertaFormacion != null) {
+            return FileService.getFileEndpointFiles("piezas") + "/" + uuid.toString() + "/";
+        }
+        return FileService.getFileEndpointFiles(null) + "/" + uuid.toString() + "/";
     }
 }

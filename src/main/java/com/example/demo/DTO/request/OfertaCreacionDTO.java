@@ -32,6 +32,18 @@ public class OfertaCreacionDTO {
     private List<SesionCreacionDTO> sesiones;
     private Integer semestre;
 
+    public void replaceNull(){
+        if(this.tipos_beneficiario == null){
+            this.tipos_beneficiario = List.of();
+        }
+        if(this.sesiones == null){
+            this.sesiones = List.of();
+        }
+        if(this.instituciones == null){
+            this.instituciones = List.of();
+        }
+    }
+
     public void setPieza_grafica(MultipartFile pieza_grafica) {
         String[] validExtensions = { ".jpg", ".jpeg", ".png", ".pdf", ".svg", ".bmp", ".gif", ".tiff", ".tif",
                 ".webp", ".ico", ".svg" };

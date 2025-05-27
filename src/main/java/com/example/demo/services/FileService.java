@@ -48,12 +48,12 @@ public class FileService {
 	}
 
 	// Static method to access the file endpoint
-	public static String getFileEndpointFiles() {
+	public static String getFileEndpointFiles(String suffix) {
 		if (staticFileEndpoint == null) {
 			// Fallback to default value if not initialized
-			return "/files";
+			return "/files" + (suffix != null ? "/" + suffix : "");
 		}
-		return staticFileEndpoint;
+		return staticFileEndpoint + (suffix != null ? "/" + suffix : "");
 	}
 
 	@Autowired
@@ -150,11 +150,11 @@ public class FileService {
 		return archivo;
 	}
 
-	public Pair<String,Resource> getPlantilla(String uuid) throws FileException, IOException {
+	public Pair<String, Resource> getPlantilla(String uuid) throws FileException, IOException {
 
 		Archivo archivo = getFileById(uuid);
 
-		if(archivo.getPlantillaCertificado() == null){
+		if (archivo.getPlantillaCertificado() == null) {
 			throw new FileException("El archivo no es un certificado");
 		}
 
@@ -170,21 +170,21 @@ public class FileService {
 		return new Pair<>(archivo.getNombre(), resource);
 	}
 
-	public Pair<String,Resource> getEvidencia(String uuid, Usuario usuario) throws FileException, IOException {
+	public Pair<String, Resource> getEvidencia(String uuid, Usuario usuario) throws FileException, IOException {
 
 		Archivo archivo = getFileById(uuid);
 
-		if(archivo.getEvidencia() == null){
+		if (archivo.getEvidencia() == null) {
 			throw new FileException("El archivo no es un certificado");
 		}
 
-		if(usuario.getAdministrador() == null){
+		if (usuario.getAdministrador() == null) {
 			Long userId = usuario.getId();
-			if(archivo.getEvidencia().getSesion().getInstructores().stream().noneMatch(i -> i.getId() == userId)){
+			if (archivo.getEvidencia().getSesion().getInstructores().stream().noneMatch(i -> i.getId() == userId)) {
 				throw new ResourceNotFoundException("Este usuario no es instructor de la sesión");
 			}
 		}
-		
+
 		Path filePath = Paths.get(uploadDirectory).resolve(archivo.getFilename()).normalize();
 
 		log.info("serving file with uuid {}", uuid);
@@ -201,7 +201,7 @@ public class FileService {
 
 		Archivo archivo = getFileById(uuid);
 
-		if(archivo.getOfertaFormacion() == null){
+		if (archivo.getOfertaFormacion() == null) {
 			throw new FileException("El archivo no es una pieza grafica");
 		}
 

@@ -98,6 +98,7 @@ public class FileController {
                 .header(HttpHeaders.CACHE_CONTROL, "max-age=3600")
                 .body(p.getSecond());
     }
+    /*
 
     @GetMapping("/{uuid}/")
     public ResponseEntity<Resource> serveFile(@PathVariable String uuid) throws IOException {
@@ -125,9 +126,11 @@ public class FileController {
          * .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
          * resource.getFilename() + "\"")
          * .body(resource);
-         */
+        
     }
-    /*
+
+    
+    
      * @PostMapping(value = "/", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
      * public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile
      * file) throws Exception {
