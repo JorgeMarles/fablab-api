@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -18,6 +20,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.DTO.response.CertificadoItemDTO;
 import com.example.demo.entities.Archivo;
 import com.example.demo.entities.Certificado;
 import com.example.demo.entities.Instructor;
@@ -86,5 +89,16 @@ public class CertificadoService {
             return certificadoFinal;
         }
 
+    }
+
+    public List<CertificadoItemDTO> listar(Long id) {
+        List<Certificado> certificados = certificadoRepository.findByInstructor_Id(id);
+        List<CertificadoItemDTO> certs = new ArrayList<>();
+        for (Certificado c : certificados) {
+            CertificadoItemDTO dto = new CertificadoItemDTO();
+            dto.parseFromEntity(c);
+            certs.add(dto);
+        }
+        return certs;
     }
 }
