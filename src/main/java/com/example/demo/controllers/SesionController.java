@@ -1,6 +1,9 @@
 package com.example.demo.controllers;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.DTO.request.EvidenciaCreacionDTO;
+import com.example.demo.DTO.response.AsistenciaDTO;
 import com.example.demo.DTO.response.SesionDTO;
 import com.example.demo.entities.Usuario;
 import com.example.demo.exceptions.FileException;
+import com.example.demo.services.AsistenciaService;
 import com.example.demo.services.EvidenciaService;
 import com.example.demo.services.SesionService;
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/sesiones")
@@ -31,6 +38,9 @@ public class SesionController {
 
     @Autowired
     private EvidenciaService evidenciaService;
+
+    @Autowired
+    private AsistenciaService asistenciaService;
 
     @GetMapping("/{id}/")
     public ResponseEntity<SesionDTO> obtenerPorId(@PathVariable(name = "id") Long id){
@@ -51,6 +61,41 @@ public class SesionController {
     //Preauthorize admin
     public ResponseEntity<?> eliminarEvidencia(@PathVariable(name = "id") Long id, @PathVariable(name = "evidenciaId") Long evidenciaId) throws IOException {
         evidenciaService.eliminar(evidenciaId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/asistencias/toggle-token/")
+    public ResponseEntity<?> toggleAsistencia(@PathVariable(name = "id") Long id) {
+        asistenciaService.toggleSesion(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/asistencias/token/")
+    public ResponseEntity<?> getToken(@PathVariable(name = "id") Long id) {
+        Map<String, String> token = new HashMap<>();
+        token.put("token", asistenciaService.getToken(id));
+        return ResponseEntity.ok().body(token);
+    }
+
+    @GetMapping("/{id}/asistencias/")
+    public ResponseEntity<List<AsistenciaDTO>> obtenerAsistencias(@PathVariable(name = "id") Long id) {
+        return ResponseEntity.ok().body(asistenciaService.obtenerAsistenciasPorSesion(id));
+    }
+
+    @PostMapping("/{id}/asistencias/{idParticipante}/")
+    public ResponseEntity<?> registrarAsistencia(@PathVariable(name = "id") Long id, @PathVariable(name = "idParticipante") Long idParticipante) {
+        asistenciaService.toggleAsistencia(id, idParticipante);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/asistencias/")
+    //Preauthorize participante
+    public ResponseEntity<?> registrarAsistencia(@PathVariable(name = "id") Long id, @RequestBody(required = true) Map<String, String> body) {
+        if (!body.containsKey("token")) {
+            return ResponseEntity.badRequest().body("Token de asistencia requerido.");
+        }
+        Long idParticipante = ((Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        asistenciaService.marcarAsistencia(id, idParticipante, body.get("token"));
         return ResponseEntity.ok().build();
     }
 }

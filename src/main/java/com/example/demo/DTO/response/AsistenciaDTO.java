@@ -11,12 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AsistenciaDTO implements IResponseDTO<Asistencia>{
     private Long id;
-    private String nombre;
+    private ParticipanteItemDTO participante;
     private boolean asistio;
     @Override
     public void parseFromEntity(Asistencia entity) {
         this.id = entity.getId();
-        this.nombre = entity.getParticipante().getUsuario().getNombreCompleto();
+        this.participante = new ParticipanteItemDTO();
+        this.participante.parseFromEntity(entity.getParticipante());
         this.asistio = entity.isAsistio();
     }
 }
