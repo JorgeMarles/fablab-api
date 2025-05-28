@@ -1,8 +1,8 @@
 package com.example.demo.controllers;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,14 +28,14 @@ import com.example.demo.services.AsistenciaService;
 import com.example.demo.services.EvidenciaService;
 import com.example.demo.services.SesionService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/sesiones")
 @Slf4j
 public class SesionController {
-    
+
     @Autowired
     private SesionService sesionService;
 
@@ -45,13 +46,15 @@ public class SesionController {
     private AsistenciaService asistenciaService;
 
     @GetMapping("/{id}/")
-    public ResponseEntity<SesionDTO> obtenerPorId(@PathVariable(name = "id") Long id){
+    public ResponseEntity<SesionDTO> obtenerPorId(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok().body(sesionService.obtenerPorIdDto(id));
     }
 
     @PostMapping("/{id}/evidencias/")
-    //Preauthorize admin or instructor (?) o solo instructor
-    public ResponseEntity<?> subirEvidencia(@PathVariable(name = "id") Long id, @ModelAttribute EvidenciaCreacionDTO evidenciaDTO, @RequestParam("file") MultipartFile file) throws FileException, IOException {
+    // Preauthorize admin or instructor (?) o solo instructor
+    public ResponseEntity<?> subirEvidencia(@PathVariable(name = "id") Long id,
+            @ModelAttribute EvidenciaCreacionDTO evidenciaDTO, @RequestParam("file") MultipartFile file)
+            throws FileException, IOException {
         Long idInstructor = ((Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         evidenciaDTO.setArchivo(file);
         evidenciaDTO.setId_sesion(id);
@@ -60,8 +63,9 @@ public class SesionController {
     }
 
     @DeleteMapping("/{id}/evidencias/{evidenciaId}/")
-    //Preauthorize admin
-    public ResponseEntity<?> eliminarEvidencia(@PathVariable(name = "id") Long id, @PathVariable(name = "evidenciaId") Long evidenciaId) throws IOException {
+    // Preauthorize admin
+    public ResponseEntity<?> eliminarEvidencia(@PathVariable(name = "id") Long id,
+            @PathVariable(name = "evidenciaId") Long evidenciaId) throws IOException {
         evidenciaService.eliminar(evidenciaId);
         return ResponseEntity.ok().build();
     }
@@ -83,21 +87,22 @@ public class SesionController {
     }
 
     @PostMapping("/{id}/asistencias/{idParticipante}/")
-    public ResponseEntity<?> registrarAsistencia(@PathVariable(name = "id") Long id, @PathVariable(name = "idParticipante") Long idParticipante) {
+    public ResponseEntity<?> registrarAsistencia(@PathVariable(name = "id") Long id,
+            @PathVariable(name = "idParticipante") Long idParticipante) {
         asistenciaService.toggleAsistencia(id, idParticipante);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/asistencias/")
-    //Preauthorize participante
-    public ResponseEntity<?> registrarAsistencia(@PathVariable(name = "id") Long id, @RequestBody(required = true) HashMap<String, String> body) {
-        log.info("Registrar asistencia para la sesión con ID: {}", id);
-        log.info("Cuerpo de la solicitud: {}", body);
+    // Preauthorize participante
+    public ResponseEntity<?> registrarAsistencia(@PathVariable(name = "id") Long id,
+            @RequestBody Map<String, String> body, HttpServletRequest request) {
         if (!body.containsKey("token")) {
             return ResponseEntity.badRequest().body("Token de asistencia requerido.");
         }
         Long idParticipante = ((Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        asistenciaService.marcarAsistencia(id, idParticipante, body.get("token"));
+        asistenciaService.marcarAsistencia(id, idParticipante, (String) body.get("token"));
         return ResponseEntity.ok().build();
+
     }
 }
