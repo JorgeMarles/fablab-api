@@ -128,6 +128,7 @@ public class OfertaFormacionService {
     public OfertaFormacion crear(OfertaCreacionDTO dto) {
         String fileUuid = null;
         try {
+            dto.replaceNull();
             if (ofertaFormacionRepository.findByCodigo(dto.getCodigo()).isPresent()) {
                 throw new IllegalArgumentException("Ya existe una oferta con el mismo código.");
             }
@@ -146,8 +147,6 @@ public class OfertaFormacionService {
             for (SesionCreacionDTO sesion : dto.getSesiones()) {
                 sesionService.validar(sesion);
             }
-
-            dto.replaceNull();
 
             OfertaFormacion oferta = new OfertaFormacion();
             oferta.setNombre(dto.getNombre());
