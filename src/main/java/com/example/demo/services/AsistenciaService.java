@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.example.demo.DTO.response.AsistenciaDTO;
 import com.example.demo.DTO.response.AsistenciaTokenDTO;
 import com.example.demo.entities.Asistencia;
+import com.example.demo.entities.EstadoOfertaFormacion;
+import com.example.demo.entities.Sesion;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repositories.AsistenciaRepository;
 import com.example.demo.utils.StringGenerator;
@@ -26,27 +29,48 @@ import net.jodah.expiringmap.ExpiringMap;
 public class AsistenciaService {
 
     private static final long EXPIRATION_MINUTES = 1; // Tiempo de expiración en minutos
+    private static final int MAX_RENEWALS = 3600; // Número máximo de renovaciones permitidas
 
     @Autowired
     private AsistenciaRepository asistenciaRepository;
+
+    @Autowired
+    private SesionService sesionService;
 
     @Data
     @AllArgsConstructor
     private static class TokenValue {
         private String token;
         private LocalDateTime expiracion;
+        private int times;
     }
 
     private ExpiringMap<Long, TokenValue> tokens = ExpiringMap.builder()
             .expiration(EXPIRATION_MINUTES, TimeUnit.MINUTES) // Tiempo de expiración del token
             .maxSize(1000) // Tamaño máximo del mapa
             .asyncExpirationListener((key, value) -> {
-                generarToken((Long) key);
+                TokenValue val = (TokenValue) value;
+                if(val.getTimes() > 0) {
+                    val.setTimes(val.getTimes() - 1);
+                    generarToken((Long) key);
+                    log.info("Token de asistencia para la sesión {} ha sido renovado. Quedan {} usos.",
+                            key, val.getTimes());
+                } else {
+                    log.info("Token de asistencia para la sesión {} ha expirado.", key);
+                }
+                
             })
             .build();
 
     public void toggleSesion(Long idSesion) {
         if (!tokens.containsKey(idSesion)) {
+            Optional<Sesion> sesion = sesionService.obtenerPorIdEntidad(idSesion);
+            if(!sesion.isPresent()) {
+                throw new ResourceNotFoundException("Sesión no encontrada con ID: " + idSesion);
+            }
+            if(sesion.get().getOfertaFormacion().getEstado() != EstadoOfertaFormacion.ACTIVA) {
+                throw new IllegalArgumentException("La sesión no está activa.");
+            }
             generarToken(idSesion);
         } else {
             tokens.remove(idSesion);
@@ -67,7 +91,7 @@ public class AsistenciaService {
     private void generarToken(Long id) {
         String tokenGenerado = StringGenerator.generateRandomString();
         LocalDateTime expiracion = LocalDateTime.now().plusMinutes(EXPIRATION_MINUTES);
-        tokens.put(id, new TokenValue(tokenGenerado, expiracion));
+        tokens.put(id, new TokenValue(tokenGenerado, expiracion, MAX_RENEWALS));
         log.info("Token generado para ID {}: {}, vence el {}", id, tokenGenerado, expiracion);
     }
 
@@ -112,7 +136,7 @@ public class AsistenciaService {
         }
 
         if (!tokenGenerado.getToken().equals(token)) {
-            throw new IllegalArgumentException("Token de asistencia inválido.");
+            throw new IllegalArgumentException("Token de asistencia inválido: " + token);
         }
 
         asistencia.setAsistio(true);

@@ -327,8 +327,12 @@ public class OfertaFormacionService {
         ofertaFormacionRepository.save(oferta);
     }
 
+    public List<OfertaFormacion> listarTodosEntidades() {
+        return ofertaFormacionRepository.findAll();
+    }
+
     public List<OfertaItemDTO> listarTodos() {
-        return ofertaFormacionRepository.findAll().stream().map(oferta -> {
+        return listarTodosEntidades().stream().map(oferta -> {
             OfertaItemDTO item = new OfertaItemDTO();
             item.parseFromEntity(oferta);
             return item;
@@ -352,7 +356,7 @@ public class OfertaFormacionService {
     }
 
     public List<OfertaItemDTO> listarActivas() {
-        return ofertaFormacionRepository.findAll().stream().map(oferta -> {
+        return listarTodosEntidades().stream().map(oferta -> {
             OfertaItemDTO item = new OfertaItemDTO();
             item.parseFromEntity(oferta);
             return item;
@@ -389,13 +393,15 @@ public class OfertaFormacionService {
         return ofertaFormacionRepository.findById(ofertaId);
     }
 
-    public OfertaDetalleDTO obtenerPorIdDetalle(Long ofertaId) {
+    public OfertaDetalleDTO obtenerPorIdDetalle(Long ofertaId, Long userId) {
         Optional<OfertaFormacion> opt = this.obtenerPorIdEntidad(ofertaId);
         if (!opt.isPresent()) {
             throw new ResourceNotFoundException("No existe una oferta de formación con ese id");
         }
+        Usuario usuario = usuarioRepository.findById(userId)
+                .orElse(null);
         OfertaDetalleDTO dto = new OfertaDetalleDTO();
-        dto.parseFromEntity(opt.get());
+        dto.personalizeFromEntity(opt.get(), usuario);
         return dto;
     }
 }

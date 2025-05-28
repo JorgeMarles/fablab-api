@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.example.demo.entities.EstadoOfertaFormacion;
 import com.example.demo.entities.OfertaFormacion;
+import com.example.demo.entities.Sesion;
+import com.example.demo.entities.Usuario;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion> {
+public class OfertaDetalleDTO implements IPersonalizableResponseDTO<OfertaFormacion> {
 
 	private Long id;
 	private String nombre;
@@ -87,6 +89,16 @@ public class OfertaDetalleDTO implements IResponseDTO<OfertaFormacion> {
 					return inscritoDTO;
 				})
 				.toList();
+	}
+
+	@Override
+	public void personalizeFromEntity(OfertaFormacion entity, Usuario user) {
+		this.parseFromEntity(entity);
+		for(int i = 0; i < this.sesiones.size(); i++) {
+			SesionItemDTO sesion = this.sesiones.get(i);
+			Sesion entitySesion = entity.getSesiones().get(i);
+			sesion.personalizeFromEntity(entitySesion, user);
+		}
 	}
 
 }

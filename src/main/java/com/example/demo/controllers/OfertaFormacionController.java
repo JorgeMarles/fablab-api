@@ -140,7 +140,17 @@ public class OfertaFormacionController {
 
     @GetMapping("/{id}/")
     public ResponseEntity<OfertaDetalleDTO> detalle(@PathVariable(name = "id") Long idOferta) {
-        return ResponseEntity.ok().body(ofertaFormacionService.obtenerPorIdDetalle(idOferta));
+        Long id;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal instanceof String) {
+            id = -1L;
+        } else if (principal instanceof Usuario) {
+            id = ((Usuario) principal).getId();
+        } else {
+            log.warn("Tipo de principal desconocido: {}", principal.getClass().getName());
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(ofertaFormacionService.obtenerPorIdDetalle(idOferta, id));
     }
 
     @GetMapping("/tipos-oferta/")
