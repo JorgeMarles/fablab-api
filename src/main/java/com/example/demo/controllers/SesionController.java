@@ -1,8 +1,8 @@
 package com.example.demo.controllers;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -88,7 +88,7 @@ public class SesionController {
 
     @PostMapping("/{id}/asistencias/")
     //Preauthorize participante
-    public ResponseEntity<?> registrarAsistencia(@PathVariable(name = "id") Long id, @RequestBody(required = true) Map<String, String> body) {
+    public ResponseEntity<?> registrarAsistencia(@PathVariable(name = "id") Long id, @RequestBody(required = true) HashMap<String, String> body) {
         if (!body.containsKey("token")) {
             return ResponseEntity.badRequest().body("Token de asistencia requerido.");
         }
