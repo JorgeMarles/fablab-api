@@ -28,9 +28,11 @@ import com.example.demo.services.EvidenciaService;
 import com.example.demo.services.SesionService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/sesiones")
+@Slf4j
 public class SesionController {
     
     @Autowired
@@ -89,6 +91,8 @@ public class SesionController {
     @PostMapping("/{id}/asistencias/")
     //Preauthorize participante
     public ResponseEntity<?> registrarAsistencia(@PathVariable(name = "id") Long id, @RequestBody(required = true) HashMap<String, String> body) {
+        log.info("Registrar asistencia para la sesión con ID: {}", id);
+        log.info("Cuerpo de la solicitud: {}", body);
         if (!body.containsKey("token")) {
             return ResponseEntity.badRequest().body("Token de asistencia requerido.");
         }
