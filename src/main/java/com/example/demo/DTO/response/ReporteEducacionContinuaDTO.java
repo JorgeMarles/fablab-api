@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReporteEducacionContinuaDTO implements IReporteDTO {
-    private Integer year;
+    private Integer año;
     private Integer semestre;
     private String codigo_curso;
     private Integer num_horas;

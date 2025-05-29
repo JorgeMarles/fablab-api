@@ -1,12 +1,11 @@
 package com.example.demo.services;
 
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -29,6 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class ReporteService {
+
+    public static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @Data
     @AllArgsConstructor
@@ -114,7 +115,7 @@ public class ReporteService {
             int year = oferta.getFechaInicio().getYear(); // Ajuste para obtener el año correcto
             for (TipoBeneficiario tipo : oferta.getTiposBeneficiario()) {
                 ReporteEducacionContinuaDTO reporte = new ReporteEducacionContinuaDTO();
-                reporte.setYear(year);
+                reporte.setAño(year);
                 reporte.setSemestre(oferta.getSemestre());
                 reporte.setCodigo_curso(oferta.getCodigo());
                 reporte.setNum_horas(oferta.getHoras());
@@ -159,7 +160,7 @@ public class ReporteService {
 
         List<ReporteEducacionContinuaDTO> reportes = this.getReporteEducacionContinua();
         List<List<Object>> data = reportes.stream().map(reporte -> {
-            return List.<Object>of(reporte.getYear(), reporte.getSemestre(), reporte.getCodigo_curso(),
+            return List.<Object>of(reporte.getAño(), reporte.getSemestre(), reporte.getCodigo_curso(),
                     reporte.getNum_horas(), reporte.getId_tipo_curso_extension(), reporte.getValor_curso(),
                     reporte.getId_tipo_documento(), reporte.getNum_documento(), reporte.getId_tipo_benef_extension(),
                     reporte.getCantidad_beneficiarios());
@@ -210,13 +211,5 @@ public class ReporteService {
         return excelGenerator.generateExcel();
     }
 
-    public XSSFWorkbook generarExcel() {
-        return new XSSFWorkbook();
-    }
-
-    public XSSFSheet generarHoja(String nombre, XSSFWorkbook workbook) {
-        XSSFSheet sheet = workbook.createSheet(nombre);
-        return sheet;
-    }
 
 }
