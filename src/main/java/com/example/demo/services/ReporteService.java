@@ -14,6 +14,7 @@ import com.example.demo.DTO.response.ReporteCursoDTO;
 import com.example.demo.DTO.response.ReporteDTO;
 import com.example.demo.DTO.response.ReporteEducacionContinuaDTO;
 import com.example.demo.DTO.response.ReporteEducacionContinuaDetalleDTO;
+import com.example.demo.DTO.response.ReportePracticanteDTO;
 import com.example.demo.entities.EstadoOfertaFormacion;
 import com.example.demo.entities.Inscripcion;
 import com.example.demo.entities.Instructor;
@@ -31,6 +32,12 @@ public class ReporteService {
 
     public static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
+    @Autowired
+    private OfertaFormacionService ofertaFormacionService;
+
+    @Autowired
+    private InstructorService instructorService;
+
     @Data
     @AllArgsConstructor
     private class Plantilla {
@@ -42,10 +49,9 @@ public class ReporteService {
             "PLANTILLA_CURSOS",
             new Plantilla(this::generarReporteCursoExcel, this::generarReporteCurso),
             "PLANTILLA_EDUCACION_CONTINUA",
-            new Plantilla(this::generarReporteEducacionContinuaExcel, this::generarReporteEducacionContinua));
-
-    @Autowired
-    private OfertaFormacionService ofertaFormacionService;
+            new Plantilla(this::generarReporteEducacionContinuaExcel, this::generarReporteEducacionContinua),
+            "PLANTILLA_PRACTICANTES",
+            new Plantilla(this::generarReportePracticantesExcel, this::generarReportePracticantes));
 
     public Resource generarExcel(String nombrePlantilla) throws Exception {
         Plantilla plantilla = plantillasMap.get(nombrePlantilla);
@@ -211,5 +217,49 @@ public class ReporteService {
         return excelGenerator.generateExcel();
     }
 
+    public List<ReportePracticanteDTO> getReportePracticantes() {
+        List<ReportePracticanteDTO> practicantes = new LinkedList<>();
+        List<Instructor> instructores = instructorService.listarEntidad();
+        for (Instructor instructor : instructores) {
+            ReportePracticanteDTO dto = new ReportePracticanteDTO(instructor);
+            practicantes.add(dto);
+        }
+        return practicantes;
+    }
+
+    public Resource generarReportePracticantesExcel() throws Exception {
+        ExcelGenerator excelGenerator = new ExcelGenerator();
+        int sheetPracticantes = excelGenerator.addSheet("PRACTICANTES").getSecond();
+
+        excelGenerator.addHeaders(sheetPracticantes,
+                new String[] { "AÑO", "SEMESTRE", "ID_TIPO_DOCUMENTO", "NUM_DOCUMENTO", "FECHA_EXPEDICION",
+                        "PRIMER_NOMBRE", "SEGUNDO_NOMBRE", "PRIMER_APELLIDO", "SEGUNDO_APELLIDO", "ID_SEXO_BIOLOGICO",
+                        "FECHA_NACIMIENTO", "ID_PAIS", "MUNICIPIO_NACIMIENTO", "DIRECCION_RESIDENCIA",
+                        "TELEFONO_CONTACTO", "EMAIL_PERSONAL", "ENTIDAD_DONDE_REALIZA_PRACTICA_O_PASANTIA",
+                        "MODALIDAD" });
+
+        List<ReportePracticanteDTO> reportes = this.getReportePracticantes();
+        List<List<Object>> data = reportes.stream().map(reporte -> {
+            return List.<Object>of(reporte.getAño(), reporte.getSemestre(), reporte.getId_tipo_documento(),
+                    reporte.getNum_documento(), reporte.getFecha_expedicion(), reporte.getPrimer_nombre(),
+                    reporte.getSegundo_nombre(), reporte.getPrimer_apellido(), reporte.getSegundo_apellido(),
+                    reporte.getId_sexo_biologico(), reporte.getFecha_nacimiento(), reporte.getId_pais(),
+                    reporte.getMunicipio_nacimiento(), reporte.getDireccion_residencia(),
+                    reporte.getTelefono_contacto(), reporte.getEmail_personal(),
+                    reporte.getEntidad_donde_realiza_practica_o_pasantia(), reporte.getModalidad());
+        }).toList();
+
+        excelGenerator.addData(sheetPracticantes, data);
+
+        return excelGenerator.generateExcel();
+    }
+
+    public List<ReporteDTO> generarReportePracticantes() {
+        ReporteDTO reporte = new ReporteDTO();
+        reporte.setNombre("PRACTICANTES");
+        List<ReportePracticanteDTO> practicantes = this.getReportePracticantes();
+        reporte.getDatos().addAll(practicantes);
+        return List.of(reporte);
+    }
 
 }
