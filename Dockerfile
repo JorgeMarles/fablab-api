@@ -32,5 +32,9 @@ EXPOSE 9091
 # Create a volume for the uploads
 VOLUME /app/uploads
 
+# Install necessary packages for fonts
+RUN apk add --no-cache msttcorefonts-installer fontconfig
+RUN update-ms-fonts
+
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
