@@ -14,11 +14,13 @@ import com.example.demo.DTO.response.ReporteCursoDTO;
 import com.example.demo.DTO.response.ReporteDTO;
 import com.example.demo.DTO.response.ReporteEducacionContinuaDTO;
 import com.example.demo.DTO.response.ReporteEducacionContinuaDetalleDTO;
+import com.example.demo.DTO.response.ReporteParticipanteDTO;
 import com.example.demo.DTO.response.ReportePracticanteDTO;
 import com.example.demo.entities.EstadoOfertaFormacion;
 import com.example.demo.entities.Inscripcion;
 import com.example.demo.entities.Instructor;
 import com.example.demo.entities.OfertaFormacion;
+import com.example.demo.entities.Participante;
 import com.example.demo.entities.TipoBeneficiario;
 import com.example.demo.utils.ExcelGenerator;
 
@@ -38,6 +40,9 @@ public class ReporteService {
     @Autowired
     private InstructorService instructorService;
 
+    @Autowired
+    private ParticipanteService participanteService;
+
     @Data
     @AllArgsConstructor
     private class Plantilla {
@@ -51,7 +56,9 @@ public class ReporteService {
             "PLANTILLA_EDUCACION_CONTINUA",
             new Plantilla(this::generarReporteEducacionContinuaExcel, this::generarReporteEducacionContinua),
             "PLANTILLA_PRACTICANTES",
-            new Plantilla(this::generarReportePracticantesExcel, this::generarReportePracticantes));
+            new Plantilla(this::generarReportePracticantesExcel, this::generarReportePracticantes),
+            "PLANTILLA_PARTICIPANTES",
+            new Plantilla(this::generarReporteParticipantesExcel, this::generarReporteParticipantes));
 
     public Resource generarExcel(String nombrePlantilla) throws Exception {
         Plantilla plantilla = plantillasMap.get(nombrePlantilla);
@@ -260,6 +267,49 @@ public class ReporteService {
         List<ReportePracticanteDTO> practicantes = this.getReportePracticantes();
         reporte.getDatos().addAll(practicantes);
         return List.of(reporte);
+    }
+
+    public List<ReporteParticipanteDTO> getReporteParticipantes() {
+        List<ReporteParticipanteDTO> participantes = new LinkedList<>();
+        List<Participante> listaParticipantes = participanteService.listarEntidad();
+        for (Participante participante : listaParticipantes) {
+            ReporteParticipanteDTO dto = new ReporteParticipanteDTO(participante);
+            participantes.add(dto);
+        }
+        return participantes;
+    }
+
+    public List<ReporteDTO> generarReporteParticipantes() {
+        ReporteDTO reporte = new ReporteDTO();
+        reporte.setNombre("PARTICIPANTES");
+        List<ReporteParticipanteDTO> participantes = this.getReporteParticipantes();
+        reporte.getDatos().addAll(participantes);
+        return List.of(reporte);
+    }
+
+    public Resource generarReporteParticipantesExcel() throws Exception {
+        ExcelGenerator excelGenerator = new ExcelGenerator();
+        int sheetParticipantes = excelGenerator.addSheet("PARTICIPANTES").getSecond();
+
+        excelGenerator.addHeaders(sheetParticipantes,
+                new String[] { "ID_TIPO_DOCUMENTO", "NUM_DOCUMENTO", "FECHA_EXPEDICION", "PRIMER_NOMBRE",
+                        "SEGUNDO_NOMBRE", "PRIMER_APELLIDO", "SEGUNDO_APELLIDO", "ID_SEXO_BIOLOGICO",
+                        "ID_ESTADO_CIVIL", "FECHA_NACIMIENTO", "ID_PAIS", "ID_MUNICIPIO", "TELEFONO_CONTACTO",
+                        "EMAIL_PERSONAL", "EMAIL_INSTITUCIONAL", "DIRECCION_INSTITUCIONAL" });
+
+        List<ReporteParticipanteDTO> reportes = this.getReporteParticipantes();
+        List<List<Object>> data = reportes.stream().map(reporte -> {
+            return List.<Object>of(reporte.getId_tipo_documento(), reporte.getNum_documento(),
+                    reporte.getFecha_expedicion(), reporte.getPrimer_nombre(), reporte.getSegundo_nombre(),
+                    reporte.getPrimer_apellido(), reporte.getSegundo_apellido(), reporte.getId_sexo_biologico(),
+                    reporte.getId_estado_civil(), reporte.getFecha_nacimiento(), reporte.getId_pais(),
+                    reporte.getId_municipio(), reporte.getTelefono_contacto(), reporte.getEmail_personal(),
+                    reporte.getEmail_institucional(), reporte.getDireccion_institucional());
+        }).toList();
+
+        excelGenerator.addData(sheetParticipantes, data);
+
+        return excelGenerator.generateExcel();
     }
 
 }
