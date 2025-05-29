@@ -20,4 +20,8 @@ public class TipoDocumento extends BaseEntity {
         super(id, nombre);
         this.siglas = siglas;
     }
+
+    public String getFullName(){
+        return this.siglas + "-" + this.getNombre();
+    }
 }

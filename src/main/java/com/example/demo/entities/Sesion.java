@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -43,13 +44,13 @@ public class Sesion {
     @JoinColumn(name = "sala_id")
     private Sala sala;
 
-    @OneToMany(mappedBy = "sesion")
+    @OneToMany(mappedBy = "sesion", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Evidencia> evidencias = new ArrayList<>();
 
     @ManyToMany(mappedBy = "sesiones")
     private List<Instructor> instructores = new ArrayList<>();
 
-    @OneToMany(mappedBy = "sesion")
+    @OneToMany(mappedBy = "sesion", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Asistencia> asistencias = new ArrayList<>();
 
     public void addInstructor(Instructor instructor) {

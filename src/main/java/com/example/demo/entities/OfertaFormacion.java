@@ -3,6 +3,8 @@ package com.example.demo.entities;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -101,6 +103,21 @@ public class OfertaFormacion {
 
     @OneToMany(mappedBy = "ofertaFormacion")
     private List<Certificado> certificados = new ArrayList<>();
+
+    public List<Instructor> getInstructores() {
+        Set<Instructor> instructores = new TreeSet<>(
+            (i1, i2) -> {
+                if (i1.getId() == null || i2.getId() == null) {
+                    return 0; // No comparar si alguno es nulo
+                }
+                return i1.getId().compareTo(i2.getId());
+            }
+        );
+        for (Sesion sesion : sesiones) {
+            instructores.addAll(sesion.getInstructores());
+        }
+        return instructores.stream().toList();
+    }
 
     public void addInstitucion(Institucion institucion) {
         instituciones.add(institucion);

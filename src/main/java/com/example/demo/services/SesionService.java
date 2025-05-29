@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -126,7 +127,7 @@ public class SesionService {
     }
 
     @Transactional
-    public void eliminar(Sesion sesion) {
+    public void eliminar(Sesion sesion) throws IOException {
         sesion.clearInstructores();
         sesionRepository.delete(sesion);
     }

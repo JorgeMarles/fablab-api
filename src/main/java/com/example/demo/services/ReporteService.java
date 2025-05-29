@@ -1,61 +1,213 @@
 package com.example.demo.services;
 
-import java.io.ByteArrayOutputStream;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.DTO.response.ReporteCursoDTO;
+import com.example.demo.DTO.response.ReporteDTO;
+import com.example.demo.DTO.response.ReporteEducacionContinuaDTO;
+import com.example.demo.DTO.response.ReporteEducacionContinuaDetalleDTO;
 import com.example.demo.entities.EstadoOfertaFormacion;
+import com.example.demo.entities.Inscripcion;
+import com.example.demo.entities.Instructor;
 import com.example.demo.entities.OfertaFormacion;
+import com.example.demo.entities.TipoBeneficiario;
+import com.example.demo.utils.ExcelGenerator;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class ReporteService {
 
+    @Data
+    @AllArgsConstructor
+    private class Plantilla {
+        private Callable<Resource> generadorArchivo;
+        private Callable<List<ReporteDTO>> generadorDatos;
+    }
+
+    private Map<String, Plantilla> plantillasMap = Map.of(
+            "PLANTILLA_CURSOS",
+            new Plantilla(this::generarReporteCursoExcel, this::generarReporteCurso),
+            "PLANTILLA_EDUCACION_CONTINUA",
+            new Plantilla(this::generarReporteEducacionContinuaExcel, this::generarReporteEducacionContinua));
+
     @Autowired
     private OfertaFormacionService ofertaFormacionService;
 
-    public Resource generarReporteCurso() throws Exception {
-        XSSFWorkbook workbook = generarExcel();
-        XSSFSheet sheet = generarHoja("CURSO", workbook);
-        addHeaders(workbook, sheet,
-                new String[] { "CODIGO_CURSO", "NOMBRE_CURSO", "ID_CINE_CAMPO_DETALLADO", "ES_EXTENSION", "ACTIVO" });
-        int countRow = 1;
-        List<OfertaFormacion> ofertas = ofertaFormacionService.listarTodosEntidades();
-        CellStyle style = workbook.createCellStyle();
-        XSSFFont font = workbook.createFont();
-        font.setFontHeight(14);
-        style.setFont(font);
-        for (OfertaFormacion of : ofertas) {
-            XSSFRow row = sheet.createRow(countRow++);
-            createCell(sheet, row, 0, of.getCodigo(), null);
-            createCell(sheet, row, 1, of.getNombre(), null);
-            createCell(sheet, row, 2, of.getCine(), null);
-            createCell(sheet, row, 3, of.isExtension() ? "S" : "N", null);
-            createCell(sheet, row, 4, of.getEstado() == EstadoOfertaFormacion.ACTIVA ? "S" : "N", null);
+    public Resource generarExcel(String nombrePlantilla) throws Exception {
+        Plantilla plantilla = plantillasMap.get(nombrePlantilla);
+        if (plantilla == null) {
+            throw new IllegalArgumentException("No existe una plantilla con el nombre: " + nombrePlantilla);
         }
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
-            workbook.write(outputStream);
-            workbook.close();
-            return new ByteArrayResource(outputStream.toByteArray());
-        } catch (Exception e) {
-            log.error("Error generating report: {}", e.getMessage());
-            throw e;
+        return plantilla.generadorArchivo.call();
+    }
+
+    public List<ReporteDTO> generarReporte(String nombrePlantilla) throws Exception {
+        Plantilla plantilla = plantillasMap.get(nombrePlantilla);
+        if (plantilla == null) {
+            throw new IllegalArgumentException("No existe una plantilla con el nombre: " + nombrePlantilla);
+        }
+        return plantilla.generadorDatos.call();
+    }
+
+    public List<ReporteDTO> generarReporteCurso() {
+        ReporteDTO reporte = new ReporteDTO();
+        reporte.setNombre("CURSOS");
+        List<ReporteCursoDTO> cursos = this.getReporteCurso();
+        for (ReporteCursoDTO curso : cursos) {
+            reporte.getDatos().add(curso);
+        }
+        return List.of(reporte);
+    }
+
+    public List<ReporteDTO> generarReporteEducacionContinua() {
+        ReporteDTO reporteEducacionContinua = new ReporteDTO();
+        reporteEducacionContinua.setNombre("EDUCACION_CONTINUA");
+        List<ReporteEducacionContinuaDTO> educacionContinua = this.getReporteEducacionContinua();
+        for (ReporteEducacionContinuaDTO educacion : educacionContinua) {
+            reporteEducacionContinua.getDatos().add(educacion);
+        }
+        ReporteDTO detalle = new ReporteDTO();
+        detalle.setNombre("DETALLE");
+        List<ReporteEducacionContinuaDetalleDTO> detalles = this.getReporteEducacionContinuaDetalle();
+        for (ReporteEducacionContinuaDetalleDTO detalleEducacion : detalles) {
+            detalle.getDatos().add(detalleEducacion);
+        }
+        return List.of(reporteEducacionContinua, detalle);
+    }
+
+    public List<ReporteCursoDTO> getReporteCurso() {
+        List<OfertaFormacion> ofertas = ofertaFormacionService.listarTodosEntidades();
+        return ofertas.stream().map(of -> {
+            ReporteCursoDTO dto = new ReporteCursoDTO();
+            dto.setCodigo_curso(of.getCodigo());
+            dto.setNombre_curso(of.getNombre());
+            dto.setId_cine_campo_detallado(of.getCine());
+            dto.setEs_extension(of.isExtension() ? "S" : "N");
+            dto.setActivo(of.getEstado() == EstadoOfertaFormacion.ACTIVA ? "S" : "N");
+            return dto;
+        }).toList();
+    }
+
+    public List<ReporteEducacionContinuaDTO> getReporteEducacionContinua() {
+        List<OfertaFormacion> ofertas = ofertaFormacionService.listarTodosEntidades();
+        List<ReporteEducacionContinuaDTO> reportes = new LinkedList<>();
+
+        for (OfertaFormacion oferta : ofertas) {
+            int cantidad = oferta.getInscripciones().size();
+            int cantidadXTB = cantidad / oferta.getTiposBeneficiario().size();
+            int sobra = cantidad % oferta.getTiposBeneficiario().size();
+            Instructor instructor = oferta.getInstructores().get(0);
+
+            int year = oferta.getFechaInicio().getYear(); // Ajuste para obtener el año correcto
+            for (TipoBeneficiario tipo : oferta.getTiposBeneficiario()) {
+                ReporteEducacionContinuaDTO reporte = new ReporteEducacionContinuaDTO();
+                reporte.setYear(year);
+                reporte.setSemestre(oferta.getSemestre());
+                reporte.setCodigo_curso(oferta.getCodigo());
+                reporte.setNum_horas(oferta.getHoras());
+                reporte.setId_tipo_curso_extension(oferta.getTipo().getId());
+                reporte.setValor_curso(oferta.getValor());
+                reporte.setId_tipo_documento(instructor.getUsuario().getTipoDocumento().getSiglas());
+                reporte.setNum_documento(instructor.getUsuario().getDocumento());
+                reporte.setId_tipo_benef_extension(tipo.getId());
+                reporte.setCantidad_beneficiarios(cantidadXTB + sobra);
+                sobra = 0;
+                reportes.add(reporte);
+            }
         }
 
+        return reportes;
+    }
+
+    public List<ReporteEducacionContinuaDetalleDTO> getReporteEducacionContinuaDetalle() {
+        List<OfertaFormacion> ofertas = ofertaFormacionService.listarTodosEntidades();
+        List<ReporteEducacionContinuaDetalleDTO> reportes = new LinkedList<>();
+
+        for (OfertaFormacion oferta : ofertas) {
+            Instructor instructor = oferta.getInstructores().get(0);
+            for (Inscripcion inscripcion : oferta.getInscripciones()) {
+                ReporteEducacionContinuaDetalleDTO reporte = new ReporteEducacionContinuaDetalleDTO(oferta, inscripcion,
+                        instructor);
+                reportes.add(reporte);
+            }
+        }
+
+        return reportes;
+    }
+
+    public Resource generarReporteEducacionContinuaExcel() throws Exception {
+        ExcelGenerator excelGenerator = new ExcelGenerator();
+        int sheetEducacionContinua = excelGenerator.addSheet("EDUCACION_CONTINUA").getSecond();
+
+        excelGenerator.addHeaders(sheetEducacionContinua,
+                new String[] { "AÑO", "SEMESTRE", "CODIGO_CURSO", "NUM_HORAS", "ID_TIPO_CURSO_EXTENSION",
+                        "VALOR_CURSO", "ID_TIPO_DOCUMENTO", "NUM_DOCUMENTO", "ID_TIPO_BENEF_EXTENSION",
+                        "CANTIDAD_BENEFICIARIOS" });
+
+        List<ReporteEducacionContinuaDTO> reportes = this.getReporteEducacionContinua();
+        List<List<Object>> data = reportes.stream().map(reporte -> {
+            return List.<Object>of(reporte.getYear(), reporte.getSemestre(), reporte.getCodigo_curso(),
+                    reporte.getNum_horas(), reporte.getId_tipo_curso_extension(), reporte.getValor_curso(),
+                    reporte.getId_tipo_documento(), reporte.getNum_documento(), reporte.getId_tipo_benef_extension(),
+                    reporte.getCantidad_beneficiarios());
+        }).toList();
+
+        excelGenerator.addData(sheetEducacionContinua, data);
+
+        int sheetDetalle = excelGenerator.addSheet("DETALLE").getSecond();
+
+        excelGenerator.addHeaders(sheetDetalle,
+                new String[] { "CODIGO_CURSO", "ID_TIPO_BENEF_EXTENSION", "NOMBRE_DEL_CURSO", "TIPO_DE_CURSO",
+                        "FECHA_INICIO_DEL_CURSO", "TIPO_DOCUMENTO_DEL_PARTICIPANTE", "NUMERO_DE_DOCUMENTO",
+                        "NOMBRE_Y_APELLIDO_DEL_PARTICIPANTE", "PROGRAMA", "VALOR_DE_CURSO",
+                        "NUMERO_DE_HORAS_DEL_CURSO", "DOCENTE_IMPARTIO_EL_CURSO", "TIPO_DOCUMENTO_DOCENTE",
+                        "NUMERO_DEL_DOCUMENTO" });
+
+        List<ReporteEducacionContinuaDetalleDTO> detalles = this.getReporteEducacionContinuaDetalle();
+        List<List<Object>> data2 = detalles.stream().map(reporte -> {
+            return List.<Object>of(reporte.getCodigo_curso(), reporte.getId_tipo_benef_extension(),
+                    reporte.getNombre_del_curso(), reporte.getTipo_de_curso(),
+                    reporte.getFecha_inicio_del_curso(), reporte.getTipo_de_documento_del_participante(),
+                    reporte.getNumero_de_documento(), reporte.getNombre_y_apellido_del_participante(),
+                    reporte.getPrograma(), reporte.getValor_de_curso(), reporte.getNumero_de_horas_del_curso(),
+                    reporte.getDocente_impartio_el_curso(), reporte.getTipo_documento_docente(),
+                    reporte.getNumero_del_documento());
+        }).toList();
+
+        excelGenerator.addData(sheetDetalle, data2);
+
+        return excelGenerator.generateExcel();
+    }
+
+    public Resource generarReporteCursoExcel() throws Exception {
+        ExcelGenerator excelGenerator = new ExcelGenerator();
+        excelGenerator.addSheet("CURSO");
+
+        excelGenerator.addHeaders(0,
+                new String[] { "CODIGO_CURSO", "NOMBRE_CURSO", "ID_CINE_CAMPO_DETALLADO", "ES_EXTENSION", "ACTIVO" });
+
+        List<ReporteCursoDTO> ofertas = this.getReporteCurso();
+        List<List<Object>> data = ofertas.stream().map(oferta -> {
+            return List.<Object>of(oferta.getCodigo_curso(), oferta.getNombre_curso(),
+                    oferta.getId_cine_campo_detallado(), oferta.getEs_extension(), oferta.getActivo());
+        }).toList();
+
+        excelGenerator.addData(0, data);
+
+        return excelGenerator.generateExcel();
     }
 
     public XSSFWorkbook generarExcel() {
@@ -67,32 +219,4 @@ public class ReporteService {
         return sheet;
     }
 
-    public void addHeaders(XSSFWorkbook workbook, XSSFSheet sheet, String[] headers) {
-        CellStyle style = workbook.createCellStyle();
-        XSSFFont font = workbook.createFont();
-        font.setBold(true);
-        font.setFontHeight(16);
-        style.setFont(font);
-        XSSFRow headerRow = sheet.createRow(0);
-        for (int i = 0; i < headers.length; i++) {
-            createCell(sheet, headerRow, i, headers[i], style);
-        }
-    }
-
-    private void createCell(XSSFSheet sheet, Row row, int columnCount, Object value, CellStyle style) {
-        sheet.autoSizeColumn(columnCount);
-        Cell cell = row.createCell(columnCount);
-        if (value instanceof Integer) {
-            cell.setCellValue((Integer) value);
-        } else if (value instanceof Long) {
-            cell.setCellValue((Long) value);
-        } else if (value instanceof String) {
-            cell.setCellValue((String) value);
-        } else if (value instanceof Boolean) {
-            cell.setCellValue((Boolean) value);
-        } else {
-            cell.setCellValue(value.toString());
-        }
-        cell.setCellStyle(style);
-    }
 }

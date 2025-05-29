@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -9,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.Usuario;
@@ -27,10 +30,12 @@ public class ReporteController {
 
     @Autowired
     private ReporteService reporteService;
-    
-    @GetMapping("/")
-    public ResponseEntity<Resource> getReporte() throws Exception {
-        Resource p = reporteService.generarReporteCurso();
+
+    @GetMapping("/excel/")
+    public ResponseEntity<Resource> getReporteExcel(@RequestParam(name = "plantilla") String plantilla)
+            throws Exception {
+        log.info("Generating Excel report with template: {}", plantilla);
+        Resource p = reporteService.generarExcel(plantilla);
         // Determine content type
         String contentType = fileService.determineContentType(".xlsx");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -42,12 +47,22 @@ public class ReporteController {
         } else {
             log.warn("Unknown principal type: {}", principal.getClass().getName());
         }
-        
+
         // Build response with inline disposition (display in browser)
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"Reporte.xlsx\"")
-                .header(HttpHeaders.CACHE_CONTROL, "max-age=3600")
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "inline; filename=\"Reporte-" + System.currentTimeMillis() + ".xlsx\"")
+                .header(HttpHeaders.CACHE_CONTROL, "max-age=1")
                 .body(p);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<?>> getReporte(@RequestParam(name = "plantilla") String plantilla) throws Exception {
+        log.info("Generating Excel report with template: {}", plantilla);
+        List<?> reportes = reporteService.generarReporte(plantilla);
+
+        // Build response with inline disposition (display in browser)
+        return ResponseEntity.ok().body(reportes);
     }
 }
