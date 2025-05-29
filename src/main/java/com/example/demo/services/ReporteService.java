@@ -27,7 +27,7 @@ public class ReporteService {
     @Autowired
     private OfertaFormacionService ofertaFormacionService;
 
-    public Resource generarReporteCurso() {
+    public Resource generarReporteCurso() throws Exception {
         XSSFWorkbook workbook = generarExcel();
         XSSFSheet sheet = generarHoja("CURSO", workbook);
         addHeaders(workbook, sheet,
