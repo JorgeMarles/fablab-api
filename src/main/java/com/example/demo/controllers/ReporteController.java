@@ -1,7 +1,5 @@
 package com.example.demo.controllers;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -31,7 +29,7 @@ public class ReporteController {
     private ReporteService reporteService;
     
     @GetMapping("/")
-    public ResponseEntity<Resource> getReporte() throws IOException {
+    public ResponseEntity<Resource> getReporte() throws Exception {
         Resource p = reporteService.generarReporteCurso();
         // Determine content type
         String contentType = fileService.determineContentType(".xlsx");
