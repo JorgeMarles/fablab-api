@@ -251,6 +251,9 @@ public class FileService {
 	}
 
 	public static String getFileExtension(String fileName) {
+		if(!fileName.contains(".")){
+			throw new FileException("El nombre del archivo no contiene una extensión válida: " + fileName);
+		}
 		return fileName.substring(fileName.lastIndexOf("."));
 	}
 

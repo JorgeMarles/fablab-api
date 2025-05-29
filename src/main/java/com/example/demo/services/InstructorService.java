@@ -87,8 +87,10 @@ public class InstructorService {
         instructor.setEntidad(instructorDto.getEntidad());
         instructor.setModalidad(modalidadOpt.get());
 
-        firebaseService.changePassword(instructor.getUsuario().getUid(), instructorDto.getPassword());
-
+        if(instructorDto.getPassword() != null && !instructorDto.getPassword().isEmpty()) {
+            firebaseService.changePassword(instructor.getUsuario().getUid(), instructorDto.getPassword());
+        } 
+        
         instructor = instructorRepository.save(instructor);
 
         DatosPersonalesResponseDTO idto = new DatosPersonalesResponseDTO();

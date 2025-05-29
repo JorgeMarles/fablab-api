@@ -75,7 +75,7 @@ public class FileController {
                 .body(p.getSecond());
     }
 
-    @GetMapping("/plantillas/{uuid}/")
+    @GetMapping("/certificados/{uuid}/")
     //Preauthorize admin
     public ResponseEntity<Resource> serveFileCertificado(@PathVariable String uuid) throws IOException {
         Pair<String,Resource> p = fileService.getPlantilla(uuid);

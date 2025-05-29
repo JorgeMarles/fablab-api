@@ -133,6 +133,14 @@ public class OfertaFormacionService {
                 throw new IllegalArgumentException("Ya existe una oferta con el mismo código.");
             }
 
+            if(dto.getTipos_beneficiario().size() == 0) {
+                throw new IllegalArgumentException("Debe seleccionar al menos un tipo de beneficiario.");
+            }
+
+            if(dto.getSesiones().size() == 0) {
+                throw new IllegalArgumentException("Debe agregar al menos una sesión.");
+            }
+
             TipoOferta tipo = tipoOfertaRepository.findById(dto.getId_tipo())
                     .orElseThrow(() -> new IllegalArgumentException("Tipo de oferta no encontrado"));
 

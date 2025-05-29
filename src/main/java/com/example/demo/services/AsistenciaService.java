@@ -52,7 +52,7 @@ public class AsistenciaService {
                 TokenValue val = (TokenValue) value;
                 if(val.getTimes() > 0) {
                     val.setTimes(val.getTimes() - 1);
-                    generarToken((Long) key);
+                    generarToken((Long) key, val.getTimes());
                     log.info("Token de asistencia para la sesión {} ha sido renovado. Quedan {} usos.",
                             key, val.getTimes());
                 } else {
@@ -71,7 +71,7 @@ public class AsistenciaService {
             if(sesion.get().getOfertaFormacion().getEstado() != EstadoOfertaFormacion.ACTIVA) {
                 throw new IllegalArgumentException("La sesión no está activa.");
             }
-            generarToken(idSesion);
+            generarToken(idSesion, MAX_RENEWALS);
         } else {
             tokens.remove(idSesion);
             log.info("Token de asistencia para la sesión {} ha sido desactivado.", idSesion);
@@ -88,10 +88,10 @@ public class AsistenciaService {
                 .collect(Collectors.toList());
     }
 
-    private void generarToken(Long id) {
+    private void generarToken(Long id, int times) {
         String tokenGenerado = StringGenerator.generateRandomString();
         LocalDateTime expiracion = LocalDateTime.now().plusMinutes(EXPIRATION_MINUTES);
-        tokens.put(id, new TokenValue(tokenGenerado, expiracion, MAX_RENEWALS));
+        tokens.put(id, new TokenValue(tokenGenerado, expiracion, times));
         log.info("Token generado para ID {}: {}, vence el {}", id, tokenGenerado, expiracion);
     }
 
