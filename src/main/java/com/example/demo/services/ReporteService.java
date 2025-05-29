@@ -53,7 +53,7 @@ public class ReporteService {
             return new ByteArrayResource(outputStream.toByteArray());
         } catch (Exception e) {
             log.error("Error generating report: {}", e.getMessage());
-            return null;
+            throw e;
         }
 
     }
