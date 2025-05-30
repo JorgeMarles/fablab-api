@@ -1,5 +1,6 @@
 package com.example.demo.DTO.response;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.example.demo.entities.EstadoOfertaFormacion;
@@ -35,6 +36,7 @@ public class OfertaDetalleDTO implements IPersonalizableResponseDTO<OfertaFormac
 	private List<InstitucionDTO> instituciones;
 	private List<SesionItemDTO> sesiones;
 	private List<InscritoDTO> inscritos;
+	private List<String> roles = new LinkedList<>();
 
 	@Override
 	public void parseFromEntity(OfertaFormacion entity) {
@@ -93,6 +95,17 @@ public class OfertaDetalleDTO implements IPersonalizableResponseDTO<OfertaFormac
 
 	@Override
 	public void personalizeFromEntity(OfertaFormacion entity, Usuario user) {
+		if (user != null && user.getHasPersonalData()) {
+			if(user.getAdministrador() != null) {
+				this.roles.add("ADMINISTRADOR");
+			}
+			if(user.getInstructor() != null) {
+				this.roles.add("INSTRUCTOR");
+			}
+			if(user.getParticipante() != null) {
+				this.roles.add("PARTICIPANTE");
+			}
+		}
 		this.parseFromEntity(entity);
 		for(int i = 0; i < this.sesiones.size(); i++) {
 			SesionItemDTO sesion = this.sesiones.get(i);

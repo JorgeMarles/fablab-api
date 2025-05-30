@@ -37,7 +37,9 @@ public class SesionItemDTO implements IPersonalizableResponseDTO<Sesion> {
                     .orElse(null);
             LocalDateTime fin = entity.getFecha().atTime(entity.getFin());
             if (asistencia != null) {
-                if (LocalDateTime.now().isAfter(fin)) { // Si la sesión terminó, ya no puede estar pendiente
+                if (asistencia.isAsistio()) { // Si la sesión terminó, ya no puede estar pendiente
+                    this.estado = AsistenciaEstado.PRESENTE;
+                } else if (LocalDateTime.now().isAfter(fin)) {
                     this.estado = asistencia.isAsistio() ? AsistenciaEstado.PRESENTE : AsistenciaEstado.AUSENTE;
                 } else {
                     this.estado = AsistenciaEstado.PENDIENTE;
