@@ -330,10 +330,8 @@ public class OfertaFormacionService {
                 .orElseThrow(() -> new ResourceNotFoundException("No existe una oferta de formación con ese id"));
         oferta.setEstado(EstadoOfertaFormacion.FINALIZADA);
         LocalDateTime fechaFin = LocalDateTime.now();
-        oferta.getSesiones().forEach(sesion -> {
-            sesion.getInstructores().forEach(instructor -> {
-                certificadoService.crearCertificado(oferta, instructor, fechaFin, plantilla);
-            });
+        oferta.getInstructores().forEach(instructor -> {
+            certificadoService.crearCertificado(oferta, instructor, fechaFin, plantilla);
         });
         ofertaFormacionRepository.save(oferta);
     }
