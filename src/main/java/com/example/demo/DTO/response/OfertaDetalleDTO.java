@@ -100,10 +100,16 @@ public class OfertaDetalleDTO implements IPersonalizableResponseDTO<OfertaFormac
 				this.roles.add("ADMINISTRADOR");
 			}
 			if(user.getInstructor() != null) {
-				this.roles.add("INSTRUCTOR");
+				if(entity.getInstructores().stream()
+						.anyMatch(instructor -> instructor.getId().equals(user.getInstructor().getId()))) {
+					this.roles.add("INSTRUCTOR");
+				}
 			}
 			if(user.getParticipante() != null) {
-				this.roles.add("PARTICIPANTE");
+				if(entity.getInscripciones().stream()
+						.anyMatch(inscripcion -> inscripcion.getParticipante().getId().equals(user.getParticipante().getId()))) {
+					this.roles.add("PARTICIPANTE");
+				}
 			}
 		}
 		this.parseFromEntity(entity);
