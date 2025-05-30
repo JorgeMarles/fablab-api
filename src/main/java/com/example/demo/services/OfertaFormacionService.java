@@ -278,6 +278,10 @@ public class OfertaFormacionService {
                 }
             }
 
+            log.info("Sesiones a editar {} ", ofertaDto.getSesiones());
+            log.info("Sesiones actuales: {} ", oferta.getSesiones().stream()
+                    .map(sesion -> sesion.getId()).collect(Collectors.toList()));
+
             List<Sesion> sesionesARemover = oferta.getSesiones().stream()
                     .filter(sesion -> ofertaDto.getSesiones().stream()
                             .noneMatch(s -> s.getId() != null && s.getId().equals(sesion.getId())))

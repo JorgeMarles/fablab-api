@@ -10,11 +10,14 @@ import org.springframework.stereotype.Service;
 import com.example.demo.DTO.request.SesionCreacionDTO;
 import com.example.demo.DTO.response.SesionDTO;
 import com.example.demo.DTO.response.SesionItemDTO;
+import com.example.demo.entities.Asistencia;
+import com.example.demo.entities.Inscripcion;
 import com.example.demo.entities.Instructor;
 import com.example.demo.entities.OfertaFormacion;
 import com.example.demo.entities.Sala;
 import com.example.demo.entities.Sesion;
 import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.repositories.AsistenciaRepository;
 import com.example.demo.repositories.SesionRepository;
 
 import jakarta.transaction.Transactional;
@@ -23,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class SesionService {
+
+    @Autowired
+    private AsistenciaRepository asistenciaRepository;
     
     @Autowired
     private SesionRepository sesionRepository;
@@ -121,6 +127,16 @@ public class SesionService {
             }
             sesion.getInstructores().add(instructorOpt.get());
             instructorOpt.get().getSesiones().add(sesion);
+        }
+
+        for(Inscripcion inscripcion : oferta.getInscripciones()) {
+            Asistencia asistencia = new Asistencia();
+            asistencia.setSesion(sesion);
+            asistencia.setParticipante(inscripcion.getParticipante());
+            asistencia.setAsistio(false);
+            sesion.getAsistencias().add(asistencia);
+            inscripcion.getParticipante().getAsistencias().add(asistencia);
+            asistenciaRepository.save(asistencia);
         }
 
         return sesionRepository.save(sesion);
