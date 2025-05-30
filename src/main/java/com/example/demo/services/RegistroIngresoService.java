@@ -170,9 +170,6 @@ public class RegistroIngresoService {
 		Optional<Institucion> institucion = institucionService
 				.obtenerPorIdEntidad(registroIngresoDTO.getId_institucion());
 		if (institucion.isPresent()) {
-			if(institucion.get().getTipoInstitucion() != tipo) {
-				throw new IllegalArgumentException("La institución no es del tipo esperado.");
-			}
 			registroIngreso.setInstitucion(institucion.get());
 			registroIngreso.setInstitucionNombre(registroIngresoDTO.getNombre_institucion());
 		} else {
