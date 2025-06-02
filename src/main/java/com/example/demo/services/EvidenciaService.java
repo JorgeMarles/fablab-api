@@ -35,6 +35,8 @@ public class EvidenciaService {
     @Autowired
     private InstructorService instructorService;
 
+    private static final int MAX_EVIDENCIAS_POR_SESION = 5;
+
     public List<EvidenciaDTO> listarPorSesionId(Long sesionId) {
         return evidenciaRepository.findBySesion_Id(sesionId).stream().map(evidencia -> {
             EvidenciaDTO dto = new EvidenciaDTO();
@@ -60,6 +62,11 @@ public class EvidenciaService {
 
         if(!sesion.getInstructores().contains(instructor)) {
             throw new ResourceNotFoundException("El instructor no está asignado a la sesión");
+        }
+
+        if(sesion.getEvidencias().size() >= MAX_EVIDENCIAS_POR_SESION) {
+            throw new ResourceNotFoundException("La sesión ya tiene el máximo de evidencias permitidas");
+
         }
 
         Archivo archivo = fileService.uploadFile(dto.getArchivo());

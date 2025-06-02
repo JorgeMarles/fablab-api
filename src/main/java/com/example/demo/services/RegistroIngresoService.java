@@ -160,7 +160,7 @@ public class RegistroIngresoService {
 	}
 
 	private void addInstitucion(RegistroIngreso registroIngreso, RegistroIngresoDTO registroIngresoDTO, TipoInstitucion tipo) {
-		if (registroIngresoDTO.getId_institucion() == null && registroIngresoDTO.getNombre_institucion() == null) {
+		if (registroIngresoDTO.getId_institucion() == null || registroIngresoDTO.getNombre_institucion() == null) {
 			throw new IllegalArgumentException("El id_institucion o el nombre_institucion son obligatorios.");
 		}
 		if (registroIngresoDTO.getId_institucion() == null) {
@@ -226,7 +226,7 @@ public class RegistroIngresoService {
 	}
 
 	private void addSemillero(RegistroIngreso registroIngreso, RegistroIngresoDTO registroIngresoDTO) {
-		if (registroIngresoDTO.getId_semillero() == null && registroIngresoDTO.getNombre_semillero() == null) {
+		if (registroIngresoDTO.getId_semillero() == null || registroIngresoDTO.getNombre_semillero() == null) {
 			throw new IllegalArgumentException("El id_semillero o el nombre_semillero son obligatorios.");
 		}
 		if (registroIngresoDTO.getId_semillero() == null) {
