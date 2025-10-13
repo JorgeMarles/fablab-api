@@ -10,10 +10,12 @@ import com.example.demo.utils.Mappeable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class DatosPersonalesDTO {
     @Mappeable(mapsTo = "primerNombre")
     private String primer_nombre;
@@ -59,10 +61,11 @@ public class DatosPersonalesDTO {
     private String password;
 
     public String getNombreCompleto() {
-        return this.primer_nombre + " " + this.segundo_nombre + " " + this.primer_apellido + " " + this.segundo_apellido;
+        return this.primer_nombre + " " + this.segundo_nombre + " " + this.primer_apellido + " "
+                + this.segundo_apellido;
     }
 
-    public void registerChanges(ChangeMap map) throws Exception{
+    public void registerChanges(ChangeMap map) throws Exception {
         for (Field field : this.getClass().getDeclaredFields()) {
             Mappeable mappeable = field.getAnnotation(Mappeable.class);
             if (mappeable != null) {

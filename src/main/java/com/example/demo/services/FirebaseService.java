@@ -19,6 +19,7 @@ import com.example.demo.repositories.UsuarioRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import com.google.firebase.auth.ListUsersPage;
 import com.google.firebase.auth.UserRecord;
 
 import jakarta.transaction.Transactional;
@@ -163,5 +164,28 @@ public class FirebaseService {
                 .setPassword(newPassword);
 
         FirebaseAuth.getInstance().updateUser(request);
+    }
+
+    public void deleteAllUsers() {
+        try {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            ListUsersPage page = auth.listUsers(null);
+
+            int deletedCount = 0;
+
+            while (page != null) {
+                for (UserRecord user : page.getValues()) {
+                    auth.deleteUser(user.getUid());
+                    deletedCount++;
+                }
+                page = page.getNextPage();
+            }
+
+            System.out.println("✅ Deleted " + deletedCount + " users from Firebase Authentication.");
+
+        } catch (Exception e) {
+            System.err.println("❌ Error deleting users: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

@@ -44,10 +44,14 @@ public class UsuarioService {
     private InstructorService instructorService;
 
     @Autowired
+    private AdministradorService administradorService;
+
+    @Autowired
     private FirebaseService firebaseService;
 
     @Transactional
-    public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO usuarioDto, Usuario usuario, boolean setCorreo) {
+    public DatosPersonalesResponseDTO crearParticipante(DatosPersonalesDTO usuarioDto, Usuario usuario,
+            boolean setCorreo) {
         Usuario usuarioCreado = this.crear(usuarioDto, usuario, setCorreo);
         return participanteService.crearParticipante(usuarioDto, usuarioCreado);
     }
@@ -66,23 +70,50 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario crear(DatosPersonalesDTO usuarioDto, Usuario usuario, boolean setCorreo) {
-        Optional<TipoDocumento> tipoDocumentoOpt = tipoDocumentoService
-                .obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_tipo_documento()));
-        Optional<Pais> paisOpt = paisService.obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_pais()));
-        if (!paisOpt.isPresent()) {
-            throw new ResourceNotFoundException("No existe un pais con ese id");
+    public DatosPersonalesResponseDTO crearAdministrador(DatosPersonalesDTO usuarioDto) {
+        try {
+            Usuario existente = this.buscarPorDocumento(usuarioDto.getDocumento()).orElse(new Usuario());
+            existente.setHasPersonalData(true);
+            Usuario usuarioCreado = this.crear(usuarioDto, existente, true);
+            usuarioCreado = firebaseService.createUser(usuarioCreado, usuarioDto);
+            return administradorService.crearAdministrador(usuarioCreado);
+        } catch (FirebaseAuthException e) {
+            log.error("Error: ", e);
+            throw new IllegalArgumentException(e);
         }
-        Optional<Municipio> municipioOpt = Optional.empty();
-        if (paisOpt.get().getCodigo().equals("170")) {
-            municipioOpt = municipioService
-                    .obtenerPorIdEntidad(Long.valueOf(usuarioDto.getId_municipio()));
-            if (!municipioOpt.isPresent()) {
-                throw new ResourceNotFoundException("No existe un municipio con ese id");
+    }
+
+    @Transactional
+    public Usuario crear(DatosPersonalesDTO usuarioDto, Usuario usuario, boolean setCorreo) {
+
+        Optional<TipoDocumento> tipoDocumentoOpt = Optional.empty();
+
+        if (usuarioDto.getId_tipo_documento() != null) {
+            tipoDocumentoOpt = tipoDocumentoService.obtenerPorIdEntidad(usuarioDto.getId_tipo_documento());
+
+            if (tipoDocumentoOpt.isEmpty()) {
+                throw new ResourceNotFoundException("No existe un tipo de documento con ese id");
             }
         }
-        if (!tipoDocumentoOpt.isPresent()) {
-            throw new ResourceNotFoundException("No existe un tipo de documento con ese id");
+
+        Optional<Pais> paisOpt = Optional.empty();
+        Optional<Municipio> municipioOpt = Optional.empty();
+        if (usuarioDto.getId_pais() != null) {
+            paisOpt = paisService.obtenerPorIdEntidad(usuarioDto.getId_pais());
+
+            if (paisOpt.isEmpty()) {
+                throw new ResourceNotFoundException("No existe un pais con ese id");
+            }
+
+            if (usuarioDto.getId_municipio() != null && "170".equals(paisOpt.get().getCodigo())) {
+                municipioOpt = municipioService
+                        .obtenerPorIdEntidad(usuarioDto.getId_municipio());
+
+                if (municipioOpt.isEmpty()) {
+                    throw new ResourceNotFoundException("No existe un municipio con ese id");
+                }
+
+            }
         }
 
         if (usuario == null) {
@@ -96,16 +127,18 @@ public class UsuarioService {
         usuario.setFechaExpedicion(usuarioDto.getFecha_expedicion());
         usuario.setFechaNacimiento(usuarioDto.getFecha_nacimiento());
         usuario.setMunicipio(municipioOpt.orElse(null));
-        usuario.setPais(paisOpt.get());
+        usuario.setPais(paisOpt.orElse(null));
         usuario.setPrimerApellido(usuarioDto.getPrimer_apellido());
         usuario.setPrimerNombre(usuarioDto.getPrimer_nombre());
         usuario.setSegundoApellido(usuarioDto.getSegundo_apellido());
         usuario.setSegundoNombre(usuarioDto.getSegundo_nombre());
         usuario.setSexo(usuarioDto.getSexo());
         usuario.setTelefono(usuarioDto.getTelefono());
-        usuario.setTipoDocumento(tipoDocumentoOpt.get());
+        usuario.setTipoDocumento(tipoDocumentoOpt.orElse(null));
 
-        usuario.setHasPersonalData(usuario.getDocumento() != null);
+        if (!usuario.getHasPersonalData()) {
+            usuario.setHasPersonalData(usuario.getDocumento() != null);
+        }
 
         log.info("Usuario actualizado: {} ", usuario.getHasPersonalData());
 
@@ -170,7 +203,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado."));
     }
 
-    public List<DatosPersonalesResponseDTO> buscar(String q){
+    public List<DatosPersonalesResponseDTO> buscar(String q) {
         List<Participante> participantes = participanteService.buscar(q);
         List<DatosPersonalesResponseDTO> dtos = new ArrayList<>();
         for (Participante ptcp : participantes) {
