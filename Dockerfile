@@ -32,8 +32,8 @@ EXPOSE 9091
 # Create a volume for the uploads
 VOLUME /app/uploads
 
-# Install necessary packages for fonts
-RUN apk add --no-cache msttcorefonts-installer fontconfig
+# Install necessary packages
+RUN apk add --no-cache msttcorefonts-installer fontconfig curl
 RUN update-ms-fonts
 
 # Run the application

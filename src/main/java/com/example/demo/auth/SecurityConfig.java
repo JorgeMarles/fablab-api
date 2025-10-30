@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    //@Autowired
+    // @Autowired
 
     @Autowired
     private CustomAccessDeniedHandler customAccessDeniedHandler;
@@ -28,30 +28,30 @@ public class SecurityConfig {
     private FirebaseAuthFilter firebaseAuthFilter;
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .cors(Customizer.withDefaults())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api-docs/**").permitAll()
-                .requestMatchers("/docs/**").permitAll()
-                .requestMatchers("/files/piezas/**").permitAll()
-                .requestMatchers("/ofertas/**").permitAll()
-                .requestMatchers("/reportes/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            .exceptionHandling(exception -> exception
-                .accessDeniedHandler(customAccessDeniedHandler)
-                .authenticationEntryPoint(customAuthenticationEntryPoint)
-            )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api-docs/**").permitAll()
+                        .requestMatchers("/docs/**").permitAll()
+                        .requestMatchers("/files/piezas/**").permitAll()
+                        .requestMatchers("/ofertas/**").permitAll()
+                        .requestMatchers("/reportes/**").permitAll()
+                        .requestMatchers("/health").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(customAccessDeniedHandler)
+                        .authenticationEntryPoint(customAuthenticationEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
